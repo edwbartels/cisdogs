@@ -1,0 +1,88 @@
+# General ignores
+.DS_Store
+Thumbs.db
+*.log
+*.env
+*.pyc
+__pycache__/
+
+# Ignore node_modules and build files (React frontend)
+node_modules/
+dist/
+build/
+.npm/
+
+# Ignore dependencies and virtual environment (FastAPI backend)
+env/
+venv/
+*.egg-info/
+.pip/
+*.pyo
+
+# Ignore Python bytecode
+*.py[cod]
+
+# Ignore test coverage reports
+coverage/
+*.cover
+.hypothesis/
+
+# Ignore SQLite database files
+*.sqlite3
+*.db
+
+# Ignore editor-specific files
+.vscode/
+.idea/
+*.swp
+
+# Ignore local environment files
+*.env
+*.local
+
+# Ignore Python build artifacts
+build/
+dist/
+*.egg-info/
+
+# Ignore static and cache files
+staticfiles/
+media/
+*.cache
+
+# Ignore pytest cache
+.pytest_cache/
+.cache/
+
+# Ignore Flask or FastAPI instance folder
+instance/
+
+# Ignore migrations (optional, if you auto-generate them and don't need to track them)
+migrations/
+
+# Ignore package-lock and yarn.lock (React frontend)
+package-lock.json
+yarn.lock
+
+# Ignore Tailwind build files (if using Tailwind CSS in React)
+tailwind.config.js
+postcss.config.js
+
+# Ignore coverage reports
+coverage/
+*.lcov
+coverage-final.json
+
+# Ignore linting cache files
+.eslintcache
+.prettierignore
+
+# Ignore Docker-related files (if using Docker)
+docker-compose.override.yml
+.env.docker
+
+# Ignore any temporary/backup files
+*.bak
+*.tmp
+*.temp
+~$*

@@ -6,6 +6,13 @@ import checker from 'vite-plugin-checker';
 export default defineConfig({
 	plugins: [react(), checker({ typescript: true })],
 	server: {
+		proxy: {
+			'/api/': {
+				target: 'http://127.0.0.1:8000',
+				changeOrigin: true,
+				secure: false,
+			},
+		},
 		open: true,
 		watch: {
 			usePolling: true,

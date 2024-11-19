@@ -1,5 +1,9 @@
 from pydantic import BaseModel
-from app.models import UserRead, ItemRead
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.schemas.user import UserRead
+    from app.schemas.item import ItemRead
 
 
 class ListingBase(BaseModel):
@@ -17,7 +21,10 @@ class ListingCreate(ListingBase):
 class ListingRead(ListingBase):
     id: int
 
+    class Config:
+        from_attributes = True
+
 
 class ListingDetails(ListingRead):
-    seller: UserRead
-    item: ItemRead
+    seller: "UserRead"
+    item: "ItemRead"

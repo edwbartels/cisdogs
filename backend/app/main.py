@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes import (
     albums,
@@ -18,20 +18,25 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173/"],
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+
 # Connect routers
-app.include_router(auth)
-app.include_router(session)
-app.include_router(users)
-app.include_router(artists)
-app.include_router(albums)
-app.include_router(releases)
-app.include_router(items)
-app.include_router(listings)
-app.include_router(transactions)
-app.include_router(reviews)
+api_router = APIRouter(prefix="/api")
+
+api_router.include_router(auth.router)
+# api_router.include_router(session.router)
+api_router.include_router(users.router)
+api_router.include_router(artists.router)
+api_router.include_router(albums.router)
+api_router.include_router(releases.router)
+api_router.include_router(items.router)
+api_router.include_router(listings.router)
+api_router.include_router(transactions.router)
+api_router.include_router(reviews.router)
+
+app.include_router(api_router)

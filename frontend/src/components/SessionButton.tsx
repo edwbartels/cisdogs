@@ -9,7 +9,7 @@ const SessionButton: React.FC<SessionButtonProps> = ({ onClick, title }) => {
 	return (
 		<a
 			onClick={onClick}
-			className="bg-white text-blue-600 px-4 py-2 mx-1 rounded-md font-medium hover:bg-gray-100 cursor-pointer"
+			className="bg-wax-silver text-wax-black px-4 py-2 mx-1 rounded-md font-medium hover:bg-wax-amber cursor-pointer"
 		>
 			{title}
 		</a>

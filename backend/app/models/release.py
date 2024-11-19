@@ -1,7 +1,6 @@
 from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.database import Base
-from app.models import Album
 
 
 class Release(Base):
@@ -12,4 +11,5 @@ class Release(Base):
     media_type: Mapped[str] = mapped_column(String)
     variant: Mapped[str] = mapped_column(String)
 
-    album: Mapped[Album] = relationship("Album", back_populates="albums")
+    album: Mapped["Album"] = relationship("Album", back_populates="releases")
+    items: Mapped["Item"] = relationship("Item", back_populates="release")

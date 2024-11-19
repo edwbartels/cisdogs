@@ -1,5 +1,9 @@
 from pydantic import BaseModel
-from app.models import UserRead, TransactionRead
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.schemas.user import UserRead
+    from app.schemas.transaction import TransactionRead
 
 
 class ReviewBase(BaseModel):
@@ -12,12 +16,15 @@ class ReviewCreate(ReviewBase):
     transaction_id: int
 
 
-class ReviewRead(BaseModel):
+class ReviewRead(ReviewBase):
     id: int
     user_id: int
     transaction_id: int
 
+    class Config:
+        from_attributes = True
+
 
 class ReviewDetails(ReviewRead):
-    user: UserRead
-    transaction: TransactionRead
+    user: "UserRead"
+    transaction: "TransactionRead"

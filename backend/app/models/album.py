@@ -1,7 +1,6 @@
 from sqlalchemy import Integer, String, ForeignKey, JSON
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.database import Base
-from app.models import Artist, Release
 
 
 class Album(Base):
@@ -11,8 +10,8 @@ class Album(Base):
     title: Mapped[str] = mapped_column(String)
     artist_id: Mapped[int] = mapped_column(Integer, ForeignKey("artists.id"))
     track_data: Mapped[JSON] = mapped_column(JSON, nullable=True)
-    releases: Mapped[list[Release]] = relationship("Release", back_populates="albums")
-    artist: Mapped[Artist] = relationship("Artist", back_populates="albums")
+    releases: Mapped[list["Release"]] = relationship("Release", back_populates="album")
+    artist: Mapped["Artist"] = relationship("Artist", back_populates="albums")
 
     # @property
     # def track_list(self):

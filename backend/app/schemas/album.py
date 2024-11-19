@@ -1,5 +1,9 @@
 from pydantic import BaseModel
-from app.models import ArtistRead, ReleaseRead
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.schemas.artist import ArtistRead
+    from app.schemas.release import ReleaseRead
 
 
 class AlbumBase(BaseModel):
@@ -15,9 +19,9 @@ class AlbumRead(AlbumBase):
     artist_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class AlbumDetails(AlbumRead):
-    artist: ArtistRead
-    releases: list[ReleaseRead] = []
+    artist: "ArtistRead"
+    releases: list["ReleaseRead"] = []

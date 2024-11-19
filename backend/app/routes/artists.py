@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.schemas import ArtistRead, ArtistCreate
-from app.models.database import get_db
+from app.database import get_db
 from app.models import Artist
+from app.schemas.artist import ArtistRead, ArtistBase
 
 router = APIRouter(prefix="/artists", tags=["artists"])
 
@@ -24,7 +24,7 @@ def get_artist_by_id(artist_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=ArtistRead)
-def create_artist(artist: ArtistCreate, db: Session = Depends(get_db)):
+def create_artist(artist: ArtistBase, db: Session = Depends(get_db)):
     existing_artist = db.query(Artist).filter(Artist.name == artist.name).first()
     if existing_artist:
         raise HTTPException(status_code=400, detail="Artist already exists")

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
-from app.schemas import ReleaseRead, ReleaseCreate
-from app.models.database import get_db
+from app.database import get_db
 from app.models import Release
+from app.schemas.release import ReleaseRead, ReleaseCreate
 
 router = APIRouter(prefix="/releases", tags=["releases"])
 

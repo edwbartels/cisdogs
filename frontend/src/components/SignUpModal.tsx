@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import useAuthStore from '../stores/authStore';
 
 interface SignUpModalProps {
 	isOpen: boolean;
@@ -29,35 +30,38 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(signupForm),
 			});
-			if (res.ok) {
-				const userInfo = await res.json();
-				return userInfo;
+			if (!res.ok) {
+				throw new Error('Login failed');
 			}
+			const { access_token, ...remaining } = await res.json();
+			localStorage.setItem('accessToken', access_token);
+			useAuthStore.getState().login(remaining);
+			onClose();
 		} catch (e) {
-			return e;
+			console.error(e);
 		}
 	};
 	if (!isOpen) return null;
 
 	return (
 		<div
-			className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+			className="fixed inset-0 bg-wax-black bg-opacity-50 flex justify-center items-center"
 			onClick={onClose}
 		>
 			<div
-				className="bg-white p-6 rounded shadow-lg flex flex-col items-center"
+				className="bg-wax-cream p-8 rounded shadow-lg flex flex-col items-center border-2 border-wax-gray"
 				onClick={(e) => e.stopPropagation()}
 			>
-				<h2 className="text-xl text-black border-black border-b-2 font-bold mb-4">
+				<h2 className="text-xl text-wax-black border-wax-black border-b-2 font-bold mb-4">
 					Sign Up
 				</h2>
-				<form>
+				<form onSubmit={handleSubmit}>
 					<input
 						type="text"
 						onChange={handleFormChange('username')}
 						defaultValue={signupForm.username}
 						placeholder="Username"
-						className="block text-black w-full mb-2 p-2 border rounded"
+						className="block text-wax-black w-full mb-2 p-2 border rounded"
 						required
 					/>
 					<input
@@ -65,7 +69,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 						onChange={handleFormChange('email')}
 						defaultValue={signupForm.email}
 						placeholder="Email"
-						className="block text-black w-full mb-2 p-2 border rounded"
+						className="block text-wax-black w-full mb-2 p-2 border rounded"
 						required
 					/>
 					<input
@@ -73,19 +77,18 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 						onChange={handleFormChange('password')}
 						defaultValue={signupForm.password}
 						placeholder="Password"
-						className="block w-full mb-2 p-2 border rounded"
+						className="text-wax-black block w-full mb-2 p-2 border rounded"
 					/>
 					<button
 						type="submit"
-						onClick={() => handleSubmit}
-						className="w-full bg-green-500 text-white py-2 rounded"
+						className="w-full bg-wax-teal text-wax-cream py-2 rounded hover:border-wax-teal border-4"
 					>
 						Sign Up
 					</button>
 				</form>
 				<button
 					onClick={onClose}
-					className="mt-4 bg-red-500 text-white px-4 py-2 rounded w-1/2"
+					className="mt-4 bg-wax-red text-white px-4 py-2 rounded w-1/2 hover:border-wax-red border-2"
 				>
 					Close
 				</button>

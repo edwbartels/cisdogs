@@ -1,5 +1,9 @@
 from pydantic import BaseModel
-from app.models import UserRead, ListingRead
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.schemas.user import UserRead
+    from app.schemas.listing import ListingRead
 
 
 class TransactionBase(BaseModel):
@@ -19,8 +23,11 @@ class TransactionRead(TransactionBase):
     listing_id: int
     completed: bool
 
+    class Config:
+        from_attributes = True
+
 
 class TransactionDetails(TransactionRead):
-    seller: UserRead
-    buyer: UserRead
-    listing: ListingRead
+    seller: "UserRead"
+    buyer: "UserRead"
+    listing: "ListingRead"

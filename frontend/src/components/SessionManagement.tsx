@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import SessionButton from './SessionButton';
 import SignInModal from './SignInModal';
 import SignUpModal from './SignUpModal';
+import useAuthStore from '../stores/authStore';
 
 // interface ActiveModalState = 'signIn'|'signUp'|null(null)
 
@@ -9,21 +10,38 @@ const SessionManagement: React.FC = () => {
 	const [activeModal, setActiveModal] = useState<'signIn' | 'signUp' | null>(
 		null
 	);
+	const { isLoggedIn, logout } = useAuthStore();
+
+	const handleLogout: () => void = async () => {
+		try {
+			const url = '/api/logout';
+			await fetch(url, { method: 'POST' });
+			logout();
+		} catch (err) {
+			console.error('Logout failed', err);
+		}
+	};
 
 	return (
 		<div className="flex">
-			<SessionButton
-				onClick={() => {
-					setActiveModal('signUp');
-				}}
-				title="Sign Up"
-			/>
-			<SessionButton
-				onClick={() => {
-					setActiveModal('signIn');
-				}}
-				title="Sign In"
-			/>
+			{isLoggedIn ? (
+				<SessionButton onClick={handleLogout} title="Log Out" />
+			) : (
+				<>
+					<SessionButton
+						onClick={() => {
+							setActiveModal('signUp');
+						}}
+						title="Sign Up"
+					/>
+					<SessionButton
+						onClick={() => {
+							setActiveModal('signIn');
+						}}
+						title="Sign In"
+					/>
+				</>
+			)}
 
 			<SignUpModal
 				isOpen={activeModal === 'signUp'}

@@ -1,5 +1,9 @@
 from pydantic import BaseModel
-from app.models import UserRead, ReleaseRead
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.schemas.user import UserRead
+    from app.schemas.release import ReleaseRead
 
 
 class ItemBase(BaseModel):
@@ -16,9 +20,9 @@ class ItemRead(ItemBase):
     owner_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ItemDetail(ItemRead):
-    owner = UserRead
-    release: ReleaseRead
+    owner: "UserRead"
+    release: "ReleaseRead"

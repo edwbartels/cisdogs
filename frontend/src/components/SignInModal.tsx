@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import useAuthStore from '../stores/authStore';
 
 interface SignInModalProps {
 	isOpen: boolean;
@@ -22,66 +23,100 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const url = '/api/auth';
+		const url = '/api/login';
 		try {
 			const res = await fetch(url, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(loginForm),
 			});
-			if (res.ok) {
-				const userInfo = await res.json();
-				return userInfo;
+			if (!res.ok) {
+				throw new Error('Login failed');
 			}
+
+			const { access_token, ...remaining } = await res.json();
+			localStorage.setItem('accessToken', access_token);
+			useAuthStore.getState().login(remaining);
+			onClose();
 		} catch (e) {
-			return e;
+			console.error(e);
+		}
+	};
+
+	const handleDemoClick = async () => {
+		const url = '/api/login';
+		try {
+			const res = await fetch(url, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					credential: 'admin',
+					password: 'password',
+				}),
+			});
+			if (!res.ok) {
+				throw new Error('Login failed');
+			}
+			const { access_token, ...remaining } = await res.json();
+			localStorage.setItem('accessToken', access_token);
+			useAuthStore.getState().login(remaining);
+			onClose();
+		} catch (e) {
+			console.error(e);
 		}
 	};
 	if (!isOpen) return null;
 
 	return (
 		<div
-			className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+			className="fixed inset-0 bg-wax-black bg-opacity-50 flex justify-center items-center"
 			onClick={onClose} // Close modal on background click
 		>
 			<div
-				className="bg-white p-6 rounded shadow-lg flex flex-col items-center"
+				className="bg-wax-cream p-8 rounded shadow-lg flex flex-col items-center border-2 border-wax-gray"
 				onClick={(e) => e.stopPropagation()} // Prevent closing when clicking modal content
 			>
-				<h2 className="text-xl text-black border-black border-b-2 font-bold mb-4">
+				<h2 className="text-xl text-wax-black border-wax-black border-b-2 font-bold mb-4">
 					Sign In
 				</h2>
-				<form>
+				<form onSubmit={handleSubmit}>
 					<input
 						type="text"
 						onChange={handleFormChange('credential')}
-						defaultValue={loginForm.credential}
+						value={loginForm.credential}
 						placeholder="Username or Email"
-						className="block text-black w-full mb-2 p-2 border rounded"
+						className="block text-wax-black w-full mb-2 p-2 border rounded"
 						required
 					/>
 					<input
 						type="password"
 						onChange={handleFormChange('password')}
-						defaultValue={loginForm.password}
+						value={loginForm.password}
 						placeholder="Password"
-						className="block text-black w-full mb-2 p-2 border rounded"
+						className="block text-wax-black w-full mb-2 p-2 border rounded"
 						required
 					/>
 					<button
 						type="submit"
-						onClick={() => handleSubmit}
-						className="w-full bg-blue-500 text-white py-2 rounded"
+						className="w-full bg-wax-blue text-wax-cream py-2 rounded hover:border-wax-blue border-4"
 					>
 						Sign In
 					</button>
 				</form>
-				<button
-					onClick={onClose}
-					className="mt-4 bg-red-500 text-white px-4 py-2 rounded w-1/2"
-				>
-					Close
-				</button>
+				<div className="flex">
+					<button
+						onClick={handleDemoClick}
+						className="mt-3 mx-2 bg-wax-teal text-wax-cream px-5 py-2 rounded w-full hover:border-wax-teal border-2"
+					>
+						Demo
+					</button>
+					<button
+						onClick={onClose}
+						className="mt-3 mx-2 bg-wax-red text-wax-cream px-5 py-2 rounded w-full hover:border-wax-red border-2"
+					>
+						Close
+					</button>
+				</div>
 			</div>
 		</div>
 	);

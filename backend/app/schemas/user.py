@@ -1,9 +1,19 @@
 from pydantic import BaseModel
-from app.models import ItemRead, ListingRead, TransactionRead, ReviewRead
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.schemas.item import ItemRead
+    from app.schemas.listing import ListingRead
+    from app.schemas.transaction import TransactionRead
+    from app.schemas.review import ReviewRead
+
+
+class LoginRequest(BaseModel):
+    credential: str
+    password: str
 
 
 class UserBase(BaseModel):
-    name: str
     email: str
     username: str
 
@@ -16,11 +26,11 @@ class UserRead(UserBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserDetail(UserRead):
-    items: list[ItemRead] = []
-    listings: list[ListingRead] = []
-    transactions: list[TransactionRead] = []
-    reviews: list[ReviewRead] = []
+    items: list["ItemRead"] = []
+    listings: list["ListingRead"] = []
+    transactions: list["TransactionRead"] = []
+    reviews: list["ReviewRead"] = []

@@ -12,11 +12,3 @@ class Album(Base):
     track_data: Mapped[JSON] = mapped_column(JSON, nullable=True)
     releases: Mapped[list["Release"]] = relationship("Release", back_populates="album")
     artist: Mapped["Artist"] = relationship("Artist", back_populates="albums")
-
-    # @property
-    # def track_list(self):
-    #     pass
-
-    # @track_list.setter
-    # def track_list(self, value):
-    #     pass

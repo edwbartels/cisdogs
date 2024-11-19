@@ -21,3 +21,33 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def create_tables():
+    from app.models import (
+        Album,
+        Artist,
+        Item,
+        Listing,
+        Release,
+        Review,
+        Transaction,
+        User,
+    )
+
+    Base.metadata.create_all(bind=engine)
+
+
+def drop_tables():
+    from app.models import (
+        Album,
+        Artist,
+        Item,
+        Listing,
+        Release,
+        Review,
+        Transaction,
+        User,
+    )
+
+    Base.metadata.drop_all(bind=engine)

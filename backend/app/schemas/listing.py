@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 if TYPE_CHECKING:
     from app.schemas.user import UserRead
@@ -8,9 +8,9 @@ if TYPE_CHECKING:
 
 class ListingBase(BaseModel):
     price: float
-    quality: str
-    description: str or None
-    status: str
+    quality: Literal["m", "vg", "g", "f", "ng"]
+    description: str | None
+    status: Literal["available", "closed"]
 
 
 class ListingCreate(ListingBase):

@@ -6,12 +6,17 @@ if TYPE_CHECKING:
     from app.schemas.release import ReleaseRead
 
 
+class TrackData:
+    dict[str, list[str]]
+
+
 class AlbumBase(BaseModel):
     title: str
 
 
 class AlbumCreate(AlbumBase):
     artist_id: int
+    track_data: dict[str, list[str]] | None
 
 
 class AlbumRead(AlbumBase):

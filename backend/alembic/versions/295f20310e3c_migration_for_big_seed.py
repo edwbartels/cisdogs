@@ -1,8 +1,8 @@
-"""Initial migration
+"""migration for BIG SEED
 
-Revision ID: ff91d3c3d128
+Revision ID: 295f20310e3c
 Revises: 
-Create Date: 2024-11-18 22:38:30.340142
+Create Date: 2024-11-19 18:27:07.019023
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'ff91d3c3d128'
+revision: str = '295f20310e3c'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -48,7 +48,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('album_id', sa.Integer(), nullable=False),
     sa.Column('media_type', sa.String(), nullable=False),
-    sa.Column('variant', sa.String(), nullable=False),
+    sa.Column('variant', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['album_id'], ['albums.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -65,7 +65,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('quality', sa.String(), nullable=False),
-    sa.Column('description', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=True),
     sa.Column('seller_id', sa.Integer(), nullable=False),
     sa.Column('item_id', sa.Integer(), nullable=False),
     sa.Column('status', sa.String(), nullable=False),
@@ -92,7 +92,7 @@ def upgrade() -> None:
     op.create_table('reviews',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('rating', sa.Integer(), nullable=False),
-    sa.Column('comment', sa.String(), nullable=False),
+    sa.Column('comment', sa.String(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('transaction_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['transaction_id'], ['transactions.id'], ),

@@ -8,7 +8,7 @@ class Review(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     rating: Mapped[int] = mapped_column(Integer)
-    comment: Mapped[str] = mapped_column(String)
+    comment: Mapped[str] = mapped_column(String, nullable=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), index=True)
     transaction_id: Mapped[int] = mapped_column(Integer, ForeignKey("transactions.id"))
 

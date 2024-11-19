@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 class ReviewBase(BaseModel):
     rating: int
-    comment: str or None
+    comment: str | None
 
 
 class ReviewCreate(ReviewBase):

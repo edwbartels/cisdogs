@@ -7,8 +7,7 @@ if TYPE_CHECKING:
 
 
 class ItemBase(BaseModel):
-    title: str
-    description: str | None = None
+    release_id: int
 
 
 class ItemCreate(ItemBase):

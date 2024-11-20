@@ -102,16 +102,16 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 						Sign In
 					</button>
 				</form>
-				<div className="flex">
+				<div className="flex justify-center">
 					<button
 						onClick={handleDemoClick}
-						className="w-full px-5 py-2 mx-2 mt-3 border-2 rounded bg-wax-amber text-wax-cream border-wax-silver hover:border-wax-amber"
+						className="w-full px-5 py-2 mx-2 mt-3 border-4 rounded bg-wax-amber text-wax-cream border-wax-silver hover:border-wax-amber"
 					>
 						Demo
 					</button>
 					<button
 						onClick={onClose}
-						className="w-full px-5 py-2 mx-2 mt-3 border-2 rounded bg-wax-red text-wax-cream border-wax-silver hover:border-wax-red"
+						className="w-full px-5 py-2 mx-2 mt-3 border-4 rounded bg-wax-red text-wax-cream border-wax-silver hover:border-wax-red"
 					>
 						Close
 					</button>

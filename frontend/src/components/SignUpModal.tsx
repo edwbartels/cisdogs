@@ -1,58 +1,57 @@
-import React, { useState } from 'react';
-import useAuthStore from '../stores/authStore';
+import React, { useState } from 'react'
+import useAuthStore from '../stores/authStore'
 
 interface SignUpModalProps {
-	isOpen: boolean;
-	onClose: () => void;
+	isOpen: boolean
+	onClose: () => void
 }
 const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 	const [signupForm, setSignupForm] = useState({
 		username: '',
 		email: '',
 		password: '',
-	});
+	})
 
 	const handleFormChange =
-		(signupFormField: string) =>
-		(e: React.ChangeEvent<HTMLInputElement>) => {
+		(signupFormField: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
 			setSignupForm({
 				...signupForm,
 				[signupFormField]: e.target.value,
-			});
-		};
+			})
+		}
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		const url = '/api/signup';
+		e.preventDefault()
+		const url = '/api/signup'
 		try {
 			const res = await fetch(url, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(signupForm),
-			});
+			})
 			if (!res.ok) {
-				throw new Error('Login failed');
+				throw new Error('Login failed')
 			}
-			const { access_token, ...remaining } = await res.json();
-			localStorage.setItem('accessToken', access_token);
-			useAuthStore.getState().login(remaining);
-			onClose();
+			const { access_token, ...remaining } = await res.json()
+			localStorage.setItem('accessToken', access_token)
+			useAuthStore.getState().login(remaining)
+			onClose()
 		} catch (e) {
-			console.error(e);
+			console.error(e)
 		}
-	};
-	if (!isOpen) return null;
+	}
+	if (!isOpen) return null
 
 	return (
 		<div
-			className="fixed inset-0 bg-wax-black bg-opacity-50 flex justify-center items-center"
+			className="fixed inset-0 flex items-center justify-center bg-opacity-50 bg-wax-black"
 			onClick={onClose}
 		>
 			<div
-				className="bg-wax-cream p-8 rounded shadow-lg flex flex-col items-center border-2 border-wax-gray"
+				className="flex flex-col items-center p-8 border-4 rounded shadow-lg bg-wax-silver border-wax-gray"
 				onClick={(e) => e.stopPropagation()}
 			>
-				<h2 className="text-xl text-wax-black border-wax-black border-b-2 font-bold mb-4">
+				<h2 className="mb-4 text-3xl font-bold border-b-2 text-wax-black border-wax-black">
 					Sign Up
 				</h2>
 				<form onSubmit={handleSubmit}>
@@ -61,7 +60,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 						onChange={handleFormChange('username')}
 						defaultValue={signupForm.username}
 						placeholder="Username"
-						className="block text-wax-black w-full mb-2 p-2 border rounded"
+						className="block w-full p-2 mb-2 border rounded text-wax-black"
 						required
 					/>
 					<input
@@ -69,7 +68,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 						onChange={handleFormChange('email')}
 						defaultValue={signupForm.email}
 						placeholder="Email"
-						className="block text-wax-black w-full mb-2 p-2 border rounded"
+						className="block w-full p-2 mb-2 border rounded text-wax-black"
 						required
 					/>
 					<input
@@ -77,24 +76,24 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 						onChange={handleFormChange('password')}
 						defaultValue={signupForm.password}
 						placeholder="Password"
-						className="text-wax-black block w-full mb-2 p-2 border rounded"
+						className="block w-full p-2 mb-2 border rounded text-wax-black"
 					/>
 					<button
 						type="submit"
-						className="w-full bg-wax-teal text-wax-cream py-2 rounded hover:border-wax-teal border-4"
+						className="w-full py-2 border-4 rounded border-wax-silver bg-wax-teal text-wax-cream hover:border-wax-teal"
 					>
 						Sign Up
 					</button>
 				</form>
 				<button
 					onClick={onClose}
-					className="mt-4 bg-wax-red text-white px-4 py-2 rounded w-1/2 hover:border-wax-red border-2"
+					className="w-1/2 px-4 py-2 mt-4 text-white border-4 rounded border-wax-silver bg-wax-red hover:border-wax-red"
 				>
 					Close
 				</button>
 			</div>
 		</div>
-	);
-};
+	)
+}
 
-export default SignUpModal;
+export default SignUpModal

@@ -12,16 +12,15 @@ class TrackData:
 
 class AlbumBase(BaseModel):
     title: str
+    track_data: dict[str, list[str]] | None
 
 
 class AlbumCreate(AlbumBase):
     artist_id: int
-    track_data: dict[str, list[str]] | None
 
 
 class AlbumRead(AlbumBase):
     id: int
-    artist_id: int
 
     class Config:
         from_attributes = True

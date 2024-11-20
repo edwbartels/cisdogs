@@ -3,18 +3,31 @@ import { devtools } from 'zustand/middleware'
 
 export type Item = {
 	id: number
-	release_id: number
-	owner_id: number
-	listed: boolean
 	owner: {
 		id: number
 		username: string
 	}
+	listing: {
+		id: number
+		active: boolean
+		status: 'available' | 'closed'
+		price: number
+		quality: 'm' | 'vg' | 'g' | 'f' | 'vg'
+		description: string | null
+	} | null
 	release: {
 		id: number
-		album_id: number
-		media_type: string
+		media_type: 'vinyl' | 'cassette' | 'cd'
 		variant: string | null
+	}
+	album: {
+		id: number
+		title: string
+		track_data: string[]
+	}
+	artist: {
+		id: number
+		name: string
 	}
 }
 
@@ -31,7 +44,7 @@ const useItemStore = create(
 			items: {},
 			updateItems: async () => {
 				try {
-					const url = '/api/items/'
+					const url = '/api/items/full/'
 					const res = await fetch(url)
 					if (!res.ok) {
 						throw new Error('Fetch all items failed')

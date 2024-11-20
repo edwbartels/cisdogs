@@ -9,10 +9,14 @@ import Dashboard from './components/Dashboard'
 
 const Layout = () => {
 	return (
-		<div className="min-h-screen font-sans bg-wax-cream text-wax-black">
+		<div className="flex flex-col min-h-screen font-sans bg-wax-cream text-wax-black">
 			<NavBar />
-			<Sidebar />
-			<Outlet />
+			<div className="flex">
+				<Sidebar />
+				<div className="items-center justify-center p-4 bg-wax-cream">
+					<Outlet />
+				</div>
+			</div>
 		</div>
 	)
 }
@@ -21,8 +25,8 @@ const router = createBrowserRouter([
 	{
 		element: <Layout />,
 		children: [
-			{ path: '/', element: <HomePage /> },
-			{ path: '/listings', element: <ListingsMain /> },
+			{ path: '/', element: <ListingsMain /> },
+			{ path: '/listings', element: <HomePage /> },
 			{ path: '/dashboard', element: <Dashboard /> },
 		],
 	},

@@ -14,9 +14,8 @@ class ItemCreate(ItemBase):
     owner_id: int
 
 
-class ItemRead(ItemBase):
+class ItemRead(BaseModel):
     id: int
-    owner_id: int
 
     model_config = {"from_attributes": True}
 

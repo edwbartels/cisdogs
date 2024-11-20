@@ -1,17 +1,39 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.database import get_db
-from app.models import Listing
+from app.models import Listing, Item, Release, Album
 from app.schemas.listing import ListingRead, ListingCreate, ListingDetail
+from app.schemas.res import ListingFull
 
 router = APIRouter(prefix="/listings", tags=["listings"])
 
 
 @router.get("/", response_model=dict[int, ListingDetail])
 def get_all_listings(db: Session = Depends(get_db)):
-    listings = db.query(Listing).all()
+    listings = db.query(Listing).filter(Listing.active == True).all()
     if not listings:
         raise HTTPException(status_code=404, detail="No listings found")
+    return {listing.id: listing for listing in listings}
+
+
+@router.get("/full", response_model=dict[int, ListingFull])
+def get_all_listings_full(db: Session = Depends(get_db)):
+    listings = (
+        db.query(Listing)
+        .filter(Listing.active == True)
+        .options(
+            joinedload(Listing.item)
+            .joinedload(Item.release)
+            .joinedload(Release.album)
+            .joinedload(Album.artist)
+        )
+        .all()
+    )
+    for listing in listings:
+        listing.release = listing.item.release
+        listing.album = listing.item.release.album
+        listing.artist = listing.item.release.album.artist
+
     return {listing.id: listing for listing in listings}
 
 

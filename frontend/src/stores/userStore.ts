@@ -1,52 +1,74 @@
-import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
-import useAuthStore from './authStore';
-import useItemStore, { Item } from './itemStore';
-
-// type Item = {
-// 	id: number;
-// 	release_id: number;
-// 	owner_id: number;
-// 	listed: boolean;
-// 	owner: {
-// 		id: number;
-// 		username: string;
-// 	};
-// 	release: {
-// 		id: number;
-// 		album_id: number;
-// 		media_type: string;
-// 		variant: string | null;
-// 	};
-// };
+import { create } from 'zustand'
+import { devtools } from 'zustand/middleware'
+import useAuthStore from './authStore'
+import useItemStore, { Item } from './itemStore'
+import useListingStore, { Listing } from './listingStore'
 interface UserStore {
-	// id: number | null;
-	itemIds: number[];
-	// setUser: (userId: number) => void;
-	updateItemIds: () => void;
+	itemIds: number[]
+	listingIds: number[]
+	itemDetails: {
+		[key: number]: Item
+	}
+	listingDetails: {
+		[key: number]: Listing
+	}
+	updateItemIds: () => void
+	updateListingIds: () => void
+	updateDashboard: () => void
+	// getUserItems: () => void
+	// getUserListings: () => void
 }
 
 const useUserStore = create(
 	devtools<UserStore>(
 		(set) => ({
-			// id: null,
 			itemIds: [],
-			// setUser: (userId) => set({ id: userId }),
+			listingIds: [],
+			itemDetails: {},
+			listingDetails: {},
 			updateItemIds: () => {
-				const userId = useAuthStore.getState().user?.id;
-				const items = useItemStore.getState().items;
-
+				const userId = useAuthStore.getState().user?.id
+				const items = useItemStore.getState().items
 				if (userId) {
 					const ownedItems = Object.values(items)
 						.filter((item) => item.owner_id === userId)
-						.map((item) => item.id);
-					console.log(ownedItems);
-					set({ itemIds: ownedItems });
+						.map((item) => item.id)
+					set({ itemIds: ownedItems })
 				}
 			},
+			updateListingIds: () => {
+				const userId = useAuthStore.getState().user?.id
+				const listings = useListingStore.getState().listings
+				if (userId) {
+					const ownedListings = Object.values(listings)
+						.filter((listing) => listing.seller_id === userId)
+						.map((item) => item.id)
+					set({ listingIds: ownedListings })
+				}
+			},
+			updateDashboard: async () => {
+				try {
+					const token = localStorage.getItem('accessToken')
+					const url = '/api/users/dashboard'
+					const res = await fetch(url, {
+						method: 'GET',
+						headers: { Authorization: `Bearer ${token}` },
+					})
+					if (!res.ok) {
+						throw new Error('Fetch users dashboard data failed')
+					}
+					const data = await res.json()
+					set({ itemDetails: data.items })
+					set({ listingDetails: data.listings })
+				} catch (e) {
+					console.error(e)
+				}
+			},
+			// getUserItems: () => {},
+			// getUserListings: () => {},
 		}),
 		{ name: 'userStore' }
 	)
-);
+)
 
-export default useUserStore;
+export default useUserStore

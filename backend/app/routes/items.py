@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Item, User
-from app.schemas.item import ItemRead, ItemCreate, ItemDetail, ItemsAllResponse
+from app.schemas.item import ItemRead, ItemCreate, ItemDetail
 from app.lib.jwt import get_current_user
 
 router = APIRouter(prefix="/items", tags=["items"])
@@ -16,12 +17,18 @@ def get_all_items(db: Session = Depends(get_db)):
     return {item.id: item for item in items}
 
 
-@router.get("/{item_id}", response_model=ItemRead)
+@router.get("/{item_id}", response_model=ItemDetail)
 def get_item_by_id(item_id: int, db: Session = Depends(get_db)):
     item = db.query(Item).filter(Item.id == item_id).first()
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
     return item
+
+
+# @router.get("/dashboard", response_model=ItemDetail)
+# def get_user_items(db:Session=Depends(get_db), current_user: User = Depends(get_current_user)):
+#     if not current_user:
+#         return RedirectResponse(url='/')
 
 
 @router.post("/", response_model=ItemRead)
@@ -32,9 +39,7 @@ def create_item(
 ):
     if item.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
-    new_item = Item(
-        title=item.title, description=item.description, owner_id=item.owner_id
-    )
+    new_item = Item(release_id=item.release_id, owner_id=item.owner_id)
 
     db.add(new_item)
     db.commit()

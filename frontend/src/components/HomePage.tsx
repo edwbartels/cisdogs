@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import ItemTileMain from './ItemTileMain';
-import useItemStore, { Item } from '../stores/itemStore';
+import useItemStore from '../stores/itemStore';
 import useUserStore from '../stores/userStore';
 import useAuthStore from '../stores/authStore';
 
@@ -11,9 +11,7 @@ const HomePage = () => {
 
 	useEffect(() => {
 		updateItems().then(() => {
-			console.log('update all done');
 			if (userId) {
-				console.log('passed userid check');
 				updateUserItems();
 			}
 		});

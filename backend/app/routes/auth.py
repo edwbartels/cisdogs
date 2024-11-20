@@ -36,7 +36,7 @@ def login(
             status_code=401, detail="Invalid username/email or password"
         )
 
-    access_token = create_access_token(data={"sub": user.id})
+    access_token = create_access_token(data={"sub": str(user.id)})
 
     return (user, {"access_token": access_token, "token_type": "bearer"})
 
@@ -50,7 +50,7 @@ def logout(response: Response, db: Session = Depends(get_db)):
             httponly=True,
         )
         return {"message": "Successfully logged out"}
-    except Exception as err:
+    except Exception:
         raise HTTPException(status_code=500, detail="An error occured during logout")
 
 

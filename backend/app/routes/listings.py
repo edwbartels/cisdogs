@@ -2,17 +2,17 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Listing
-from app.schemas.listing import ListingRead, ListingCreate
+from app.schemas.listing import ListingRead, ListingCreate, ListingDetail
 
 router = APIRouter(prefix="/listings", tags=["listings"])
 
 
-@router.get("/", response_model=list[ListingRead])
+@router.get("/", response_model=dict[int, ListingDetail])
 def get_all_listings(db: Session = Depends(get_db)):
     listings = db.query(Listing).all()
     if not listings:
         raise HTTPException(status_code=404, detail="No listings found")
-    return listings
+    return {listing.id: listing for listing in listings}
 
 
 @router.get("/{listing_id}", response_model=ListingRead)

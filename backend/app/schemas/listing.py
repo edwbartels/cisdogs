@@ -1,9 +1,9 @@
 from pydantic import BaseModel
 from typing import TYPE_CHECKING, Literal
 
-if TYPE_CHECKING:
-    from app.schemas.user import UserRead
-    from app.schemas.item import ItemRead
+
+from app.schemas.user import UserRead
+from app.schemas.item import ItemRead
 
 
 class ListingBase(BaseModel):
@@ -11,20 +11,28 @@ class ListingBase(BaseModel):
     quality: Literal["m", "vg", "g", "f", "ng"]
     description: str | None
     status: Literal["available", "closed"]
+    active: bool
+    model_config = {"from_attributes": True}
 
 
 class ListingCreate(ListingBase):
     seller_id: int
     item_id: int
+    model_config = {"from_attributes": True}
 
 
 class ListingRead(ListingBase):
     id: int
-
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
-class ListingDetails(ListingRead):
+class Config:
+    model_config = {"from_attributes": True}
+
+
+class ListingDetail(ListingRead):
+    seller_id: int
+    item_id: int
     seller: "UserRead"
     item: "ItemRead"
+    model_config = {"from_attributes": True}

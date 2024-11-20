@@ -1,8 +1,8 @@
-"""migration for BIG SEED
+"""add active column to listings, consider removing or changing status
 
-Revision ID: 295f20310e3c
+Revision ID: 918659282ce4
 Revises: 
-Create Date: 2024-11-19 18:27:07.019023
+Create Date: 2024-11-20 01:25:46.126584
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '295f20310e3c'
+revision: str = '918659282ce4'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -69,6 +69,7 @@ def upgrade() -> None:
     sa.Column('seller_id', sa.Integer(), nullable=False),
     sa.Column('item_id', sa.Integer(), nullable=False),
     sa.Column('status', sa.String(), nullable=False),
+    sa.Column('active', sa.Boolean(), nullable=False),
     sa.ForeignKeyConstraint(['item_id'], ['items.id'], ),
     sa.ForeignKeyConstraint(['seller_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')

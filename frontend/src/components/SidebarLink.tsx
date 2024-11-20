@@ -3,11 +3,12 @@ import { NavLink } from 'react-router-dom';
 
 interface SidebarLinkProps {
 	title: string;
+	to: string;
 }
 
-const SidebarLink: React.FC<SidebarLinkProps> = ({ title }) => {
+const SidebarLink: React.FC<SidebarLinkProps> = ({ title, to }) => {
 	return (
-		<NavLink to="#" className="text-wax-black p-2 hover:bg-wax-amber">
+		<NavLink to={to} className="text-wax-black p-2 hover:bg-wax-amber">
 			{title}
 		</NavLink>
 	);

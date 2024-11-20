@@ -1,6 +1,5 @@
 from pydantic import BaseModel, RootModel
-# from typing import TYPE_CHECKING
-
+from typing import TYPE_CHECKING
 
 from app.schemas.user import UserReadBrief
 from app.schemas.release import ReleaseRead
@@ -23,10 +22,10 @@ class ItemRead(ItemBase):
 
 
 class ItemDetail(ItemRead):
-    owner: UserReadBrief
-    release: ReleaseRead
+    owner: "UserReadBrief"
+    release: "ReleaseRead"
     model_config = {"from_attributes": True}
 
 
-class ItemsAllResponse(RootModel[dict[int, ItemDetail]]):
-    model_config = {"from_attributes": True}
+# class ItemsAllResponse(RootModel[dict[int, "ItemDetail"]]):
+#     model_config = {"from_attributes": True}

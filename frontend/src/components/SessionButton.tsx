@@ -1,19 +1,19 @@
-import React from 'react';
+import React from 'react'
 
 interface SessionButtonProps {
-	onClick: () => void;
-	title: string;
+	onClick: () => void
+	title: string
 }
 
 const SessionButton: React.FC<SessionButtonProps> = ({ onClick, title }) => {
 	return (
 		<a
 			onClick={onClick}
-			className="bg-wax-silver text-wax-black px-4 py-2 mx-1 rounded-md font-medium hover:bg-wax-amber cursor-pointer"
+			className="px-4 py-2 mx-1 font-medium border-2 rounded-md cursor-pointer bg-wax-silver text-wax-black hover:bg-wax-amber border-wax-gray hover:border-wax-amber"
 		>
 			{title}
 		</a>
-	);
-};
+	)
+}
 
-export default SessionButton;
+export default SessionButton

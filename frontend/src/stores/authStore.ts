@@ -41,7 +41,7 @@ const useAuthStore = create(
 				},
 			}),
 			{
-				name: 'userAuthStore',
+				name: 'authStore',
 			}
 		)
 	)

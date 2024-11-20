@@ -13,3 +13,9 @@ class Item(Base):
     owner: Mapped["User"] = relationship("User", back_populates="items")
     release: Mapped["Release"] = relationship("Release", back_populates="items")
     listing: Mapped["Listing"] = relationship("Listing", back_populates="item")
+
+    @property
+    def listed(self) -> bool:
+        if self.listing:
+            return True
+        return False

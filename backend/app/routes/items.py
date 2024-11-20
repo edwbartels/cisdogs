@@ -2,18 +2,18 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Item, User
-from app.schemas.item import ItemRead, ItemCreate
+from app.schemas.item import ItemRead, ItemCreate, ItemDetail, ItemsAllResponse
 from app.lib.jwt import get_current_user
 
 router = APIRouter(prefix="/items", tags=["items"])
 
 
-@router.get("/", response_model=list[ItemRead])
+@router.get("/", response_model=dict[int, ItemDetail])
 def get_all_items(db: Session = Depends(get_db)):
     items = db.query(Item).all()
     if not items:
         raise HTTPException(status_code=404, detail="No items found")
-    return items
+    return {item.id: item for item in items}
 
 
 @router.get("/{item_id}", response_model=ItemRead)

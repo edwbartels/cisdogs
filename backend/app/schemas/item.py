@@ -1,13 +1,14 @@
-from pydantic import BaseModel
-from typing import TYPE_CHECKING
+from pydantic import BaseModel, RootModel
+# from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from app.schemas.user import UserRead
-    from app.schemas.release import ReleaseRead
+
+from app.schemas.user import UserReadBrief
+from app.schemas.release import ReleaseRead
 
 
 class ItemBase(BaseModel):
     release_id: int
+    model_config = {"from_attributes": True}
 
 
 class ItemCreate(ItemBase):
@@ -18,10 +19,14 @@ class ItemRead(ItemBase):
     id: int
     owner_id: int
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 class ItemDetail(ItemRead):
-    owner: "UserRead"
-    release: "ReleaseRead"
+    owner: UserReadBrief
+    release: ReleaseRead
+    model_config = {"from_attributes": True}
+
+
+class ItemsAllResponse(RootModel[dict[int, ItemDetail]]):
+    model_config = {"from_attributes": True}

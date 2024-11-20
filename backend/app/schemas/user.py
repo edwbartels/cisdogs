@@ -18,6 +18,12 @@ class UserBase(BaseModel):
     username: str
 
 
+class UserReadBrief(BaseModel):
+    username: str
+    id: int
+    model_config = {"from_attributes": True}
+
+
 class UserCreate(UserBase):
     password: str
 

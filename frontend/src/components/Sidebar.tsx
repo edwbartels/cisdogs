@@ -8,6 +8,7 @@ const Sidebar: React.FC = () => {
 			<SidebarLink title="Collection" />
 			<SidebarLink title="Listings" />
 			<SidebarLink title="Watchlist" />
+			<SidebarLink title="Browse" />
 		</div>
 	);
 };

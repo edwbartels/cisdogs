@@ -26,9 +26,7 @@ class ReleaseCreate(ReleaseBase):
 class ReleaseRead(ReleaseBase):
     id: int
     album_id: int
-
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 class ReleaseDetails(ReleaseRead):

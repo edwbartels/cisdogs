@@ -23,7 +23,7 @@ const HomePage: React.FC = () => {
 	return (
 		<div className="flex flex-col self-center">
 			<div className="pb-8 text-center text-9xl">Homepage</div>
-			<div className="flex flex-wrap justify-center gap-4 p-4">
+			<div className="flex flex-wrap justify-start gap-4 p-4">
 				{dummyIds.map((id) => (
 					<ItemTileMain key={id} itemId={id} />
 				))}

@@ -5,16 +5,18 @@ import useItemStore, { Item } from './itemStore'
 import useListingStore, { Listing } from './listingStore'
 interface UserStore {
 	itemIds: number[]
-	listingIds: number[]
 	itemDetails: {
 		[key: number]: Item
 	}
+	listingIds: number[]
 	listingDetails: {
 		[key: number]: Listing
 	}
 	updateItemIds: () => void
 	updateListingIds: () => void
 	updateDashboard: () => void
+	updateDashboardItems: () => void
+	updateDashboardListings: () => void
 	// getUserItems: () => void
 	// getUserListings: () => void
 }
@@ -31,7 +33,7 @@ const useUserStore = create(
 				const items = useItemStore.getState().items
 				if (userId) {
 					const ownedItems = Object.values(items)
-						.filter((item) => item.owner_id === userId)
+						.filter((item) => item.owner.id === userId)
 						.map((item) => item.id)
 					set({ itemIds: ownedItems })
 				}
@@ -41,7 +43,7 @@ const useUserStore = create(
 				const listings = useListingStore.getState().listings
 				if (userId) {
 					const ownedListings = Object.values(listings)
-						.filter((listing) => listing.seller_id === userId)
+						.filter((listing) => listing.seller.id === userId)
 						.map((item) => item.id)
 					set({ listingIds: ownedListings })
 				}
@@ -64,8 +66,40 @@ const useUserStore = create(
 					console.error(e)
 				}
 			},
-			// getUserItems: () => {},
-			// getUserListings: () => {},
+			updateDashboardItems: async () => {
+				try {
+					const token = localStorage.getItem('accessToken')
+					const url = '/api/users/items'
+					const res = await fetch(url, {
+						method: 'GET',
+						headers: { Authorization: `Bearer ${token}` },
+					})
+					if (!res.ok) {
+						throw new Error("Fetch user's items failed")
+					}
+					const data = await res.json()
+					set({ itemDetails: data })
+				} catch (e) {
+					console.error(e)
+				}
+			},
+			updateDashboardListings: async () => {
+				try {
+					const token = localStorage.getItem('accessToken')
+					const url = '/api/users/listings'
+					const res = await fetch(url, {
+						method: 'GET',
+						headers: { Authorization: `Bearer ${token}` },
+					})
+					if (!res.ok) {
+						throw new Error("Fetch user's listings failed")
+					}
+					const data = await res.json()
+					set({ listingDetails: data })
+				} catch (e) {
+					console.error(e)
+				}
+			},
 		}),
 		{ name: 'userStore' }
 	)

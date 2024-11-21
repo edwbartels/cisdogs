@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import RedirectResponse
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.database import get_db
-from app.models import User, Item, Listing
+from app.models import User, Item, Listing, Album, Release
 from app.schemas.user import UserRead
-from app.schemas.res import UserDashboardResponse
+from app.schemas.res import UserDashboardResponse, ItemFull, ListingFull
 from app.schemas.item import ItemDetail
 from app.schemas.listing import ListingDetail
 from app.lib.jwt import get_current_user
@@ -53,3 +53,52 @@ def get_dashboard_info(
         "items": item_dict,
         "listings": listing_dict,
     }
+
+
+@router.get("/items", response_model=dict[int, ItemFull])
+def get_user_items(
+    db: Session = Depends(get_db), current_user: User = Depends(get_current_user)
+):
+    if not current_user:
+        RedirectResponse(url="/")
+        raise HTTPException(
+            status_code=401, detail="Not authenticated (no active user)"
+        )
+    items = (
+        db.query(Item)
+        .filter(Item.owner_id == current_user.id)
+        .options(
+            joinedload(Item.release).joinedload(Release.album).joinedload(Album.artist)
+        )
+        .all()
+    )
+    for item in items:
+        item.album = item.release.album
+        item.artist = item.release.album.artist
+
+    return {item.id: item for item in items}
+
+
+@router.get("/listings", response_model=dict[int, ListingFull])
+def get_user_listings(
+    db: Session = Depends(get_db), current_user: User = Depends(get_current_user)
+):
+    if not current_user:
+        RedirectResponse(url="/")
+        raise HTTPException(status_code=401, detail="Not authenticated(no active user)")
+    listings = (
+        db.query(Listing)
+        .filter(Listing.seller_id == current_user.id)
+        .options(
+            joinedload(Listing.item)
+            .joinedload(Item.release)
+            .joinedload(Release.album)
+            .joinedload(Album.artist)
+        )
+        .all()
+    )
+    for listing in listings:
+        listing.release = listing.item.release
+        listing.album = listing.item.release.album
+        listing.artist = listing.item.release.album.artist
+    return {listing.id: listing for listing in listings}

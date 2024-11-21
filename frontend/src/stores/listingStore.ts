@@ -46,7 +46,7 @@ const useListingStore = create(
 			listings: {},
 			updateListings: async () => {
 				try {
-					const url = '/api/listings/full/'
+					const url = '/api/listings/full'
 					const res = await fetch(url)
 					if (!res.ok) {
 						throw new Error('Fetch all listings failed')

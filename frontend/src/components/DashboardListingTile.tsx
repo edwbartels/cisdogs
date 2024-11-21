@@ -1,18 +1,23 @@
 import React from 'react'
-import useItemStore, { Item } from '../stores/itemStore'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye } from '@fortawesome/free-regular-svg-icons'
 import { faPlus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
+import useUserStore from '../stores/userStore'
+import { Listing } from '../stores/listingStore'
 
-interface ItemTileMainProps {
-	itemId: number
+interface DashboardListingTitleProps {
+	listingId: number
 }
 
-const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
-	const item: Item = useItemStore((state) => state.items[itemId])
+const DashboardListingTile: React.FC<DashboardListingTitleProps> = ({
+	listingId,
+}) => {
+	const listing: Listing = useUserStore(
+		(state) => state.listingDetails[listingId]
+	)
 
-	if (!item) {
-		return <div>Item not found</div>
+	if (!listing) {
+		return <div>Listing not found</div>
 	}
 	return (
 		<>
@@ -47,14 +52,14 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 					{/* {listing.album.art && <img src=`${listing.album.art}` className='object-contain w-full aspect-square'} */}
 
 					<div className="w-full font-semibold text-center bg-opacity-60 text-wax-black bg-wax-silver">
-						{item.album.title}
+						{listing.album.title}
 					</div>
 					<div></div>
 				</div>
 				{/* <div className="w-full h-8 bg-wax-gray text-wax-amber"> */}
 				<div className="flex items-end justify-between w-full h-6 px-2 font-semibold bg-wax-gray text-wax-amber">
 					{/* <div className="cursor-pointer">{`$${listing.price}`}</div> */}
-					<div className="cursor-pointer">{item.artist.name}</div>
+					<div className="cursor-pointer">{listing.artist.name}</div>
 					{/* </div> */}
 				</div>
 			</div>
@@ -62,4 +67,4 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 	)
 }
 
-export default ItemTileMain
+export default DashboardListingTile

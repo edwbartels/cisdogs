@@ -44,7 +44,7 @@ const useItemStore = create(
 			items: {},
 			updateItems: async () => {
 				try {
-					const url = '/api/items/full/'
+					const url = '/api/items/full'
 					const res = await fetch(url)
 					if (!res.ok) {
 						throw new Error('Fetch all items failed')

@@ -23,13 +23,13 @@ const ListingsMain = () => {
 	const dummyIds: number[] = Object.keys(
 		useListingStore((state) => state.listings)
 	)
-		.slice(0, 16)
+		.slice(0, 30)
 		.map(Number)
 
 	return (
 		<div className="flex flex-col self-center">
 			<div className="pb-8 text-center text-9xl">Homepage</div>
-			<div className="flex flex-wrap justify-center gap-4 p-4">
+			<div className="flex flex-wrap justify-start gap-4 p-4">
 				{dummyIds.map((id) => (
 					<ListingTileMain key={id} listingId={id} />
 				))}

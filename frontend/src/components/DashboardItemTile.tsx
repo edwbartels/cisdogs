@@ -1,18 +1,19 @@
 import React from 'react'
-import useItemStore, { Item } from '../stores/itemStore'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye } from '@fortawesome/free-regular-svg-icons'
 import { faPlus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
+import useUserStore from '../stores/userStore'
+import { Item } from '../stores/itemStore'
 
-interface ItemTileMainProps {
+interface DashboardItemTitleProps {
 	itemId: number
 }
 
-const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
-	const item: Item = useItemStore((state) => state.items[itemId])
+const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
+	const item: Item = useUserStore((state) => state.itemDetails[itemId])
 
 	if (!item) {
-		return <div>Item not found</div>
+		return <div>Listing not found</div>
 	}
 	return (
 		<>
@@ -62,4 +63,4 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 	)
 }
 
-export default ItemTileMain
+export default DashboardItemTile

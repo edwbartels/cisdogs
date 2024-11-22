@@ -7,12 +7,12 @@ if TYPE_CHECKING:
 
 
 class TrackData:
-    dict[str, list[str]]
+    dict[int, str]
 
 
 class AlbumBase(BaseModel):
     title: str
-    track_data: dict[str, list[str]] | None
+    track_data: dict[int, str] | None
 
 
 class AlbumCreate(AlbumBase):

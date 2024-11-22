@@ -34,16 +34,32 @@ export type Listing = {
 }
 
 interface ListingStore {
+	focus: Listing | null
 	listings: {
 		[key: number]: Listing
 	}
+	getFocus: (id: number) => Promise<void>
 	updateListings: () => Promise<void>
 }
 
 const useListingStore = create(
 	devtools<ListingStore>(
 		(set) => ({
+			focus: null,
 			listings: {},
+			getFocus: async (id) => {
+				try {
+					const url = `/api/listings/${id}`
+					const res = await fetch(url)
+					if (!res.ok) {
+						throw new Error(`Failed to fetch listing (id:${id})`)
+					}
+					const listing = await res.json()
+					set({ focus: listing })
+				} catch (e) {
+					console.error(e)
+				}
+			},
 			updateListings: async () => {
 				try {
 					const url = '/api/listings/full'

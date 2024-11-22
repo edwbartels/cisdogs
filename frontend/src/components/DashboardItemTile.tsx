@@ -29,6 +29,7 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 		}
 		setDropdownOpen(false)
 	}
+
 	const handleClickOutside = (event: MouseEvent) => {
 		if (
 			dropdownRef.current &&
@@ -50,12 +51,9 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 	return (
 		<>
 			<div
-				className={
-					`flex flex-col items-center justify-between w-56 h-64 m-1 rounded border-6 bg-wax-cream border-wax-amber ring-8 ${
-						item.listing ? 'ring-wax-teal' : 'ring-wax-gray'
-					}`
-					// (item.listing ? 'ring-wax-teal' : 'ring-wax-gray')
-				}
+				className={`flex flex-col items-center justify-between w-56 h-64 m-1 rounded border-6 bg-wax-cream border-wax-amber ring-8 ${
+					item.listing ? 'ring-green-700' : 'ring-wax-gray'
+				}`}
 			>
 				<div className="flex justify-between w-full h-6 px-1 bg-wax-amber">
 					<div className="relative flex space-x-1">
@@ -65,22 +63,19 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 							className="cursor-pointer hover:text-wax-cream"
 						/>
 						{!item.listing && (
-							<div className="">
-								<div className="flex flex-col" ref={dropdownRef}>
-									<FontAwesomeIcon
-										icon={faMinus}
-										size="xl"
-										onClick={toggleDropdown}
-										// ref={buttonRef}
-										className="cursor-pointer hover:text-wax-cream"
-									/>
-									<DropdownMenu
-										className="absolute left-0 w-24 font-bold text-center border border-4 rounded-lg shadow-lg cursor-pointer bg-wax-cream bottom-full border-wax-red hover:bg-wax-red hover:text-wax-cream hover:border-wax-gray"
-										options={menuOptions}
-										isOpen={isDropdownOpen}
-										onSelect={handleOptionSelect}
-									/>
-								</div>
+							<div className="flex flex-col" ref={dropdownRef}>
+								<FontAwesomeIcon
+									icon={faMinus}
+									size="xl"
+									onClick={toggleDropdown}
+									className="cursor-pointer hover:text-wax-cream"
+								/>
+								<DropdownMenu
+									className="absolute left-0 w-24 font-bold text-center border border-4 rounded-lg shadow-lg cursor-pointer bg-wax-cream bottom-full border-wax-red hover:bg-wax-red hover:text-wax-cream hover:border-wax-gray"
+									options={menuOptions}
+									isOpen={isDropdownOpen}
+									onSelect={handleOptionSelect}
+								/>
 							</div>
 						)}
 					</div>
@@ -98,18 +93,16 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 						backgroundPosition: 'center',
 					}}
 				>
-					{/* {listing.album.art && <img src=`${listing.album.art}` className='object-contain w-full aspect-square'} */}
-
 					<div className="w-full font-semibold text-center cursor-default bg-opacity-60 text-wax-black bg-wax-silver">
 						{item.album.title}
 					</div>
 					<div></div>
 				</div>
-				{/* <div className="w-full h-8 bg-wax-gray text-wax-amber"> */}
 				<div className="flex items-end justify-between w-full h-6 px-2 font-semibold bg-wax-gray text-wax-amber">
-					{/* <div className="cursor-pointer">{`$${listing.price}`}</div> */}
 					<div className="cursor-pointer">{item.artist.name}</div>
-					{/* </div> */}
+					{item.listing && (
+						<div className="cursor-pointer">$ {item.listing.price}</div>
+					)}
 				</div>
 			</div>
 		</>

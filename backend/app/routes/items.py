@@ -34,11 +34,14 @@ def get_all_items_full(db: Session = Depends(get_db)):
     return {item.id: item for item in items}
 
 
-@router.get("/{item_id}", response_model=ItemDetail)
+@router.get("/{item_id}", response_model=ItemFull)
 def get_item_by_id(item_id: int, db: Session = Depends(get_db)):
     item = db.query(Item).filter(Item.id == item_id).first()
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
+
+    item.album = item.release.album
+    item.artist = item.release.album.artist
     return item
 
 

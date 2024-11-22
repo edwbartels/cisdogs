@@ -23,7 +23,7 @@ const SessionManagement: React.FC = () => {
 	}
 
 	return (
-		<div className="flex">
+		<div className="flex flex-col">
 			{isLoggedIn ? (
 				<SessionButton onClick={handleLogout} title="Log Out" />
 			) : (

@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
 from app.database import get_db
-from app.models import Listing, Item, Release, Album
+from app.models import Listing, Item, Release, Album, User
 from app.schemas.listing import ListingRead, ListingCreate, ListingDetail
 from app.schemas.res import ListingFull
+from app.lib.jwt import get_current_user
 
 router = APIRouter(prefix="/listings", tags=["listings"])
 
@@ -37,11 +38,15 @@ def get_all_listings_full(db: Session = Depends(get_db)):
     return {listing.id: listing for listing in listings}
 
 
-@router.get("/{listing_id}", response_model=ListingRead)
+@router.get("/{listing_id}", response_model=ListingFull)
 def get_listing_by_id(listing_id: int, db: Session = Depends(get_db)):
     listing = db.query(Listing).filter(Listing.id == listing_id).first()
     if not listing:
         raise HTTPException(status_code=404, detail="Listing not found")
+
+    listing.release = listing.item.release
+    listing.album = listing.item.release.album
+    listing.artist = listing.item.release.album.artist
     return listing
 
 
@@ -67,3 +72,20 @@ def create_listing(listing: ListingCreate, db: Session = Depends(get_db)):
     db.refresh(new_listing)
 
     return new_listing
+
+
+@router.delete("/{listing_id:int}")
+def delete_listing(
+    listing_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    listing = db.query(Listing).filter(Listing.id == listing_id).first()
+    if not listing:
+        raise HTTPException(status_code=404, detail="Listing not found")
+    if listing.seller_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not Authorized")
+
+    db.delete(listing)
+    db.commit
+    return {"message": "Listing deleted successfully"}

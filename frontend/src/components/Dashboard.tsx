@@ -25,39 +25,46 @@ const Dashboard = () => {
 		<div className="w-fulldashboard-container">
 			<div className="pb-8 text-center text-9xl ">User Details</div>
 			<div className="flex justify-between border-b border-wax-silver">
-				<div className="flex w-full text-xl tabs">
-					<button
-						onClick={() => handleTabClick('items')}
-						className={`tab px-2 hover:bg-wax-amber hover:bg-opacity-10 ${
-							activeTab === 'items'
-								? 'text-wax-blue border-b-2 rounded border-wax-blue'
-								: 'text-wax-gray'
-						}`}
-					>
-						Collection
-					</button>
-					<button
-						onClick={() => handleTabClick('listings')}
-						className={`tab  hover:bg-wax-amber hover:bg-opacity-10 px-2 ${
-							activeTab === 'listings'
-								? 'text-wax-blue border-b-2 rounded border-wax-blue'
-								: 'text-wax-gray'
-						}`}
-					>
-						Listings
-					</button>
-					<button
-						onClick={() => handleTabClick('orders')}
-						className={`tab hover:bg-wax-amber hover:bg-opacity-10 px-2 ${
-							activeTab === 'orders'
-								? 'text-blue-500 border-b-2 rounded border-wax-blue'
-								: 'text-wax-gray'
-						}`}
-					>
-						Orders
-					</button>
+				<div className="flex justify-between w-full text-xl tabs">
+					<div>
+						<button
+							onClick={() => handleTabClick('items')}
+							className={`tab px-2 hover:bg-wax-amber hover:bg-opacity-10 h-full ${
+								activeTab === 'items'
+									? 'text-wax-blue border-b-2 rounded border-wax-blue'
+									: 'text-wax-gray'
+							}`}
+						>
+							Collection
+						</button>
+						<button
+							onClick={() => handleTabClick('listings')}
+							className={`tab  hover:bg-wax-amber hover:bg-opacity-10 px-2 h-full ${
+								activeTab === 'listings'
+									? 'text-wax-blue border-b-2 rounded border-wax-blue'
+									: 'text-wax-gray'
+							}`}
+						>
+							Listings
+						</button>
+						<button
+							onClick={() => handleTabClick('orders')}
+							className={`tab hover:bg-wax-amber hover:bg-opacity-10 px-2 h-full ${
+								activeTab === 'orders'
+									? 'text-blue-500 border-b-2 rounded border-wax-blue'
+									: 'text-wax-gray'
+							}`}
+						>
+							Orders
+						</button>
+						<Link to="#">
+							<button className="w-24 mb-1 ml-8 bg-green-700 rounded-md ring-2 ring-wax-cream text-wax-cream hover:ring-wax-gray">
+								Sell
+							</button>
+						</Link>
+					</div>
 					<Link to="/submissions">
-						<button className="mb-1 ml-8 rounded-md ring-2 ring-wax-blue w-36 text-wax-cream bg-wax-teal hover:ring-4">
+						<button className="mb-1 ml-8 bg-green-700 rounded-md ring-2 ring-wax-cream w-36 text-wax-cream hover:ring-wax-gray">
 							Add a release
 						</button>
 					</Link>

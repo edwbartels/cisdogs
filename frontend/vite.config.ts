@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
-import checker from 'vite-plugin-checker';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react-swc'
+import checker from 'vite-plugin-checker'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -11,6 +11,7 @@ export default defineConfig({
 				target: 'http://127.0.0.1:8000',
 				changeOrigin: true,
 				secure: false,
+				debug: true,
 			},
 		},
 		open: true,
@@ -19,4 +20,4 @@ export default defineConfig({
 			interval: 1000,
 		},
 	},
-});
+})

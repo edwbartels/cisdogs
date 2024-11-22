@@ -20,8 +20,13 @@ class ReleaseBase(BaseModel):
 
 
 class ReleaseCreate(ReleaseBase):
-    album_id: int
+    artist: str
+    album: str
     model_config = {"from_attributes": True}
+
+
+class ReleaseCreateFull(ReleaseCreate):
+    track_data: dict[int, str]
 
 
 class ReleaseRead(ReleaseBase):

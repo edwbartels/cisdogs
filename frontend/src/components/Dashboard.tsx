@@ -8,7 +8,7 @@ import DashboardListings from './DashboardListings'
 import { Link } from 'react-router-dom'
 
 const Dashboard = () => {
-	const [activeTab, setActiveTab] = useState('listings')
+	const [activeTab, setActiveTab] = useState('items')
 	const handleTabClick = (tab: string) => {
 		setActiveTab(tab)
 	}

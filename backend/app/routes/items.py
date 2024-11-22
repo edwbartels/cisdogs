@@ -63,3 +63,20 @@ def create_item(
     db.refresh(new_item)
 
     return new_item
+
+
+@router.delete("/{item_id:int}")
+def delete_item(
+    item_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    item = db.query(Item).filter(Item.id == item_id).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    if item.owner_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not Authorized")
+
+    db.delete(item)
+    db.commit()
+    return {"message": "Item deleted successfully"}

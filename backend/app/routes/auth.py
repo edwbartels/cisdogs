@@ -8,8 +8,12 @@ from app.models import User
 from app.schemas.user import UserRead, UserCreate
 from app.schemas.auth import LoginRequest, LoginResponse
 from app.lib.jwt import create_access_token, get_current_user
+import requests
+import os
+
 
 router = APIRouter(tags=["auth"])
+LM_KEY = os.getenv("LM_KEY")
 
 
 @router.get("/session", response_model=UserRead)
@@ -78,3 +82,20 @@ def signup(req: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(
             status_code=401, detail="Account with that username already exists"
         )
+
+
+@router.get("/track_data/{artist:str}/{album:str}")
+async def get_track_list(artist: str, album: str):
+    print(LM_KEY)
+    res = requests.get(
+        f"https://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key={LM_KEY}&artist={artist}&album={album}&format=json"
+    )
+    if res.status_code == 200:
+        print("hello!")
+        details = res.json()
+        track_data = {
+            track["@attr"]["rank"]: track["name"]
+            for track in details["album"]["tracks"]["track"]
+        }
+        print(track_data)
+        return track_data

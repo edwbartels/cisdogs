@@ -26,6 +26,12 @@ class AlbumRead(AlbumBase):
         from_attributes = True
 
 
+class AlbumReadTemp(BaseModel):
+    id: int
+    title: str
+    track_data: dict[int, str]
+
+
 class AlbumDetails(AlbumRead):
     artist: "ArtistRead"
     releases: list["ReleaseRead"] = []

@@ -2,7 +2,7 @@ import React from 'react'
 import useItemStore, { Item } from '../stores/itemStore'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye } from '@fortawesome/free-regular-svg-icons'
-import { faPlus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faMinus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
 
 interface ItemTileMainProps {
 	itemId: number

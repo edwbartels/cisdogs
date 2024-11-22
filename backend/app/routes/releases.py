@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models import Release
-from app.schemas.release import ReleaseRead, ReleaseCreate
+from app.models import Release, Artist, Album
+from app.schemas.release import ReleaseRead, ReleaseCreateFull
+from app.schemas.res import ReleaseFull
 
 router = APIRouter(prefix="/releases", tags=["releases"])
 
@@ -24,13 +25,34 @@ def get_release_by_id(release_id: int, db: Session = Depends(get_db)):
     return release
 
 
-@router.post("/", response_model=ReleaseRead)
-def create_release(release: ReleaseCreate, db: Session = Depends(get_db)):
+@router.post("/", response_model=ReleaseFull)
+def create_release(release: ReleaseCreateFull, db: Session = Depends(get_db)):
+    existing_artist = db.query(Artist).filter(Artist.name == release.artist).first()
+    if not existing_artist:
+        new_artist = Artist(name=release.artist)
+        db.add(new_artist)
+        db.commit()
+        db.refresh(new_artist)
+        print("Refreshed artist id---->", new_artist.id)
+    else:
+        new_artist = existing_artist
+    print("RIGHT BEFORE ALBUM QUERY ----> ARTIST.ID ----> ", new_artist.id)
+    existing_album = db.query(Album).filter(Album.title == release.album).first()
+    if not existing_album:
+        new_album = Album(
+            title=release.album, artist_id=new_artist.id, track_data=release.track_data
+        )
+        db.add(new_album)
+        db.commit()
+        db.refresh(new_album)
+    else:
+        new_album = existing_album
+
     existing_release = (
         db.query(Release)
         .filter(
             and_(
-                Release.album_id == release.album_id,
+                Release.album_id == new_album.id,
                 Release.media_type == release.media_type,
                 Release.variant == release.variant,
             )
@@ -42,7 +64,7 @@ def create_release(release: ReleaseCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Release already exists")
 
     new_release = Release(
-        album_id=release.album_id,
+        album_id=new_album.id,
         media_type=release.media_type,
         variant=release.variant,
     )
@@ -50,5 +72,6 @@ def create_release(release: ReleaseCreate, db: Session = Depends(get_db)):
     db.add(new_release)
     db.commit()
     db.refresh(new_release)
+    new_release.artist = new_artist
 
     return new_release

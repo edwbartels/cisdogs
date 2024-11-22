@@ -17,6 +17,7 @@ interface UserStore {
 	updateDashboard: () => void
 	updateDashboardItems: () => void
 	updateDashboardListings: () => void
+	removeItem: (id: number) => void
 	// getUserItems: () => void
 	// getUserListings: () => void
 }
@@ -96,6 +97,27 @@ const useUserStore = create(
 					}
 					const data = await res.json()
 					set({ listingDetails: data })
+				} catch (e) {
+					console.error(e)
+				}
+			},
+			removeItem: async (id: number) => {
+				try {
+					const token = localStorage.getItem('accessToken')
+					const url = `/api/items/${id}`
+					const res = await fetch(url, {
+						method: 'DELETE',
+						headers: { Authorization: `Bearer ${token}` },
+						credentials: 'include',
+					})
+					if (!res.ok) {
+						throw new Error('Failed to delete item')
+					}
+					set((state) => {
+						const newItems = { ...state.itemDetails }
+						delete newItems[id]
+						return { itemDetails: newItems }
+					})
 				} catch (e) {
 					console.error(e)
 				}

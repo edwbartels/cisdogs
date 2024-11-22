@@ -4,7 +4,7 @@ from app.schemas.listing import ListingDetail, ListingRead
 from app.schemas.user import UserReadBrief, UserBase
 from app.schemas.release import ReleaseRead, ReleaseBase
 from app.schemas.artist import ArtistRead, ArtistBase
-from app.schemas.album import AlbumRead, AlbumBase
+from app.schemas.album import AlbumRead, AlbumBase, AlbumReadTemp
 
 
 class UserDashboardResponse(BaseModel):
@@ -33,3 +33,26 @@ class ListingFull(ListingRead):
     album: AlbumRead
     artist: ArtistRead
     model_config = {"from_attributes": True}
+
+
+class ReleaseFull(ReleaseRead):
+    album: AlbumReadTemp
+    artist: ArtistRead
+
+    # {
+    #     id: int,
+    #     media_type: str,
+    #     variant: str,
+    #     album: {
+    #         id: int,
+    #         title: str,
+    #         track_data: {
+    #             int: str,
+    #             ...
+    #         }
+    #     }
+    #     artist: {
+    #         id: int,
+    #         name: str
+    #     }
+    # }

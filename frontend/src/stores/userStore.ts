@@ -15,6 +15,7 @@ interface UserStore {
 		[key: number]: Listing
 	}
 	getCollection: () => void
+	addToCollection: (item: { release_id: number; owner_id: number }) => void
 	// setCollection: (newCollection: Set<number>) => void
 	updateItemIds: () => void
 	updateListingIds: () => void
@@ -44,6 +45,31 @@ const useUserStore = create(
 					}
 					const data = await res.json()
 					set({ collection: new Set(data) })
+				} catch (e) {
+					console.error(e)
+				}
+			},
+			addToCollection: async (item) => {
+				try {
+					const url = '/api/items/'
+					const res = await fetchWithAuth(url, {
+						method: 'POST',
+						body: JSON.stringify(item),
+						credentials: 'include',
+					})
+					if (!res.ok) {
+						const error = await res.text()
+						console.log(error)
+						throw new Error('Failed to add to collection')
+					}
+					const data = await res.json()
+					console.log(data)
+					set((state) => {
+						const updatedSet = new Set(state.collection)
+						console.log(data.release_id)
+						!updatedSet.has(data.release_id) && updatedSet.add(data.release_id)
+						return { collection: updatedSet }
+					})
 				} catch (e) {
 					console.error(e)
 				}

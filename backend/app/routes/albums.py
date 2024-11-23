@@ -1,8 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from fastapi.encoders import jsonable_encoder
+from sqlalchemy.orm import Session, selectinload, joinedload
+from sqlalchemy.future import select
 from app.database import get_db
-from app.models.album import Album
+from app.models import Album, Artist, Release, Item
 from app.schemas.album import AlbumRead, AlbumCreate
+from app.schemas.res import AlbumFull
 
 router = APIRouter(prefix="/albums", tags=["albums"])
 
@@ -15,21 +18,47 @@ def get_all_albums(db: Session = Depends(get_db)):
     return albums
 
 
-@router.get("/{album_id}", response_model=AlbumRead)
+@router.get("/{album_id}", response_model=AlbumFull)
 def get_album_by_id(album_id: int, db: Session = Depends(get_db)):
-    album = db.query(Album).filter(Album.id == album_id).first()
+    # album = db.query(Album).filter(Album.id == album_id).first()
+    stmt = (
+        select(Album)
+        .options(
+            joinedload(Album.artist),
+            selectinload(Album.releases)
+            .selectinload(Release.items)
+            .selectinload(Item.listing),
+        )
+        .where(Album.id == album_id)
+    )
+    album = db.execute(stmt).scalars().one_or_none()
     if not album:
         raise HTTPException(status_code=404, detail="Album not found")
-    return album
+
+    album.listings = {
+        listing.id: listing
+        for release in album.releases
+        for item in release.items
+        if item.listing is not None
+        for listing in [item.listing]
+    }
+    # print(jsonable_encoder(album.listings))
+
+    album.items = {
+        item.id: item.owner for release in album.releases for item in release.items
+    }
+    releases = {release.id: release for release in album.releases}
+
+    return (album, {"releases": releases})
 
 
 @router.post("/", response_model=AlbumRead)
 def create_album(album: AlbumCreate, db: Session = Depends(get_db)):
-    existing_album = db.query(Album).filter(Album.name == album.name).first()
+    existing_album = db.query(Album).filter(Album.title == album.title).first()
     if existing_album:
-        raise HTTPException(status_code=400, details="Album already exists")
+        raise HTTPException(status_code=400, detail="Album already exists")
 
-    new_album = Album(name=album.name, artist_id=album.artist_id)
+    new_album = Album(name=album.title, artist_id=album.artist_id)
 
     db.add(new_album)
     db.commit()

@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import TYPE_CHECKING, Literal
 
 
-from app.schemas.user import UserRead
+from app.schemas.user import UserRead, UserReadBrief
 from app.schemas.item import ItemRead
 
 
@@ -26,8 +26,8 @@ class ListingRead(ListingBase):
     model_config = {"from_attributes": True}
 
 
-class Config:
-    model_config = {"from_attributes": True}
+class ListingWithSeller(ListingRead):
+    seller: "UserReadBrief"
 
 
 class ListingDetail(ListingRead):

@@ -10,6 +10,9 @@ import Dashboard from './components/Dashboard'
 import Submissions from './components/Submissions'
 import ItemDetails from './components/ItemDetails'
 import ListingDetails from './components/ListingDetails'
+import ReleaseDetails from './components/ReleaseDetails'
+import AlbumDetails from './components/AlbumDetails'
+import ArtistDetails from './components/ArtistDetails'
 import { initializeSubscriptions } from './stores/subscriptions'
 
 const Layout = () => {
@@ -36,6 +39,9 @@ const router = createBrowserRouter([
 			{ path: '/submissions', element: <Submissions /> },
 			{ path: '/item/:id', element: <ItemDetails /> },
 			{ path: '/listing/:id', element: <ListingDetails /> },
+			{ path: '/release/:id', element: <ReleaseDetails /> },
+			{ path: '/album/:id', element: <AlbumDetails /> },
+			{ path: '/artist/:id', element: <ArtistDetails /> },
 		],
 	},
 ])

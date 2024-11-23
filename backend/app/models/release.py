@@ -12,4 +12,4 @@ class Release(Base):
     variant: Mapped[str] = mapped_column(String, nullable=True)
 
     album: Mapped["Album"] = relationship("Album", back_populates="releases")
-    items: Mapped["Item"] = relationship("Item", back_populates="release")
+    items: Mapped[list["Item"]] = relationship("Item", back_populates="release")

@@ -20,6 +20,10 @@ class ItemRead(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class ItemNew(ItemCreate):
+    id: int
+
+
 class ItemDetail(ItemRead):
     owner: "UserReadBrief"
     release: "ReleaseRead"

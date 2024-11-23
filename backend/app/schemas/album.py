@@ -35,3 +35,7 @@ class AlbumReadTemp(BaseModel):
 class AlbumDetails(AlbumRead):
     artist: "ArtistRead"
     releases: list["ReleaseRead"] = []
+
+
+class AlbumPlusReleases(AlbumRead):
+    releases: dict[int, "ReleaseRead"] | None

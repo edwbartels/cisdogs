@@ -3,9 +3,9 @@ from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session, joinedload
 from app.database import get_db
 from app.models import Item, User, Album, Release
-from app.schemas.item import ItemRead, ItemCreate, ItemDetail
+from app.schemas.item import ItemRead, ItemCreate, ItemDetail, ItemNew
 from app.schemas.res import ItemFull
-from app.lib.jwt import get_current_user
+from app.lib.jwt import get_current_user, get_user_id
 
 router = APIRouter(prefix="/items", tags=["items"])
 
@@ -51,13 +51,13 @@ def get_item_by_id(item_id: int, db: Session = Depends(get_db)):
 #         return RedirectResponse(url='/')
 
 
-@router.post("/", response_model=ItemRead)
+@router.post("/", response_model=ItemNew)
 def create_item(
     item: ItemCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    user_id: User = Depends(get_user_id),
 ):
-    if item.owner_id != current_user.id:
+    if item.owner_id != user_id:
         raise HTTPException(status_code=403, detail="Not authorized")
     new_item = Item(release_id=item.release_id, owner_id=item.owner_id)
 

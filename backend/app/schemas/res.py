@@ -1,6 +1,6 @@
 from pydantic import BaseModel, RootModel
-from app.schemas.item import ItemDetail, ItemRead
-from app.schemas.listing import ListingDetail, ListingRead
+from app.schemas.item import ItemDetail, ItemRead, ItemCreate
+from app.schemas.listing import ListingDetail, ListingRead, ListingWithSeller
 from app.schemas.user import UserReadBrief, UserBase
 from app.schemas.release import ReleaseRead, ReleaseBase
 from app.schemas.artist import ArtistRead, ArtistBase
@@ -36,9 +36,27 @@ class ListingFull(ListingRead):
 
 
 class ReleaseFull(ReleaseRead):
-    album: AlbumReadTemp
+    album: AlbumRead
     artist: ArtistRead
+    items: dict[int, UserReadBrief] | None
+    listings: dict[int, ListingWithSeller] | None
+    model_config = {"from_attributes": True}
 
+
+class AlbumFull(AlbumRead):
+    artist: ArtistRead
+    releases: dict[int, ReleaseBase] | None
+    items: dict[int, UserReadBrief] | None
+    listings: dict[int, ListingWithSeller] | None
+    model_config = {"from_attributes": True}
+
+
+class ArtistFull(ArtistRead):
+    albums: dict[int, AlbumRead] | None
+    releases: dict[int, ReleaseBase] | None
+    items: dict[int, UserReadBrief] | None
+    listings: dict[int, ListingWithSeller] | None
+    model_config = {"from_attributes": True}
     # {
     #     id: int,
     #     media_type: str,

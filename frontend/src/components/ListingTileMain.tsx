@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye } from '@fortawesome/free-regular-svg-icons'
-import { faPlus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faMinus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
 import DropdownMenu from './DropdownMenu'
 import useListingStore, { Listing } from '../stores/listingStore'
 import useUserStore from '../stores/userStore'
-// import useAuthStore from '../stores/authStore'
+import useAuthStore from '../stores/authStore'
 
 interface ListingTileMainProps {
 	listingId: number
@@ -15,8 +15,11 @@ interface ListingTileMainProps {
 type DropdownOptions = 'remove' | 'extra' | null
 
 const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
+	const userId = useAuthStore((state) => state.user?.id)
 	const listing: Listing = useListingStore((state) => state.listings[listingId])
-	const collection: Set<number> = useUserStore((state) => state.collection)
+	// const collection: Set<number> = useUserStore((state) => state.collection)
+	// const addToCollection = useUserStore((state) => state.addToCollection)
+	const { collection, addToCollection } = useUserStore((state) => state)
 	const userListings: number[] = useUserStore((state) => state.listingIds)
 	const navigate = useNavigate()
 
@@ -35,6 +38,15 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 			// 	break
 			case 'item':
 				navigate(`/item/${listing.item.id}`)
+				break
+			case 'release':
+				navigate(`/release/${listing.release.id}`)
+				break
+			case 'album':
+				navigate(`album/${listing.album.id}`)
+				break
+			case 'artist':
+				navigate(`artist/${listing.artist.id}`)
 				break
 			default:
 		}
@@ -84,6 +96,13 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 								icon={faPlus}
 								size="xl"
 								className="cursor-pointer hover:text-wax-cream"
+								onClick={() =>
+									userId &&
+									addToCollection({
+										release_id: listing.release.id,
+										owner_id: userId,
+									})
+								}
 							/>
 						)}
 					</div>

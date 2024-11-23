@@ -1,9 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy import and_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload, joinedload
+from sqlalchemy.future import select
 from app.database import get_db
-from app.models import Release, Artist, Album, User, Item
+from app.models import Release, Artist, Album, User, Item, Listing
+from app.schemas.item import ItemRead
 from app.schemas.release import ReleaseRead, ReleaseCreateFull
+from app.schemas.listing import ListingWithSeller
 from app.schemas.res import ReleaseFull
 from app.lib.jwt import get_current_user
 
@@ -18,12 +22,40 @@ def get_all_releases(db: Session = Depends(get_db)):
     return releases
 
 
-@router.get("/{release_id}", response_model=ReleaseRead)
+@router.get("/{release_id}", response_model=ReleaseFull)
 def get_release_by_id(release_id: int, db: Session = Depends(get_db)):
     release = db.query(Release).filter(Release.id == release_id).first()
+
+    # TODO Learn how to write this correctly please god
+    # release = db.execute(
+    #     select(
+    #         (Release)
+    #         .options(selectinload(Release.album).selectinload(Album.artist))
+    #         .where(Release.id == release_id)
+    #         .first()
+    #     )
+    # )
     if not release:
         raise HTTPException(status_code=404, detail="Release not found")
-    return release
+    stmt = (
+        select(Item)
+        .options(
+            joinedload(Item.listing),
+            selectinload(Item.release)
+            .selectinload(Release.album)
+            .selectinload(Album.artist),
+        )
+        .where(Item.release_id == release_id)
+    )
+    items = db.execute(stmt).scalars().all()
+
+    release_extras = {
+        "artist": release.album.artist,
+        "listings": {item.listing.id: item.listing for item in items if item.listing},
+        "items": {item.id: item.owner for item in items},
+    }
+
+    return (release, release_extras)
 
 
 @router.post("/", response_model=ReleaseFull)

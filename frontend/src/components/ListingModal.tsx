@@ -32,7 +32,6 @@ const ListingModal: React.FC<ListingModalProps> = ({ isOpen, onClose }) => {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		try {
-			const token = localStorage.getItem('accessToken')
 			const url = '/api/listings/'
 			const res = await fetchWithAuth(url, {
 				method: 'POST',

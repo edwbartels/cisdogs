@@ -44,6 +44,12 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 			case 'release':
 				navigate(`/release/${item.release.id}`)
 				break
+			case 'album':
+				navigate(`/album/${item.album.id}`)
+				break
+			case 'artist':
+				navigate(`/artist/${item.artist.id}`)
+				break
 			default:
 		}
 		setActiveDropdown(null)

@@ -43,10 +43,10 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 				navigate(`/release/${listing.release.id}`)
 				break
 			case 'album':
-				navigate(`album/${listing.album.id}`)
+				navigate(`/album/${listing.album.id}`)
 				break
 			case 'artist':
-				navigate(`artist/${listing.artist.id}`)
+				navigate(`/artist/${listing.artist.id}`)
 				break
 			default:
 		}

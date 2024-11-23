@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye } from '@fortawesome/free-regular-svg-icons'
 import { faPlus, faMinus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
@@ -9,6 +10,7 @@ import DropdownMenu from './DropdownMenu'
 interface DashboardListingTitleProps {
 	listingId: number
 }
+type DropdownOptions = 'remove' | 'extra' | null
 
 const DashboardListingTile: React.FC<DashboardListingTitleProps> = ({
 	listingId,
@@ -17,38 +19,60 @@ const DashboardListingTile: React.FC<DashboardListingTitleProps> = ({
 		(state) => state.listingDetails[listingId]
 	)
 	const removeListing = useUserStore((state) => state.removeListing)
-
-	const [isDropdownOpen, setDropdownOpen] = useState<boolean>(false)
-	const dropdownRef = useRef<HTMLDivElement>(null)
+	const navigate = useNavigate()
+	const [activeDropdown, setActiveDropdown] = useState<DropdownOptions>(null)
 	const menuOptions = [{ label: 'Remove', value: 'remove' }]
-
-	const toggleDropdown = () => setDropdownOpen((prev) => !prev)
+	const extraOptions = [
+		{ label: 'Item', value: 'item' },
+		{ label: 'Release', value: 'release' },
+		{ label: 'Album', value: 'album' },
+		{ label: 'Artist', value: 'artist' },
+	]
 
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
 			case 'remove':
 				removeListing(listingId)
 				break
+			case 'item':
+				navigate(`/item/${listing.id}`)
+				break
+			case 'release':
+				navigate(`/release/${listing.release.id}`)
+				break
+			case 'album':
+				navigate(`/album/${listing.album.id}`)
+				break
+			case 'artist':
+				navigate(`/artist/${listing.artist.id}`)
+				break
 			default:
 		}
-		setDropdownOpen(false)
+		setActiveDropdown(null)
 	}
 
-	const handleClickOutside = (event: MouseEvent) => {
-		if (
-			dropdownRef.current &&
-			!dropdownRef.current.contains(event.target as Node)
-		) {
-			setDropdownOpen(false)
-		}
-	}
+	const handleClickOutside = React.useCallback(
+		(event: MouseEvent) => {
+			if (!(event.target instanceof Element)) {
+				return
+			}
+			const targetElement = event.target as Element
+
+			const clickedRemove = targetElement.closest('.remove-dropdown')
+			const clickedExtra = targetElement.closest('.extra-dropdown')
+
+			if (!clickedRemove && activeDropdown === 'remove') setActiveDropdown(null)
+			if (!clickedExtra && activeDropdown === 'extra') setActiveDropdown(null)
+		},
+		[activeDropdown]
+	)
 
 	useEffect(() => {
 		document.addEventListener('mousedown', handleClickOutside)
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside)
 		}
-	}, [])
+	}, [handleClickOutside])
 
 	if (!listing) {
 		return <div>Listing not found</div>
@@ -63,26 +87,36 @@ const DashboardListingTile: React.FC<DashboardListingTitleProps> = ({
 							size="xl"
 							className="cursor-pointer hover:text-wax-cream"
 						/>
-						<div className="flex flex-col" ref={dropdownRef}>
+						<div className="flex flex-col remove-dropdown">
 							<FontAwesomeIcon
 								icon={faMinus}
 								size="xl"
-								onClick={toggleDropdown}
+								onClick={() => setActiveDropdown('remove')}
 								className="cursor-pointer hover:text-wax-cream"
 							/>
 							<DropdownMenu
 								className="absolute left-0 w-24 font-bold text-center border border-4 rounded-lg shadow-lg cursor-pointer bg-wax-cream bottom-full border-wax-red hover:bg-wax-red hover:text-wax-cream hover:border-wax-gray"
 								options={menuOptions}
-								isOpen={isDropdownOpen}
+								isOpen={activeDropdown == 'remove'}
 								onSelect={handleOptionSelect}
 							/>
 						</div>
 					</div>
-					<FontAwesomeIcon
-						icon={faEllipsis}
-						size="xl"
-						className="cursor-pointer hover:text-wax-cream"
-					/>
+					<div className="relative flex flex-col extra-dropdown">
+						<FontAwesomeIcon
+							icon={faEllipsis}
+							size="xl"
+							className="cursor-pointer hover:text-wax-cream"
+							onClick={() => setActiveDropdown('extra')}
+						/>
+						<DropdownMenu
+							title="View Details"
+							options={extraOptions}
+							isOpen={activeDropdown == 'extra'}
+							onSelect={handleOptionSelect}
+							className="-right-2 bg-wax-cream"
+						/>
+					</div>
 				</div>
 				<div
 					className="flex flex-col justify-between w-full h-56 text-wax-gray "

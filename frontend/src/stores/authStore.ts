@@ -89,6 +89,7 @@ const useAuthStore = create(
 					onRehydrateStorage: (state) => {
 						setTimeout(() => {
 							useUserStore.getState().getCollection()
+							useUserStore.getState().getWatchlist()
 						}, 0)
 					},
 				}

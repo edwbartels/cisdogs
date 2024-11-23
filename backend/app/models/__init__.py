@@ -6,6 +6,7 @@ from .release import Release
 from .review import Review
 from .transaction import Transaction
 from .user import User
+from .watchlist import Watchlist
 
 __all__ = [
     "Album",
@@ -16,4 +17,5 @@ __all__ = [
     "Review",
     "Transaction",
     "User",
+    "Watchlist",
 ]

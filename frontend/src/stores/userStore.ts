@@ -6,6 +6,7 @@ import useListingStore, { Listing } from './listingStore'
 import fetchWithAuth from '../utils/fetch'
 interface UserStore {
 	collection: Set<number>
+	watchlist: Set<number>
 	itemIds: number[]
 	itemDetails: {
 		[key: number]: Item
@@ -16,6 +17,7 @@ interface UserStore {
 	}
 	getCollection: () => void
 	addToCollection: (item: { release_id: number; owner_id: number }) => void
+	getWatchlist: () => void
 	// setCollection: (newCollection: Set<number>) => void
 	updateItemIds: () => void
 	updateListingIds: () => void
@@ -45,6 +47,23 @@ const useUserStore = create(
 					}
 					const data = await res.json()
 					set({ collection: new Set(data) })
+				} catch (e) {
+					console.error(e)
+				}
+			},
+			watchlist: new Set(),
+			getWatchlist: async () => {
+				try {
+					const url = '/api/watchlist'
+					const res = await fetchWithAuth(url)
+					if (!res.ok) {
+						const error = await res.text()
+						console.log(error)
+						throw new Error('Failed to get user watchlist')
+					}
+					const data = await res.json()
+					set({ watchlist: new Set(data) })
+					console.log(new Set(data))
 				} catch (e) {
 					console.error(e)
 				}

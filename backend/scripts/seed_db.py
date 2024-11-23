@@ -10,6 +10,7 @@ from app.seeders import (
     reviews,
     transactions,
     users,
+    entries,
 )
 
 # from app.seeders import albums
@@ -41,6 +42,7 @@ def seed_data() -> None:
                 *listings,
                 *transactions,
                 *reviews,
+                *entries,
             ]
         )
         session.commit()

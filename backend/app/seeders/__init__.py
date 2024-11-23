@@ -6,6 +6,7 @@ from app.seeders.releases_list import releases
 from app.seeders.reviews_list import reviews
 from app.seeders.transactions_list import transactions
 from app.seeders.users_list import users
+from app.seeders.watchlist import entries
 
 __all__ = [
     "albums",
@@ -16,4 +17,5 @@ __all__ = [
     "reviews",
     "transactions",
     "users",
+    "entries",
 ]

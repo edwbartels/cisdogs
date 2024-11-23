@@ -9,8 +9,10 @@ export const initializeSubscriptions = () => {
 			console.log('Auth state changed. Is logged in:', isLoggedIn)
 			if (isLoggedIn) {
 				useUserStore.getState().getCollection()
+				useUserStore.getState().getWatchlist()
 			} else {
-				useUserStore.setState({ collection: new Set() }) // Clear collection on logout
+				useUserStore.setState({ collection: new Set() })
+				useUserStore.setState({ watchlist: new Set() }) // Clear collection on logout
 			}
 		}
 	)

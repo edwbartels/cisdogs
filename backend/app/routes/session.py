@@ -3,7 +3,7 @@ from sqlalchemy import select, insert, delete
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Item
-from app.models.join_tables import watchlist
+from app.models.watchlist import Watchlist
 from app.schemas.req import WatchReq
 from app.lib.jwt import get_user_id, HTTPException
 
@@ -23,20 +23,18 @@ def get_user_collection(
 
 
 def get_watchlist(db, user_id):
-    stmt = (
-        select(watchlist.c.release_id).where(watchlist.c.user_id == user_id).distinct()
-    )
+    stmt = select(Watchlist.release_id).where(Watchlist.user_id == user_id).distinct()
     return set(db.execute(stmt).scalars().all())
 
 
-@router.get("/watch", response_model=set[int])
+@router.get("/watchlist", response_model=set[int])
 def get_user_watchlist(
     db: Session = Depends(get_db), user_id: int = Depends(get_user_id)
 ) -> set[int]:
     return get_watchlist(db, user_id)
 
 
-@router.post("/watch", response_model=set[int])
+@router.post("/watchlist", response_model=set[int])
 def add_to_watchlist(
     request: WatchReq,
     db: Session = Depends(get_db),
@@ -45,7 +43,7 @@ def add_to_watchlist(
     if user_id != request.user_id:
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    stmt = insert(watchlist).values(user_id=user_id, release_id=request.release_id)
+    stmt = insert(Watchlist).values(user_id=user_id, release_id=request.release_id)
     try:
         db.execute(stmt)
         db.commit()
@@ -58,7 +56,7 @@ def add_to_watchlist(
     return get_watchlist(db, user_id)
 
 
-@router.delete("/watch", response_model=set[int])
+@router.delete("/watchlist", response_model=set[int])
 def remove_from_watchlist(
     request: WatchReq,
     db: Session = Depends(get_db),
@@ -66,8 +64,8 @@ def remove_from_watchlist(
 ) -> set[int]:
     if user_id != request.user_id:
         raise HTTPException(status_code=403, detail="Not authorized")
-    stmt = delete(watchlist).where(
-        watchlist.c.user_id == user_id, watchlist.c.release_id == request.release_id
+    stmt = delete(Watchlist).where(
+        Watchlist.user_id == user_id, Watchlist.release_id == request.release_id
     )
 
     try:

@@ -2,9 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models import Release, Artist, Album
+from app.models import Release, Artist, Album, User, Item
 from app.schemas.release import ReleaseRead, ReleaseCreateFull
 from app.schemas.res import ReleaseFull
+from app.lib.jwt import get_current_user
 
 router = APIRouter(prefix="/releases", tags=["releases"])
 

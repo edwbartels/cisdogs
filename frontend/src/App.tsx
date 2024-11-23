@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom'
+import useAuthStore from './stores/authStore'
 import './App.css'
 import NavBar from './components/NavBar'
-import HomePage from './components/Browse'
+import Browse from './components/Browse'
 import Sidebar from './components/Sidebar'
 import ListingsMain from './components/ListingsMain'
 import Dashboard from './components/Dashboard'
 import Submissions from './components/Submissions'
 import ItemDetails from './components/ItemDetails'
 import ListingDetails from './components/ListingDetails'
+import { initializeSubscriptions } from './stores/subscriptions'
 
 const Layout = () => {
 	return (
@@ -29,7 +31,7 @@ const router = createBrowserRouter([
 		element: <Layout />,
 		children: [
 			{ path: '/', element: <ListingsMain /> },
-			{ path: '/browse', element: <HomePage /> },
+			{ path: '/browse', element: <Browse /> },
 			{ path: '/dashboard', element: <Dashboard /> },
 			{ path: '/submissions', element: <Submissions /> },
 			{ path: '/item/:id', element: <ItemDetails /> },
@@ -39,6 +41,20 @@ const router = createBrowserRouter([
 ])
 
 const App = () => {
+	const scheduleTokenRefresh = useAuthStore(
+		(state) => state.scheduleTokenRefresh
+	)
+	useEffect(() => {
+		const cleanup = initializeSubscriptions()
+		return () => {
+			cleanup()
+		}
+	}, [])
+
+	useEffect(() => {
+		scheduleTokenRefresh() // Start token refresh process on app load
+	}, [scheduleTokenRefresh])
+
 	return <RouterProvider router={router} />
 }
 export default App

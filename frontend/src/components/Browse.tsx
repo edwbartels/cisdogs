@@ -4,7 +4,7 @@ import useItemStore from '../stores/itemStore'
 import useUserStore from '../stores/userStore'
 import useAuthStore from '../stores/authStore'
 
-const HomePage: React.FC = () => {
+const Browse: React.FC = () => {
 	const updateItems = useItemStore((state) => state.updateItems)
 	const updateUserItems = useUserStore((state) => state.updateItemIds)
 	const userId = useAuthStore((state) => state.user?.id)
@@ -17,7 +17,7 @@ const HomePage: React.FC = () => {
 		})
 	}, [updateItems])
 	const dummyIds: number[] = Array.from(
-		{ length: 16 },
+		{ length: 50 },
 		(_: unknown, i: number) => i + 1
 	)
 	return (
@@ -32,4 +32,4 @@ const HomePage: React.FC = () => {
 	)
 }
 
-export default HomePage
+export default Browse

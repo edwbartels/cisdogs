@@ -29,7 +29,7 @@ app.add_middleware(
 api_router = APIRouter(prefix="/api")
 
 api_router.include_router(auth.router)
-# api_router.include_router(session.router)
+api_router.include_router(session.router)
 api_router.include_router(users.router)
 api_router.include_router(artists.router)
 api_router.include_router(albums.router)

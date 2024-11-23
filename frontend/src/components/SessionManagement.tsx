@@ -3,6 +3,7 @@ import SessionButton from './SessionButton'
 import SignInModal from './SignInModal'
 import SignUpModal from './SignUpModal'
 import useAuthStore from '../stores/authStore'
+import fetchWithAuth from '../utils/fetch'
 
 // interface ActiveModalState = 'signIn'|'signUp'|null(null)
 
@@ -15,7 +16,7 @@ const SessionManagement: React.FC = () => {
 	const handleLogout: () => void = async () => {
 		try {
 			const url = '/api/logout'
-			await fetch(url, { method: 'POST' })
+			await fetchWithAuth(url, { method: 'POST' })
 			logout()
 		} catch (err) {
 			console.error('Logout failed', err)

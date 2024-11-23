@@ -11,7 +11,6 @@ class ListingBase(BaseModel):
     quality: Literal["m", "vg", "g", "f", "ng"]
     description: str | None
     status: Literal["available", "closed"]
-    active: bool
     model_config = {"from_attributes": True}
 
 
@@ -23,6 +22,7 @@ class ListingCreate(ListingBase):
 
 class ListingRead(ListingBase):
     id: int
+    active: bool
     model_config = {"from_attributes": True}
 
 

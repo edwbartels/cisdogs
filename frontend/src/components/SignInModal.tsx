@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import useAuthStore from '../stores/authStore'
+import fetchWithAuth from '../utils/fetch'
 
 interface SignInModalProps {
 	isOpen: boolean
@@ -24,18 +25,16 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 		e.preventDefault()
 		const url = '/api/login'
 		try {
-			const res = await fetch(url, {
+			const res = await fetchWithAuth(url, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(loginForm),
 			})
 			if (!res.ok) {
 				throw new Error('Login failed')
 			}
 
-			const { access_token, ...remaining } = await res.json()
-			localStorage.setItem('accessToken', access_token)
-			useAuthStore.getState().login(remaining)
+			const { access_token, token_type, ...remaining } = await res.json()
+			useAuthStore.getState().login(remaining, access_token)
 			onClose()
 		} catch (e) {
 			console.error(e)
@@ -45,9 +44,8 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 	const handleDemoClick = async () => {
 		const url = '/api/login'
 		try {
-			const res = await fetch(url, {
+			const res = await fetchWithAuth(url, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					credential: 'admin',
 					password: 'password',
@@ -56,9 +54,8 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 			if (!res.ok) {
 				throw new Error('Login failed')
 			}
-			const { access_token, ...remaining } = await res.json()
-			localStorage.setItem('accessToken', access_token)
-			useAuthStore.getState().login(remaining)
+			const { access_token, token_type, ...remaining } = await res.json()
+			useAuthStore.getState().login(remaining, access_token)
 			onClose()
 		} catch (e) {
 			console.error(e)

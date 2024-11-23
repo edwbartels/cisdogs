@@ -3,6 +3,7 @@ import useItemStore, { Item } from '../stores/itemStore'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye } from '@fortawesome/free-regular-svg-icons'
 import { faPlus, faMinus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
+import useUserStore from '../stores/userStore'
 
 interface ItemTileMainProps {
 	itemId: number
@@ -10,6 +11,7 @@ interface ItemTileMainProps {
 
 const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 	const item: Item = useItemStore((state) => state.items[itemId])
+	const collection: Set<number> = useUserStore((state) => state.collection)
 
 	if (!item) {
 		return <div>Item not found</div>
@@ -24,11 +26,14 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 							size="xl"
 							className="cursor-pointer hover:text-wax-cream"
 						/>
-						<FontAwesomeIcon
-							icon={faPlus}
-							size="xl"
-							className="cursor-pointer hover:text-wax-cream"
-						/>
+						{item.release.id}
+						{!collection.has(item.release.id) && (
+							<FontAwesomeIcon
+								icon={faPlus}
+								size="xl"
+								className="cursor-pointer hover:text-wax-cream"
+							/>
+						)}
 					</div>
 					<FontAwesomeIcon
 						icon={faEllipsis}

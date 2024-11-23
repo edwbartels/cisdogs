@@ -1,9 +1,11 @@
 import { create } from 'zustand'
-import { devtools } from 'zustand/middleware'
+import { devtools, subscribeWithSelector } from 'zustand/middleware'
 import useAuthStore from './authStore'
 import useItemStore, { Item } from './itemStore'
 import useListingStore, { Listing } from './listingStore'
+import fetchWithAuth from '../utils/fetch'
 interface UserStore {
+	collection: Set<number>
 	itemIds: number[]
 	itemDetails: {
 		[key: number]: Item
@@ -12,6 +14,8 @@ interface UserStore {
 	listingDetails: {
 		[key: number]: Listing
 	}
+	getCollection: () => void
+	// setCollection: (newCollection: Set<number>) => void
 	updateItemIds: () => void
 	updateListingIds: () => void
 	updateDashboard: () => void
@@ -28,6 +32,22 @@ const useUserStore = create(
 		(set) => ({
 			itemIds: [],
 			listingIds: [],
+			collection: new Set(),
+			getCollection: async () => {
+				try {
+					const url = '/api/collection'
+					const res = await fetchWithAuth(url)
+					if (!res.ok) {
+						const error = await res.text()
+						console.log(error)
+						throw new Error('Failed to get user collection')
+					}
+					const data = await res.json()
+					set({ collection: new Set(data) })
+				} catch (e) {
+					console.error(e)
+				}
+			},
 			itemDetails: {},
 			listingDetails: {},
 			updateItemIds: () => {
@@ -52,12 +72,8 @@ const useUserStore = create(
 			},
 			updateDashboard: async () => {
 				try {
-					const token = localStorage.getItem('accessToken')
 					const url = '/api/users/dashboard'
-					const res = await fetch(url, {
-						method: 'GET',
-						headers: { Authorization: `Bearer ${token}` },
-					})
+					const res = await fetchWithAuth(url)
 					if (!res.ok) {
 						throw new Error('Fetch users dashboard data failed')
 					}
@@ -70,12 +86,8 @@ const useUserStore = create(
 			},
 			updateDashboardItems: async () => {
 				try {
-					const token = localStorage.getItem('accessToken')
 					const url = '/api/users/items'
-					const res = await fetch(url, {
-						method: 'GET',
-						headers: { Authorization: `Bearer ${token}` },
-					})
+					const res = await fetchWithAuth(url)
 					if (!res.ok) {
 						throw new Error("Fetch user's items failed")
 					}
@@ -87,12 +99,8 @@ const useUserStore = create(
 			},
 			updateDashboardListings: async () => {
 				try {
-					const token = localStorage.getItem('accessToken')
 					const url = '/api/users/listings'
-					const res = await fetch(url, {
-						method: 'GET',
-						headers: { Authorization: `Bearer ${token}` },
-					})
+					const res = await fetchWithAuth(url)
 					if (!res.ok) {
 						throw new Error("Fetch user's listings failed")
 					}
@@ -104,11 +112,9 @@ const useUserStore = create(
 			},
 			removeItem: async (id: number) => {
 				try {
-					const token = localStorage.getItem('accessToken')
 					const url = `/api/items/${id}`
-					const res = await fetch(url, {
+					const res = await fetchWithAuth(url, {
 						method: 'DELETE',
-						headers: { Authorization: `Bearer ${token}` },
 						credentials: 'include',
 					})
 					if (!res.ok) {
@@ -125,11 +131,9 @@ const useUserStore = create(
 			},
 			removeListing: async (id: number) => {
 				try {
-					const token = localStorage.getItem('accessToken')
 					const url = `/api/listings/${id}`
-					const res = await fetch(url, {
+					const res = await fetchWithAuth(url, {
 						method: 'DELETE',
-						headers: { Authorization: `Bearer ${token}` },
 						credentials: 'include',
 					})
 					if (!res.ok) {
@@ -145,7 +149,15 @@ const useUserStore = create(
 				}
 			},
 		}),
-		{ name: 'userStore' }
+		{
+			name: 'userStore',
+			// serialize: {
+			// 	options: {
+			// 		map: (key, value) =>
+			// 			value instanceof Set ? Array.from(value) : value,
+			// 	},
+			// },
+		}
 	)
 )
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import useItemStore from '../stores/itemStore'
+import fetchWithAuth from '../utils/fetch'
 
 interface ListingModalProps {
 	isOpen: boolean
@@ -13,7 +14,7 @@ const ListingModal: React.FC<ListingModalProps> = ({ isOpen, onClose }) => {
 		price: 0,
 		quality: '',
 		description: '',
-		status: 'Available',
+		status: 'available',
 	})
 
 	const handleFormChange =
@@ -29,18 +30,18 @@ const ListingModal: React.FC<ListingModalProps> = ({ isOpen, onClose }) => {
 			})
 		}
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault()
 		try {
 			const token = localStorage.getItem('accessToken')
 			const url = '/api/listings/'
-			const res = await fetch(url, {
+			const res = await fetchWithAuth(url, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`,
-				},
+				body: JSON.stringify(listingDetails),
 				credentials: 'include',
 			})
 			if (!res.ok) {
+				const error = await res.text()
+				console.log(error)
 				throw new Error('Failed to create listing')
 			}
 			onClose()

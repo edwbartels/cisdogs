@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Response, Request
 from typing import Optional
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
@@ -7,13 +7,45 @@ from app.database import get_db
 from app.models import User
 from app.schemas.user import UserRead, UserCreate
 from app.schemas.auth import LoginRequest, LoginResponse
-from app.lib.jwt import create_access_token, get_current_user
+from app.lib.jwt import (
+    create_access_token,
+    get_current_user,
+    create_refresh_token,
+    verify_refresh_token,
+)
+from jose import ExpiredSignatureError, JWTError
 import requests
 import os
 
 
 router = APIRouter(tags=["auth"])
 LM_KEY = os.getenv("LM_KEY")
+
+
+@router.post("/refresh-token")
+def refresh_token(request: Request, response: Response, db: Session = Depends(get_db)):
+    try:
+        refresh_token = request.cookies.get("refresh_token")
+        if not refresh_token:
+            raise HTTPException(status_code=401, detail="Missing refresh token")
+
+        user = verify_refresh_token(refresh_token, db)
+
+        new_access_token = create_access_token({"sub": str(user.id)})
+        new_refresh_token = create_refresh_token({"sub": str(user.id)})
+        response.set_cookie(
+            key="refresh_token",
+            value=new_refresh_token,
+            httponly=True,
+            secure=True,
+            max_age=7 * 24 * 60 * 60,
+        )
+
+        return {"accessToken": new_access_token}
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Refresh token expired")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid refresh token")
 
 
 @router.get("/session", response_model=UserRead)
@@ -25,6 +57,7 @@ def get_session(current_user: Optional[User] = Depends(get_current_user)):
 
 @router.post("/login", response_model=LoginResponse)
 def login(
+    response: Response,
     request: LoginRequest,
     db: Session = Depends(get_db),
 ):
@@ -41,6 +74,16 @@ def login(
         )
 
     access_token = create_access_token(data={"sub": str(user.id)})
+    refresh_token = create_refresh_token({"sub": str(user.id)})
+
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=True,
+        samesite="strict",
+        max_age=7 * 24 * 60 * 60,
+    )
 
     return (user, {"access_token": access_token, "token_type": "bearer"})
 

@@ -51,7 +51,17 @@ def get_listing_by_id(listing_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=ListingRead)
-def create_listing(listing: ListingCreate, db: Session = Depends(get_db)):
+def create_listing(
+    listing: ListingCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    print(listing)
+    item = db.query(Item).filter(Item.id == listing.item_id).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    if item.owner_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized")
     existing_listing = (
         db.query(Listing).filter(Listing.item_id == listing.item_id).first()
     )

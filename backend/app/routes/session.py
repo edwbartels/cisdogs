@@ -1,11 +1,20 @@
-# from fastapi import APIRouter, Depends
-# from app.lib.jwt import get_current_user
-# from app.models import User
-# from app.schemas.user import UserRead
+from fastapi import APIRouter, Depends
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+from app.database import get_db
+from app.models import Item
+from app.lib.jwt import get_user_id
 
-# router = APIRouter(prefix="/session", tags=["session"])
+router = APIRouter(tags=["session"])
 
 
-# @router.get("/", response_model=UserRead)
-# def get_current_user(current_user: User = Depends(get_current_user)):
-#     return current_user
+@router.get("/collection", response_model=set[int])
+def get_user_collection(
+    db: Session = Depends(get_db), user_id: int = Depends(get_user_id)
+) -> set[int]:
+    collection = (
+        db.execute(select(Item.release_id).where(Item.owner_id == user_id).distinct())
+        .scalars()
+        .all()
+    )
+    return set(collection)

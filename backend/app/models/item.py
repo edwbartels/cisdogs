@@ -8,7 +8,9 @@ class Item(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     owner_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), index=True)
-    release_id: Mapped[int] = mapped_column(Integer, ForeignKey("releases.id"))
+    release_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("releases.id"), index=True
+    )
 
     owner: Mapped["User"] = relationship("User", back_populates="items")
     release: Mapped["Release"] = relationship("Release", back_populates="items")

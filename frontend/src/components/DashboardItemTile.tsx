@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye } from '@fortawesome/free-regular-svg-icons'
-import { faPlus, faMinus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
+import { faMinus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
 import useUserStore from '../stores/userStore'
 import { Item } from '../stores/itemStore'
 import DropdownMenu from './DropdownMenu'
@@ -10,41 +11,67 @@ interface DashboardItemTitleProps {
 	itemId: number
 }
 
+type DropdownOptions = 'remove' | 'extra' | null
+
 const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 	const item: Item = useUserStore((state) => state.itemDetails[itemId])
 	const removeItem = useUserStore((state) => state.removeItem)
+	const navigate = useNavigate()
 
-	const [isDropdownOpen, setDropdownOpen] = useState<boolean>(false)
-	const dropdownRef = useRef<HTMLDivElement>(null)
+	const [activeDropdown, setActiveDropdown] = useState<{
+		itemId: number
+		type: DropdownOptions
+	} | null>(null)
+
 	const menuOptions = [{ label: 'Remove', value: 'remove' }]
+	const extraOptions = [
+		{ label: 'Item', value: 'item' },
+		{ label: 'Release', value: 'release' },
+		{ label: 'Album', value: 'album' },
+		{ label: 'Artist', value: 'artist' },
+	]
 
-	const toggleDropdown = () => setDropdownOpen((prev) => !prev)
+	// const toggleDropdown = (drop: DropdownOptions) => setActiveDropdown(drop)
 
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
 			case 'remove':
 				removeItem(itemId)
 				break
+			case 'item':
+				navigate(`/item/${item.id}`)
+				break
 			default:
 		}
-		setDropdownOpen(false)
+		setActiveDropdown(null)
+	}
+	const handleOpenDropdown = (itemId: number, type: DropdownOptions) => {
+		setActiveDropdown({ itemId, type })
 	}
 
-	const handleClickOutside = (event: MouseEvent) => {
-		if (
-			dropdownRef.current &&
-			!dropdownRef.current.contains(event.target as Node)
-		) {
-			setDropdownOpen(false)
-		}
+	const handleCloseDropdown = () => {
+		setActiveDropdown(null)
 	}
+
+	const handleClickOutside = React.useCallback(
+		(event: MouseEvent) => {
+			if (!(event.target instanceof Element)) {
+				return
+			}
+			const clickInside = event.target.closest('.dropdown')
+			if (!clickInside) {
+				setActiveDropdown(null)
+			}
+		},
+		[activeDropdown]
+	)
 
 	useEffect(() => {
 		document.addEventListener('mousedown', handleClickOutside)
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside)
 		}
-	}, [])
+	}, [handleClickOutside])
 	if (!item) {
 		return <div>Item not found</div>
 	}
@@ -63,27 +90,53 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 							className="cursor-pointer hover:text-wax-cream"
 						/>
 						{!item.listing && (
-							<div className="flex flex-col" ref={dropdownRef}>
+							<div className="flex flex-col remove-dropdown">
 								<FontAwesomeIcon
 									icon={faMinus}
 									size="xl"
-									onClick={toggleDropdown}
+									onClick={() =>
+										activeDropdown?.itemId === itemId &&
+										activeDropdown.type === 'remove'
+											? handleCloseDropdown()
+											: handleOpenDropdown(itemId, 'remove')
+									}
 									className="cursor-pointer hover:text-wax-cream"
 								/>
 								<DropdownMenu
-									className="absolute left-0 w-24 font-bold text-center border border-4 rounded-lg shadow-lg cursor-pointer bg-wax-cream bottom-full border-wax-red hover:bg-wax-red hover:text-wax-cream hover:border-wax-gray"
 									options={menuOptions}
-									isOpen={isDropdownOpen}
+									isOpen={
+										activeDropdown?.itemId === itemId &&
+										activeDropdown.type === 'remove'
+									}
 									onSelect={handleOptionSelect}
+									className="border-wax-red font-semibold hover:ring-2 hover:ring-wax-gray hover:bg-wax-red hover:text-wax-cream hover:border-wax-gray "
 								/>
 							</div>
 						)}
 					</div>
-					<FontAwesomeIcon
-						icon={faEllipsis}
-						size="xl"
-						className="cursor-pointer hover:text-wax-cream"
-					/>
+					<div className="relative flex flex-col extra-dropdown">
+						<FontAwesomeIcon
+							icon={faEllipsis}
+							size="xl"
+							onClick={() =>
+								activeDropdown?.itemId === itemId &&
+								activeDropdown.type === 'extra'
+									? handleCloseDropdown()
+									: handleOpenDropdown(itemId, 'extra')
+							}
+							className="cursor-pointer hover:text-wax-cream"
+						/>
+						<DropdownMenu
+							title="View Details"
+							options={extraOptions}
+							isOpen={
+								activeDropdown?.itemId === itemId &&
+								activeDropdown.type === 'extra'
+							}
+							onSelect={handleOptionSelect}
+							className="-right-2 bg-wax-cream"
+						/>
+					</div>
 				</div>
 				<div
 					className="flex flex-col justify-between w-full h-56 text-wax-gray "

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import fetchWithAuth from '../utils/fetch'
 
 type TrackData = {
 	[key: string]: string
@@ -61,14 +62,9 @@ const SubmissionForm = () => {
 		} else {
 			try {
 				console.log(releaseForm)
-				const token = localStorage.getItem('accessToken')
 				const url = '/api/releases/'
-				const res = await fetch(url, {
+				const res = await fetchWithAuth(url, {
 					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Bearer ${token}`,
-					},
 					body: JSON.stringify(releaseForm),
 					credentials: 'include',
 				})

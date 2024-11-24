@@ -1,8 +1,9 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import TYPE_CHECKING, Literal, Optional
 
-if TYPE_CHECKING:
-    from app.schemas.album import AlbumRead
+
+from app.schemas.album import AlbumRead
+from app.schemas.artist import ArtistRead
 
 
 class ReleaseBase(BaseModel):
@@ -36,4 +37,5 @@ class ReleaseRead(ReleaseBase):
 
 class ReleaseDetails(ReleaseRead):
     album: "AlbumRead"
+    artist: "ArtistRead"
     model_config = {"from_attributes": True}

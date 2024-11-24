@@ -3,19 +3,22 @@ import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMinus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
 import useUserStore from '../stores/userStore'
-import { Item } from '../stores/itemStore'
+import useWatchlistStore, { WatchlistRelease } from '../stores/watchlistStore'
 import DropdownMenu from './DropdownMenu'
 import EyeIcon from './EyeIcon'
 
-interface DashboardItemTitleProps {
+interface WatchlistReleaseTileProps {
 	itemId: number
 }
 
 type DropdownOptions = 'remove' | 'extra' | null
 
-const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
-	const item: Item = useUserStore((state) => state.itemDetails[itemId])
-	const removeItem = useUserStore((state) => state.removeItem)
+const WatchlistReleaseTile: React.FC<WatchlistReleaseTileProps> = ({
+	itemId,
+}) => {
+	const release: WatchlistRelease = useWatchlistStore(
+		(state) => state.releaseDetails[itemId]
+	)
 	const navigate = useNavigate()
 
 	const [activeDropdown, setActiveDropdown] = useState<{
@@ -23,9 +26,9 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 		type: DropdownOptions
 	} | null>(null)
 
-	const menuOptions = [{ label: 'Remove', value: 'remove' }]
+	// const menuOptions = [{ label: 'Remove', value: 'remove' }]
 	const extraOptions = [
-		{ label: 'Item', value: 'item' },
+		// { label: 'Item', value: 'item' },
 		{ label: 'Release', value: 'release' },
 		{ label: 'Album', value: 'album' },
 		{ label: 'Artist', value: 'artist' },
@@ -35,20 +38,20 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
-			case 'remove':
-				removeItem(itemId)
-				break
-			case 'item':
-				navigate(`/item/${item.id}`)
-				break
+			// case 'remove':
+			// 	removeItem(itemId)
+			// 	break
+			// case 'item':
+			// 	navigate(`/item/${release.item.id}`)
+			// 	break
 			case 'release':
-				navigate(`/release/${item.release.id}`)
+				navigate(`/release/${release.id}`)
 				break
 			case 'album':
-				navigate(`/album/${item.album.id}`)
+				navigate(`/album/${release.album.id}`)
 				break
 			case 'artist':
-				navigate(`/artist/${item.artist.id}`)
+				navigate(`/artist/${release.artist.id}`)
 				break
 			default:
 		}
@@ -81,23 +84,21 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 			document.removeEventListener('mousedown', handleClickOutside)
 		}
 	}, [handleClickOutside])
-	if (!item) {
-		return <div>Item not found</div>
+	if (!release) {
+		return <div>Release not found</div>
 	}
 	return (
 		<>
 			<div
-				className={`flex flex-col items-center justify-between w-56 h-64 m-1 rounded border-6 bg-wax-cream border-wax-amber ring-8 ${
-					item.listing ? 'ring-green-700' : 'ring-wax-gray'
-				}`}
+				className={`flex flex-col items-center justify-between w-56 h-64 m-1 rounded border-6 bg-wax-cream border-wax-amber ring-8  ring-wax-gray`}
 			>
 				{' '}
-				{`Release ID: ${item.release.id}`}
+				{`Release ID: ${release.id}`}
 				<div className="flex justify-between w-full h-6 px-1 bg-wax-amber">
 					<div className="relative flex space-x-1">
-						<EyeIcon id={item.release.id} />
+						<EyeIcon id={release.id} />
 
-						{!item.listing && (
+						{/* {!release.listing && (
 							<div className="flex flex-col remove-dropdown">
 								<FontAwesomeIcon
 									icon={faMinus}
@@ -120,7 +121,7 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 									className="border-wax-red font-semibold hover:ring-2 hover:ring-wax-gray hover:bg-wax-red hover:text-wax-cream hover:border-wax-gray "
 								/>
 							</div>
-						)}
+						)} */}
 					</div>
 					<div className="relative flex flex-col extra-dropdown">
 						<FontAwesomeIcon
@@ -155,19 +156,16 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 					}}
 				>
 					<div className="w-full font-semibold text-center cursor-default bg-opacity-60 text-wax-black bg-wax-silver">
-						{item.album.title}
+						{release.album.title}
 					</div>
 					<div></div>
 				</div>
 				<div className="flex items-end justify-between w-full h-6 px-2 font-semibold bg-wax-gray text-wax-amber">
-					<div className="cursor-pointer">{item.artist.name}</div>
-					{item.listing && (
-						<div className="cursor-pointer">$ {item.listing.price}</div>
-					)}
+					<div className="cursor-pointer">{release.artist.name}</div>
 				</div>
 			</div>
 		</>
 	)
 }
 
-export default DashboardItemTile
+export default WatchlistReleaseTile

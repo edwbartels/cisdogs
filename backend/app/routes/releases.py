@@ -13,6 +13,8 @@ from app.lib.jwt import get_current_user
 
 router = APIRouter(prefix="/releases", tags=["releases"])
 
+# * GET Routes
+
 
 @router.get("/", response_model=list[ReleaseRead])
 def get_all_releases(db: Session = Depends(get_db)):
@@ -56,6 +58,9 @@ def get_release_by_id(release_id: int, db: Session = Depends(get_db)):
     }
 
     return (release, release_extras)
+
+
+# * POST ROUTES
 
 
 @router.post("/", response_model=ReleaseFull)

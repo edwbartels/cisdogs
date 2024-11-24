@@ -5,11 +5,7 @@ import useAuthStore from '../stores/authStore'
 import DashboardItemTile from './DashboardItemTile'
 
 const DashboardItems = () => {
-	// const userId = useAuthStore((state) => state.user?.id)
-	const updateDashboardItems = useUserStore(
-		(state) => state.updateDashboardItems
-	)
-	const userItems = useUserStore((state) => state.itemDetails)
+	const { itemDetails, updateDashboardItems } = useUserStore((state) => state)
 
 	useEffect(() => {
 		updateDashboardItems()
@@ -18,7 +14,7 @@ const DashboardItems = () => {
 	return (
 		<div className="flex flex-col self-center">
 			<div className="flex flex-wrap justify-start gap-4 p-4">
-				{Object.keys(userItems).map((id) => (
+				{Object.keys(itemDetails).map((id) => (
 					<DashboardItemTile key={id} itemId={Number(id)} />
 				))}
 			</div>

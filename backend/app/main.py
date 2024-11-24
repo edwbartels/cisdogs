@@ -11,6 +11,7 @@ from app.routes import (
     session,
     transactions,
     users,
+    watchlist,
 )
 
 # Initialize app
@@ -38,5 +39,6 @@ api_router.include_router(items.router)
 api_router.include_router(listings.router)
 api_router.include_router(transactions.router)
 api_router.include_router(reviews.router)
+api_router.include_router(watchlist.router)
 
 app.include_router(api_router)

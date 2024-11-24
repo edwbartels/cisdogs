@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useItemStore, { Item } from '../stores/itemStore'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye } from '@fortawesome/free-regular-svg-icons'
 import { faPlus, faMinus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
 import useUserStore from '../stores/userStore'
 import useAuthStore from '../stores/authStore'
 import DropdownMenu from './DropdownMenu'
+import EyeIcon from './EyeIcon'
 
 interface ItemTileMainProps {
 	itemId: number
@@ -75,14 +75,10 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 	return (
 		<>
 			<div className="flex flex-col items-center justify-between w-56 h-64 m-1 rounded border-6 bg-wax-cream border-wax-amber ring-8 ring-wax-gray ">
+				{`Release ID: ${item.release.id}`}
 				<div className="flex justify-between w-full h-6 px-1 bg-wax-amber">
 					<div className="space-x-1">
-						<FontAwesomeIcon
-							icon={faEye}
-							size="xl"
-							className="cursor-pointer hover:text-wax-cream"
-						/>
-						{item.release.id}
+						<EyeIcon id={item.release.id} />
 						{!collection.has(item.release.id) && (
 							<FontAwesomeIcon
 								icon={faPlus}

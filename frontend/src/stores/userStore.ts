@@ -18,6 +18,8 @@ interface UserStore {
 	getCollection: () => void
 	addToCollection: (item: { release_id: number; owner_id: number }) => void
 	getWatchlist: () => void
+	addToWatchlist: (user_id: number, release_id: number) => void
+	removeFromWatchlist: (user_id: number, release_id: number) => void
 	// setCollection: (newCollection: Set<number>) => void
 	updateItemIds: () => void
 	updateListingIds: () => void
@@ -60,6 +62,44 @@ const useUserStore = create(
 						const error = await res.text()
 						console.log(error)
 						throw new Error('Failed to get user watchlist')
+					}
+					const data = await res.json()
+					set({ watchlist: new Set(data) })
+					console.log(new Set(data))
+				} catch (e) {
+					console.error(e)
+				}
+			},
+			addToWatchlist: async (user_id, release_id) => {
+				try {
+					const url = '/api/watchlist'
+					const res = await fetchWithAuth(url, {
+						method: 'POST',
+						body: JSON.stringify({ user_id: user_id, release_id: release_id }),
+					})
+					if (!res.ok) {
+						const error = await res.text()
+						console.log(error)
+						throw new Error('Failed to add to watchlist')
+					}
+					const data = await res.json()
+					set({ watchlist: new Set(data) })
+					console.log(new Set(data))
+				} catch (e) {
+					console.error(e)
+				}
+			},
+			removeFromWatchlist: async (user_id, release_id) => {
+				try {
+					const url = '/api/watchlist'
+					const res = await fetchWithAuth(url, {
+						method: 'DELETE',
+						body: JSON.stringify({ user_id: user_id, release_id: release_id }),
+					})
+					if (!res.ok) {
+						const error = await res.text()
+						console.log(error)
+						throw new Error('Failed to remove from watchlist')
 					}
 					const data = await res.json()
 					set({ watchlist: new Set(data) })

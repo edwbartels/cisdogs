@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye } from '@fortawesome/free-regular-svg-icons'
 import { faMinus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
 import useUserStore from '../stores/userStore'
 import { Item } from '../stores/itemStore'
 import DropdownMenu from './DropdownMenu'
+import EyeIcon from './EyeIcon'
 
 interface DashboardItemTitleProps {
 	itemId: number
@@ -15,6 +15,7 @@ type DropdownOptions = 'remove' | 'extra' | null
 
 const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 	const item: Item = useUserStore((state) => state.itemDetails[itemId])
+	const watchlist = useUserStore((state) => state.watchlist)
 	const removeItem = useUserStore((state) => state.removeItem)
 	const navigate = useNavigate()
 
@@ -91,13 +92,12 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 					item.listing ? 'ring-green-700' : 'ring-wax-gray'
 				}`}
 			>
+				{' '}
+				{`Release ID: ${item.release.id}`}
 				<div className="flex justify-between w-full h-6 px-1 bg-wax-amber">
 					<div className="relative flex space-x-1">
-						<FontAwesomeIcon
-							icon={faEye}
-							size="xl"
-							className="cursor-pointer hover:text-wax-cream"
-						/>
+						<EyeIcon id={item.release.id} />
+
 						{!item.listing && (
 							<div className="flex flex-col remove-dropdown">
 								<FontAwesomeIcon

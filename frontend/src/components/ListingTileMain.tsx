@@ -7,6 +7,7 @@ import DropdownMenu from './DropdownMenu'
 import useListingStore, { Listing } from '../stores/listingStore'
 import useUserStore from '../stores/userStore'
 import useAuthStore from '../stores/authStore'
+import EyeIcon from './EyeIcon'
 
 interface ListingTileMainProps {
 	listingId: number
@@ -84,13 +85,10 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 					userListings.includes(listing.id) ? 'ring-green-700' : 'ring-wax-gray'
 				}`}
 			>
+				{`Release ID: ${listing.release.id}`}
 				<div className="flex justify-between w-full h-6 px-1 bg-wax-amber">
 					<div className="space-x-1">
-						<FontAwesomeIcon
-							icon={faEye}
-							size="xl"
-							className="cursor-pointer hover:text-wax-cream"
-						/>
+						<EyeIcon id={listing.release.id} />
 						{!collection.has(listing.release.id) && (
 							<FontAwesomeIcon
 								icon={faPlus}

@@ -13,18 +13,22 @@ interface ListingTileMainProps {
 	listingId: number
 }
 
-type DropdownOptions = 'remove' | 'extra' | null
+type DropdownOptions = 'remove' | 'extra' | 'add' | null
 
 const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 	const userId = useAuthStore((state) => state.user?.id)
 	const listing: Listing = useListingStore((state) => state.listings[listingId])
-	// const collection: Set<number> = useUserStore((state) => state.collection)
-	// const addToCollection = useUserStore((state) => state.addToCollection)
+	const addToCart = useAuthStore((state) => state.addToCart)
+
 	const { collection, addToCollection } = useUserStore((state) => state)
 	const userListings: number[] = useUserStore((state) => state.listingIds)
 	const navigate = useNavigate()
 
 	const [activeDropdown, setActiveDropdown] = useState<DropdownOptions>(null)
+	const addOptions = [{ label: 'To Cart', value: 'cart' }]
+	if (!collection.has(listing.id))
+		addOptions.push({ label: 'To Collection', value: 'collection' })
+
 	const extraOptions = [
 		{ label: 'Item', value: 'item' },
 		{ label: 'Release', value: 'release' },
@@ -34,9 +38,22 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
-			// case 'remove':
-			// 	removeItem(itemId)
-			// 	break
+			case 'collection':
+				userId &&
+					addToCollection({
+						release_id: listing.release.id,
+						owner_id: userId,
+					})
+				break
+			case 'cart':
+				addToCart({
+					id: listing.id,
+					price: listing.price,
+					name: `${listing.release.variant || ''} ${listing.album.title} - ${
+						listing.artist.name
+					}`,
+				})
+				break
 			case 'item':
 				navigate(`/item/${listing.item.id}`)
 				break
@@ -63,9 +80,11 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 
 			const clickedRemove = targetElement.closest('.remove-dropdown')
 			const clickedExtra = targetElement.closest('.extra-dropdown')
+			const clickedAdd = targetElement.closest('.add-dropdown')
 
 			if (!clickedRemove && activeDropdown === 'remove') setActiveDropdown(null)
 			if (!clickedExtra && activeDropdown === 'extra') setActiveDropdown(null)
+			if (!clickedAdd && activeDropdown === 'add') setActiveDropdown(null)
 		},
 		[activeDropdown]
 	)
@@ -87,22 +106,22 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 			>
 				{`Release ID: ${listing.release.id}`}
 				<div className="flex justify-between w-full h-6 px-1 bg-wax-amber">
-					<div className="space-x-1">
+					<div className="space-x-1 flex">
 						<EyeIcon id={listing.release.id} />
-						{!collection.has(listing.release.id) && (
+						<div className="relative flex flex-col add-dropdown">
 							<FontAwesomeIcon
 								icon={faPlus}
 								size="xl"
 								className="cursor-pointer hover:text-wax-cream"
-								onClick={() =>
-									userId &&
-									addToCollection({
-										release_id: listing.release.id,
-										owner_id: userId,
-									})
-								}
+								onClick={() => setActiveDropdown('add')}
 							/>
-						)}
+							<DropdownMenu
+								options={addOptions}
+								onSelect={handleOptionSelect}
+								isOpen={activeDropdown === 'add'}
+								className="bottom-full font-bold hover:ring-2"
+							/>
+						</div>
 					</div>
 					<div className="relative flex flex-col extra-dropdown">
 						<FontAwesomeIcon

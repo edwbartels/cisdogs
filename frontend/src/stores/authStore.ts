@@ -9,11 +9,19 @@ export type User = {
 	username: string
 	email: string
 }
+interface Item {
+	id: number
+	price: number
+	name: string
+}
 
 export interface AuthStore {
 	isLoggedIn: boolean
 	accessToken: string | null
 	user: User | null
+	cart: { [key: number]: Item }
+	addToCart: (item: Item) => void
+	removeFromCart: (item: Item) => void
 	refreshToken: () => Promise<void>
 	login: (userData: User, token: string) => void
 	logout: () => void
@@ -28,6 +36,16 @@ const useAuthStore = create(
 					isLoggedIn: false,
 					accessToken: null,
 					user: null,
+					cart: {},
+					addToCart: (item) => {
+						const newCart = get().cart
+						set({ cart: { ...newCart, [item.id]: item } })
+					},
+					removeFromCart: (item) => {
+						const newCart = get().cart
+						delete newCart[item.id]
+						set({ cart: newCart })
+					},
 					refreshToken: async () => {
 						try {
 							const res = await fetchWithAuth('api/refresh-token', {

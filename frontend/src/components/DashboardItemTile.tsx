@@ -117,7 +117,7 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 										activeDropdown.type === 'remove'
 									}
 									onSelect={handleOptionSelect}
-									className="border-wax-red font-semibold hover:ring-2 hover:ring-wax-gray hover:bg-wax-red hover:text-wax-cream hover:border-wax-gray "
+									className="absolute left-0 w-24 font-bold text-center border border-4 rounded-lg shadow-lg cursor-pointer bg-wax-cream bottom-full border-wax-red hover:bg-wax-red hover:text-wax-cream hover:border-wax-gray"
 								/>
 							</div>
 						)}

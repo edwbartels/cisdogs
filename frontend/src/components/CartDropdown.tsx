@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faShoppingCart } from '@fortawesome/free-solid-svg-icons'
+import { faShoppingCart, faMinus } from '@fortawesome/free-solid-svg-icons'
+import useAuthStore from '../stores/authStore'
 
 interface CartItem {
 	id: number
-	name: string
+	seller_id: number
 	price: number
-	quantity: number
+	release: string
+	album: string
+	artist: string
 }
 
 interface CartDropdownProps {
-	cartItems: CartItem[]
+	cartItems: {
+		[key: number]: CartItem
+	}
 	onCheckout: () => void
 }
 
@@ -18,6 +23,8 @@ const CartDropdown: React.FC<CartDropdownProps> = ({
 	cartItems,
 	onCheckout,
 }) => {
+	const { removeFromCart } = useAuthStore((state) => state)
+
 	const [isOpen, setIsOpen] = useState(false)
 	const handleClickOutside = React.useCallback(
 		(event: MouseEvent) => {
@@ -45,6 +52,10 @@ const CartDropdown: React.FC<CartDropdownProps> = ({
 			0
 		)
 	}
+	const handleCheckout = async () => {
+		await onCheckout()
+		setIsOpen(false)
+	}
 
 	return (
 		<div className="relative ml-4 self-center cart">
@@ -63,8 +74,17 @@ const CartDropdown: React.FC<CartDropdownProps> = ({
 						<ul className="p-0 m-0 list-none">
 							{Object.values(cartItems).map((item) => (
 								<li key={item.id} className="p-1 border-b-2 border-wax-cream">
-									<strong>{item.name}</strong>
-									<div>${item.price.toFixed(2)}</div>
+									<div className="underline text-lg">{item.release}</div>
+									<div>{`${item.album} - ${item.artist}`}</div>
+									<div className="font-bold flex justify-between">
+										${item.price.toFixed(2)}
+										<FontAwesomeIcon
+											icon={faMinus}
+											size={'lg'}
+											onClick={() => removeFromCart(item)}
+											className="text-wax-red cursor-pointer hover:shadow-md hover:shadow-wax-gray hover:rounded-3xl hover:ring-2 hover:border-2 border-wax-silver hover:ring-wax-gray"
+										/>
+									</div>
 								</li>
 							))}
 						</ul>
@@ -73,7 +93,7 @@ const CartDropdown: React.FC<CartDropdownProps> = ({
 						<strong>Total: ${calculateTotal().toFixed(2)}</strong>
 						<button
 							className="mt-2 py-1 px-2 bg-wax-blue cursor-pointer rounded-md border-2 border-wax-silver text-wax-cream hover:ring-2 hover:ring-wax-amber hover:border-wax-blue hover:shadow-xl"
-							onClick={onCheckout}
+							onClick={handleCheckout}
 						>
 							Checkout
 						</button>

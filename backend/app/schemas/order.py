@@ -23,7 +23,6 @@ class OrderRead(OrderBase):
     seller_id: int
     buyer_id: int
     listing_id: int
-    completed: bool
     model_config = {"from_attributes": True}
 
 

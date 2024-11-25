@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 import { persist, devtools, subscribeWithSelector } from 'zustand/middleware'
 import useUserStore from './userStore'
+import useItemStore from './itemStore'
+import useListingStore from './listingStore'
 import { jwtDecode } from 'jwt-decode'
 import fetchWithAuth from '../utils/fetch'
 
@@ -11,8 +13,17 @@ export type User = {
 }
 interface Item {
 	id: number
+	seller_id: number
 	price: number
-	name: string
+	release: string
+	album: string
+	artist: string
+}
+
+interface OrderCreate {
+	seller_id: number
+	buyer_id: number | null
+	listing_id: number
 }
 
 export interface AuthStore {
@@ -22,11 +33,16 @@ export interface AuthStore {
 	cart: { [key: number]: Item }
 	addToCart: (item: Item) => void
 	removeFromCart: (item: Item) => void
+	checkoutCart: () => void
 	refreshToken: () => Promise<void>
 	login: (userData: User, token: string) => void
 	logout: () => void
 	scheduleTokenRefresh: () => void
 }
+
+const { updateItems } = useItemStore.getState()
+const { updateListings } = useListingStore.getState()
+const { getOrders, getCollection } = useUserStore.getState()
 
 const useAuthStore = create(
 	devtools(
@@ -38,13 +54,50 @@ const useAuthStore = create(
 					user: null,
 					cart: {},
 					addToCart: (item) => {
-						const newCart = get().cart
-						set({ cart: { ...newCart, [item.id]: item } })
+						set((state) => ({
+							cart: { ...state.cart, [item.id]: item },
+						}))
 					},
 					removeFromCart: (item) => {
-						const newCart = get().cart
-						delete newCart[item.id]
-						set({ cart: newCart })
+						set((state) => {
+							const newCart = { ...state.cart }
+							delete newCart[item.id]
+							return { cart: newCart }
+						})
+					},
+					checkoutCart: async () => {
+						const reqCart: OrderCreate[] = Object.values(get().cart).map(
+							(cartItem) => {
+								return {
+									buyer_id: get().user?.id || null,
+									seller_id: cartItem.seller_id,
+									listing_id: cartItem.id,
+								}
+							}
+						)
+						console.log(reqCart)
+						try {
+							const url = '/api/checkout'
+							const res = await fetchWithAuth(url, {
+								method: 'POST',
+								body: JSON.stringify(reqCart),
+								credentials: 'include',
+							})
+							if (!res.ok) {
+								const error = await res.text()
+								console.log(error)
+								throw new Error('Failed to checkout items')
+							}
+							alert('Checkout successful!')
+
+							updateItems()
+							updateListings()
+							getOrders()
+							getCollection()
+							set({ cart: {} })
+						} catch (e) {
+							console.error(e)
+						}
 					},
 					refreshToken: async () => {
 						try {

@@ -7,10 +7,7 @@ import useAuthStore from '../stores/authStore'
 
 const Navbar: React.FC = () => {
 	const cartItems = useAuthStore((state) => state.cart)
-
-	const handleCheckout = () => {
-		alert('Proceeding to checkout...')
-	}
+	const handleCheckout = useAuthStore((state) => state.checkoutCart)
 
 	return (
 		<nav className="bg-wax-black text-wax-silver">

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Order, User, Listing
 from app.schemas.order import OrderRead, OrderCreate
-from app.lib.jwt import get_current_user
+from app.lib.jwt import get_user_id
 
 router = APIRouter(prefix="/orders", tags=["orders"])
 
@@ -29,13 +29,11 @@ def get_order_by_id(order_id: int, db: Session = Depends(get_db)):
 @router.post("/", response_model=OrderRead)
 def create_order(
     order: OrderCreate,
-    current_user: User = Depends(get_current_user),
+    user_id: int = Depends(get_user_id),
     db: Session = Depends(get_db),
 ):
-    if current_user.id != order.buyer_id:
-        raise HTTPException(
-            status_code=403, detail="Only the buyer can initiate a order"
-        )
+    if user_id != order.buyer_id:
+        raise HTTPException(status_code=403, detail="Not authenticated")
     existing_listing = db.query(Listing).filter(Listing.id == order.listing_id).first()
     if not existing_listing:
         raise HTTPException(status_code=404, detail="Listing not found")
@@ -45,7 +43,7 @@ def create_order(
         raise HTTPException(status_code=400, detail="Order already exists")
 
     new_order = Order(
-        price=order.price,
+        price=existing_listing.price,
         seller_id=order.seller_id,
         buyer_id=order.buyer_id,
         listing_id=order.listing_id,

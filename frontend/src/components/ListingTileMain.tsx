@@ -48,10 +48,11 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 			case 'cart':
 				addToCart({
 					id: listing.id,
+					seller_id: listing.seller.id,
 					price: listing.price,
-					name: `${listing.release.variant || ''} ${listing.album.title} - ${
-						listing.artist.name
-					}`,
+					release: listing.release.variant || '',
+					album: listing.album.title,
+					artist: listing.artist.name,
 				})
 				break
 			case 'item':

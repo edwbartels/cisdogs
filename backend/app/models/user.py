@@ -2,9 +2,10 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.database import Base
 from app.lib.auth import hash_password, verify_password
+from app.models.mixins import TimestampMixin
 
 
-class User(Base):
+class User(Base, TimestampMixin):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
@@ -14,11 +15,11 @@ class User(Base):
 
     items: Mapped[list["Item"]] = relationship("Item", back_populates="owner")
     listings: Mapped[list["Listing"]] = relationship("Listing", back_populates="seller")
-    purchases: Mapped[list["Transaction"]] = relationship(
-        "Transaction", foreign_keys="Transaction.buyer_id", back_populates="buyer"
+    orders: Mapped[list["Order"]] = relationship(
+        "Order", foreign_keys="Order.buyer_id", back_populates="buyer"
     )
-    sales: Mapped[list["Transaction"]] = relationship(
-        "Transaction", foreign_keys="Transaction.seller_id", back_populates="seller"
+    orders: Mapped[list["Order"]] = relationship(
+        "Order", foreign_keys="Order.seller_id", back_populates="seller"
     )
     reviews: Mapped[list["Review"]] = relationship("Review", back_populates="user")
 

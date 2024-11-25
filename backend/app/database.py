@@ -31,7 +31,7 @@ def create_tables():
         Listing,
         Release,
         Review,
-        Transaction,
+        Order,
         User,
     )
 
@@ -46,7 +46,7 @@ def drop_tables():
         Listing,
         Release,
         Review,
-        Transaction,
+        Order,
         User,
     )
 

@@ -1,9 +1,10 @@
 from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.database import Base
+from app.models.mixins import TimestampMixin
 
 
-class Release(Base):
+class Release(Base, TimestampMixin):
     __tablename__ = "releases"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)

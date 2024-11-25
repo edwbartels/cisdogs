@@ -1,8 +1,8 @@
-"""add active column to listings, consider removing or changing status
+"""Fresh Migration w/ timestamps
 
-Revision ID: 918659282ce4
+Revision ID: 42527b845127
 Revises: 
-Create Date: 2024-11-20 01:25:46.126584
+Create Date: 2024-11-24 17:50:23.541950
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '918659282ce4'
+revision: str = '42527b845127'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -31,6 +31,8 @@ def upgrade() -> None:
     sa.Column('username', sa.String(), nullable=False),
     sa.Column('email', sa.String(), nullable=False),
     sa.Column('hashed_password', sa.String(), nullable=False),
+    sa.Column('created', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.Column('updated', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)
@@ -49,6 +51,8 @@ def upgrade() -> None:
     sa.Column('album_id', sa.Integer(), nullable=False),
     sa.Column('media_type', sa.String(), nullable=False),
     sa.Column('variant', sa.String(), nullable=True),
+    sa.Column('created', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.Column('updated', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.ForeignKeyConstraint(['album_id'], ['albums.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -61,6 +65,14 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_items_owner_id'), 'items', ['owner_id'], unique=False)
+    op.create_index(op.f('ix_items_release_id'), 'items', ['release_id'], unique=False)
+    op.create_table('watchlist',
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('release_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['release_id'], ['releases.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.PrimaryKeyConstraint('user_id', 'release_id')
+    )
     op.create_table('listings',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
@@ -70,33 +82,37 @@ def upgrade() -> None:
     sa.Column('item_id', sa.Integer(), nullable=False),
     sa.Column('status', sa.String(), nullable=False),
     sa.Column('active', sa.Boolean(), nullable=False),
+    sa.Column('created', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.Column('updated', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.ForeignKeyConstraint(['item_id'], ['items.id'], ),
     sa.ForeignKeyConstraint(['seller_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_listings_seller_id'), 'listings', ['seller_id'], unique=False)
-    op.create_table('transactions',
+    op.create_table('orders',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('price', sa.Float(), nullable=False),
     sa.Column('buyer_id', sa.Integer(), nullable=False),
     sa.Column('seller_id', sa.Integer(), nullable=False),
     sa.Column('listing_id', sa.Integer(), nullable=False),
-    sa.Column('completed', sa.Boolean(), nullable=False),
+    sa.Column('created', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.Column('updated', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.ForeignKeyConstraint(['buyer_id'], ['users.id'], ),
     sa.ForeignKeyConstraint(['listing_id'], ['listings.id'], ),
     sa.ForeignKeyConstraint(['seller_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_transactions_buyer_id'), 'transactions', ['buyer_id'], unique=False)
-    op.create_index(op.f('ix_transactions_id'), 'transactions', ['id'], unique=False)
-    op.create_index(op.f('ix_transactions_seller_id'), 'transactions', ['seller_id'], unique=False)
+    op.create_index(op.f('ix_orders_buyer_id'), 'orders', ['buyer_id'], unique=False)
+    op.create_index(op.f('ix_orders_id'), 'orders', ['id'], unique=False)
+    op.create_index(op.f('ix_orders_seller_id'), 'orders', ['seller_id'], unique=False)
     op.create_table('reviews',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('rating', sa.Integer(), nullable=False),
     sa.Column('comment', sa.String(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('transaction_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['transaction_id'], ['transactions.id'], ),
+    sa.Column('order_id', sa.Integer(), nullable=False),
+    sa.Column('created', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.Column('updated', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.ForeignKeyConstraint(['order_id'], ['orders.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -108,12 +124,14 @@ def downgrade() -> None:
     # ### commands auto generated by Alembic - please adjust! ###
     op.drop_index(op.f('ix_reviews_user_id'), table_name='reviews')
     op.drop_table('reviews')
-    op.drop_index(op.f('ix_transactions_seller_id'), table_name='transactions')
-    op.drop_index(op.f('ix_transactions_id'), table_name='transactions')
-    op.drop_index(op.f('ix_transactions_buyer_id'), table_name='transactions')
-    op.drop_table('transactions')
+    op.drop_index(op.f('ix_orders_seller_id'), table_name='orders')
+    op.drop_index(op.f('ix_orders_id'), table_name='orders')
+    op.drop_index(op.f('ix_orders_buyer_id'), table_name='orders')
+    op.drop_table('orders')
     op.drop_index(op.f('ix_listings_seller_id'), table_name='listings')
     op.drop_table('listings')
+    op.drop_table('watchlist')
+    op.drop_index(op.f('ix_items_release_id'), table_name='items')
     op.drop_index(op.f('ix_items_owner_id'), table_name='items')
     op.drop_table('items')
     op.drop_table('releases')

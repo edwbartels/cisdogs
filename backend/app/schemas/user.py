@@ -32,6 +32,6 @@ class UserRead(UserBase):
 # class UserDetail(UserRead):
 #     items: list["ItemRead"] = []
 #     listings: list["ListingRead"] = []
-#     transactions: list["TransactionRead"] = []
+#     orders: list["OrderRead"] = []
 #     reviews: list["ReviewRead"] = []
 #     model_config = {"from_attributes": True}

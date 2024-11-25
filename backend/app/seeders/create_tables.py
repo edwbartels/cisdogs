@@ -6,7 +6,7 @@ from app.models import (
     Listing,
     Release,
     Review,
-    Transaction,
+    Order,
     User,
 )
 

@@ -1,0 +1,60 @@
+{
+    "buyer_id": 1, 
+    "seller_id": 28, 
+    "listing_id": 8, 
+    "updated": "2024-11-25T01:01:27", 
+    "id": 19,
+    "created": "2024-11-25T01:01:27", 
+    "listing": {
+        "id": 8, 
+        "quality": "m", 
+        "description": "Terrible!", 
+        "active": true, 
+        "price": 63.48, 
+        "seller_id": 16, 
+        "item_id": 147, 
+        "status": "available", 
+        "created": "2024-11-25T01:01:27", 
+        "updated": "2024-11-25T01:01:27", 
+        "item": {
+            "owner_id": 13, 
+            "id": 147, 
+            "release_id": 94, 
+            "release": {
+                "id": 94, 
+                "variant": null, 
+                "album_id": 21, 
+                "media_type": "cd", 
+                "created": "2024-11-25T01:01:27", 
+                "updated": "2024-11-25T01:01:27", 
+                "album": {
+                    "id": 21, 
+                    "title": "Revolver", 
+                    "artist_id": 2, 
+                    "track_data": {
+                        "1": "Taxman", 
+                        "2": "Eleanor Rigby", 
+                        "3": "I'm Only Sleeping", 
+                        "4": "Love You To", 
+                        "5": "Here, There and Everywhere", 
+                        "6": "Yellow Submarine", 
+                        "7": "She Said She Said", 
+                        "8": "Good Day Sunshine", 
+                        "9": "And Your Bird Can Sing", 
+                        "10": "For No One", 
+                        "11": "Doctor Robert", 
+                        "12": "I Want to Tell You", 
+                        "13": "Got to Get You into My Life", 
+                        "14": "Tomorrow Never Knows"
+                        }, 
+                    "artist": {
+                        "id": 2, 
+                        "name": "The Beatles"
+                    }
+                }
+            }
+        }
+    }
+}
+
+{"id": 19, "buyer_id": 1, "created": "2024-11-25T01:01:27", "seller_id": 28, "listing_id": 8, "updated": "2024-11-25T01:01:27", "listing": {"id": 8, "quality": "m", "description": "Terrible!", "active": true, "price": 63.48, "seller_id": 16, "item_id": 147, "status": "available", "created": "2024-11-25T01:01:27", "updated": "2024-11-25T01:01:27", "item": {"id": 147, "owner_id": 13, "release_id": 94, "release": {"id": 94, "variant": null, "media_type": "cd", "album_id": 21, "created": "2024-11-25T01:01:27", "updated": "2024-11-25T01:01:27", "album": {"title": "Revolver", "id": 21, "artist_id": 2, "track_data": {"1": "Taxman", "2": "Eleanor Rigby", "3": "I'm Only Sleeping", "4": "Love You To", "5": "Here, There and Everywhere", "6": "Yellow Submarine", "7": "She Said She Said", "8": "Good Day Sunshine", "9": "And Your Bird Can Sing", "10": "For No One", "11": "Doctor Robert", "12": "I Want to Tell You", "13": "Got to Get You into My Life", "14": "Tomorrow Never Knows"}, "artist": {"id": 2, "name": "The Beatles"}}}}}}

@@ -3,10 +3,19 @@ import { devtools, subscribeWithSelector } from 'zustand/middleware'
 import useAuthStore from './authStore'
 import useItemStore, { Item } from './itemStore'
 import useListingStore, { Listing } from './listingStore'
+import { Order } from './orderStore'
 import fetchWithAuth from '../utils/fetch'
 interface UserStore {
 	collection: Set<number>
 	watchlist: Set<number>
+	orders: {
+		sales: {
+			[key: number]: Order
+		} | null
+		purchases: {
+			[key: number]: Order
+		} | null
+	}
 	itemIds: number[]
 	itemDetails: {
 		[key: number]: Item
@@ -21,6 +30,7 @@ interface UserStore {
 	addToWatchlist: (user_id: number, release_id: number) => void
 	removeFromWatchlist: (user_id: number, release_id: number) => void
 	// setCollection: (newCollection: Set<number>) => void
+	getOrders: () => void
 	updateItemIds: () => void
 	updateListingIds: () => void
 	updateDashboard: () => void
@@ -38,6 +48,8 @@ const useUserStore = create(
 			itemIds: [],
 			listingIds: [],
 			collection: new Set(),
+			watchlist: new Set(),
+			orders: { sales: null, purchases: null },
 			getCollection: async () => {
 				try {
 					const url = '/api/collection'
@@ -54,7 +66,31 @@ const useUserStore = create(
 					console.error(e)
 				}
 			},
-			watchlist: new Set(),
+			addToCollection: async (item) => {
+				try {
+					const url = '/api/items/'
+					const res = await fetchWithAuth(url, {
+						method: 'POST',
+						body: JSON.stringify(item),
+						credentials: 'include',
+					})
+					if (!res.ok) {
+						const error = await res.text()
+						console.log(error)
+						throw new Error('Failed to add to collection')
+					}
+					const data = await res.json()
+					console.log(data)
+					set((state) => {
+						const updatedSet = new Set(state.collection)
+						console.log(data.release_id)
+						!updatedSet.has(data.release_id) && updatedSet.add(data.release_id)
+						return { collection: updatedSet }
+					})
+				} catch (e) {
+					console.error(e)
+				}
+			},
 			getWatchlist: async () => {
 				try {
 					const url = '/api/watchlist'
@@ -109,27 +145,18 @@ const useUserStore = create(
 					console.error(e)
 				}
 			},
-			addToCollection: async (item) => {
+			getOrders: async () => {
 				try {
-					const url = '/api/items/'
-					const res = await fetchWithAuth(url, {
-						method: 'POST',
-						body: JSON.stringify(item),
-						credentials: 'include',
-					})
+					const url = '/api/users/orders'
+					const res = await fetchWithAuth(url)
 					if (!res.ok) {
 						const error = await res.text()
 						console.log(error)
-						throw new Error('Failed to add to collection')
+						throw new Error('Failed to get orders')
 					}
 					const data = await res.json()
+					set({ orders: data })
 					console.log(data)
-					set((state) => {
-						const updatedSet = new Set(state.collection)
-						console.log(data.release_id)
-						!updatedSet.has(data.release_id) && updatedSet.add(data.release_id)
-						return { collection: updatedSet }
-					})
 				} catch (e) {
 					console.error(e)
 				}

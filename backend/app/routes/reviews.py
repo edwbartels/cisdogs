@@ -34,7 +34,7 @@ def create_review(
     existing_review = db.query(Review).filter(
         and_(
             Review.user_id == review.user_id,
-            Review.transaction_id == review.transaction_id,
+            Review.order_id == review.order_id,
         ).first()
     )
     if existing_review:
@@ -44,7 +44,7 @@ def create_review(
         rating=review.rating,
         comment=review.comment,
         user_id=review.user_id,
-        transaction_id=review.transaction_id,
+        order_id=review.order_id,
     )
 
     db.add(new_review)

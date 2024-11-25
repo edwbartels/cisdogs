@@ -1,8 +1,8 @@
-"""weirdo behavior in db
+"""orders hybrid-prop test
 
-Revision ID: 1cdcb3096842
-Revises: 918659282ce4
-Create Date: 2024-11-20 04:27:42.876041
+Revision ID: 04ea480d3d79
+Revises: 42527b845127
+Create Date: 2024-11-24 20:22:18.448485
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '1cdcb3096842'
-down_revision: Union[str, None] = '918659282ce4'
+revision: str = '04ea480d3d79'
+down_revision: Union[str, None] = '42527b845127'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

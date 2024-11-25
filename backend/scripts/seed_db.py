@@ -1,6 +1,6 @@
 from app.database import SessionLocal
 
-# from app.models import Album, Artist, Item, Listing, Release, Review, Transaction, User
+# from app.models import Album, Artist, Item, Listing, Release, Review, Order, User
 from app.seeders import (
     albums,
     artists,
@@ -8,7 +8,7 @@ from app.seeders import (
     listings,
     releases,
     reviews,
-    transactions,
+    orders,
     users,
     entries,
 )
@@ -19,7 +19,7 @@ from app.seeders import (
 # from app.seeders import listings
 # from app.seeders import releases
 # from app.seeders import reviews
-# from app.seeders import transactions
+# from app.seeders import orders
 # from app.seeders import users
 from sqlalchemy.orm import Session
 from dotenv import load_dotenv
@@ -40,7 +40,7 @@ def seed_data() -> None:
                 *releases,
                 *items,
                 *listings,
-                *transactions,
+                *orders,
                 *reviews,
                 *entries,
             ]

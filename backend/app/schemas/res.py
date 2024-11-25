@@ -5,6 +5,8 @@ from app.schemas.user import UserReadBrief, UserBase
 from app.schemas.release import ReleaseRead, ReleaseBase
 from app.schemas.artist import ArtistRead, ArtistBase
 from app.schemas.album import AlbumRead, AlbumBase, AlbumReadTemp
+from app.schemas.order import OrderRead, OrderBase
+from app.schemas.review import ReviewRead
 
 
 class UserDashboardResponse(BaseModel):
@@ -57,6 +59,25 @@ class ArtistFull(ArtistRead):
     items: dict[int, UserReadBrief] | None
     listings: dict[int, ListingWithSeller] | None
     model_config = {"from_attributes": True}
+
+
+class OrderFull(OrderBase):
+    id: int
+    seller: UserReadBrief
+    buyer: UserReadBrief
+    listing: ListingRead
+    item: ItemRead
+    reviews: list[ReviewRead] | None
+    release: ReleaseRead
+    album: AlbumRead
+    artist: ArtistRead
+    model_config = {"from_attributes": True}
+
+
+class OrderSplit(BaseModel):
+    sales: dict[int, OrderFull]
+    purchases: dict[int, OrderFull]
+
     # {
     #     id: int,
     #     media_type: str,

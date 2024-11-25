@@ -1,15 +1,22 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import RedirectResponse
-from sqlalchemy.orm import Session, joinedload
+from fastapi.encoders import jsonable_encoder
+from sqlalchemy import or_
+from sqlalchemy.orm import Session, joinedload, selectinload
+from sqlalchemy.future import select
 from app.database import get_db
-from app.models import User, Item, Listing, Album, Release
+from app.models import User, Item, Listing, Album, Release, Order, Review
 from app.schemas.user import UserRead
 from app.schemas.res import UserDashboardResponse, ItemFull, ListingFull
 from app.schemas.item import ItemDetail
 from app.schemas.listing import ListingDetail
-from app.lib.jwt import get_current_user
+from app.schemas.res import OrderFull, OrderSplit
+from app.lib.jwt import get_current_user, get_user_id
 
 router = APIRouter(prefix="/users", tags=["users"])
+
+
+# * GET Routes
 
 
 @router.get("/", response_model=list[UserRead])
@@ -102,3 +109,37 @@ def get_user_listings(
         listing.album = listing.item.release.album
         listing.artist = listing.item.release.album.artist
     return {listing.id: listing for listing in listings}
+
+
+@router.get("/orders", response_model=OrderSplit)
+def get_user_orders(
+    db: Session = Depends(get_db), user_id: int = Depends(get_user_id)
+) -> OrderSplit:
+    if not user_id:
+        raise HTTPException(
+            status_code=401, detail="Not authenticated (no active user)"
+        )
+    stmt = select(Order).where(
+        or_(Order.buyer_id == user_id, Order.seller_id == user_id)
+    )
+    sales_stmt = select(Order).where(Order.seller_id == user_id)
+    purchases_stmt = select(Order).where(Order.buyer_id == user_id)
+
+    sales = db.execute(sales_stmt).scalars().all()
+    purchases = db.execute(purchases_stmt).scalars().all()
+    # orders = db.execute(stmt).scalars().all()
+    # sales = {order.id: order for order in sales}
+    # purchases = {order.id: order for order in purchases}
+    # orders = {"sales": sales, "purchases": purchases}
+    # orders = {"sales": {}, "purchases": {}}
+    # orders["sales"] = {order.id: order for order in sales}
+    # orders["purchases"] = {order.id: order for order in purchases}
+    # print(jsonable_encoder(orders["sales"]))
+    response = OrderSplit(
+        sales={order.id: order for order in sales},
+        purchases={order.id: order for order in purchases},
+    )
+
+    # order.reviews = {review.id: review for order in orders for review in order.reviews}
+    return response
+    # review_stmt = select(Review).where()

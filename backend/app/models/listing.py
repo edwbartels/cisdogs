@@ -1,9 +1,10 @@
 from sqlalchemy import Integer, String, Float, ForeignKey, Boolean
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.database import Base
+from app.models.mixins import TimestampMixin
 
 
-class Listing(Base):
+class Listing(Base, TimestampMixin):
     __tablename__ = "listings"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -17,6 +18,4 @@ class Listing(Base):
 
     seller: Mapped["User"] = relationship("User", back_populates="listings")
     item: Mapped["Item"] = relationship("Item", back_populates="listing")
-    transactions: Mapped[list["Transaction"]] = relationship(
-        "Transaction", back_populates="listing"
-    )
+    orders: Mapped[list["Order"]] = relationship("Order", back_populates="listing")

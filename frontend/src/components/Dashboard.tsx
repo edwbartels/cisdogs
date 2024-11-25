@@ -5,6 +5,7 @@ import { useState } from 'react'
 // import useAuthStore from '../stores/authStore'
 import DashboardItems from './DashboardItems'
 import DashboardListings from './DashboardListings'
+import DashboardOrders from './DashboardOrders'
 import { Link } from 'react-router-dom'
 
 const Dashboard = () => {
@@ -74,7 +75,7 @@ const Dashboard = () => {
 			<div className="flex flex-grow tab-content">
 				{activeTab === 'items' && <DashboardItems />}
 				{activeTab === 'listings' && <DashboardListings />}
-				{/* {activeTab === 'orders' && <OrdersTab />} } */}
+				{activeTab === 'orders' && <DashboardOrders />}
 			</div>
 		</div>
 	)

@@ -26,7 +26,7 @@ class UserCreate(UserBase):
 
 class UserRead(UserBase):
     id: int
-    model_config = {"from_attributes": True}
+    # model_config = {"from_attributes": True}
 
 
 # class UserDetail(UserRead):

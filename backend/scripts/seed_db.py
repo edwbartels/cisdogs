@@ -8,7 +8,7 @@ from app.seeders import (
     listings,
     releases,
     reviews,
-    orders,
+    # orders,
     users,
     entries,
 )
@@ -40,7 +40,7 @@ def seed_data() -> None:
                 *releases,
                 *items,
                 *listings,
-                *orders,
+                # *orders,
                 *reviews,
                 *entries,
             ]

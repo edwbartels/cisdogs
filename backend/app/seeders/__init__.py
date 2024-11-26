@@ -4,7 +4,8 @@ from app.seeders.items_list import items
 from app.seeders.listings_list import listings
 from app.seeders.releases_list import releases
 from app.seeders.reviews_list import reviews
-from app.seeders.orders_list import orders
+
+# from app.seeders.orders_list import orders
 from app.seeders.users_list import users
 from app.seeders.watchlist import entries
 
@@ -15,7 +16,7 @@ __all__ = [
     "listings",
     "releases",
     "reviews",
-    "orders",
+    # "orders",
     "users",
     "entries",
 ]

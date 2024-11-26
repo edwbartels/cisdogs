@@ -4,6 +4,8 @@ import LogoIcon from './LogoIcon'
 import { Link, NavLink } from 'react-router-dom'
 import CartDropdown from './CartDropdown'
 import useAuthStore from '../stores/authStore'
+import QuickCreate from './QuickCreate'
+import NavUser from './NavUser'
 
 const Navbar: React.FC = () => {
 	const cartItems = useAuthStore((state) => state.cart)
@@ -22,16 +24,26 @@ const Navbar: React.FC = () => {
 								/>
 							)}
 						</NavLink>
-						<NavLink
-							className="font-bold pb-1 self-end hover:text-wax-amber"
-							to="/"
-						>
+						<NavLink className="font-bold pb-1  hover:text-wax-amber" to="/">
 							Wax Exchange
 						</NavLink>
 					</div>
-					<div className="flex pb-1 text-lg self-end hidden space-x-4 md:flex hover:text-wax-amber">
-						<Link to="submissions">Submissions</Link>
-					</div>
+					<QuickCreate />
+					<NavUser />
+					{/* <div className="flex-col items-center justify-between hidden md:flex">
+						<div className="font-bold text-xl border-b-2 border-wax-silver w-full text-center px-4">
+							Add a...
+						</div>
+						<div className="flex space-x-2 text-base self-center ">
+							<div className="flex hover:text-wax-amber self-end">
+								<Link to="#">Listing</Link>
+							</div>
+							<a className="text-xl">|</a>
+							<div className="flex hover:text-wax-amber self-end">
+								<Link to="submissions">Release</Link>
+							</div>
+						</div>
+					</div> */}
 					<div className="flex">
 						<div className="flex items-center">
 							<SessionManagement />

@@ -1,16 +1,25 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import or_
+from sqlalchemy import or_, not_
 from sqlalchemy.orm import Session, joinedload, selectinload
 from sqlalchemy.future import select
 from app.database import get_db
-from app.models import User, Item, Listing, Album, Release, Order, Review
+from app.models import User, Item, Listing, Album, Release, Order, Review, Artist
 from app.schemas.user import UserRead
-from app.schemas.res import UserDashboardResponse, ItemFull, ListingFull
+
+# from app.schemas.release import ReleaseRead
+# from app.schemas.album import AlbumDetailsBrief
 from app.schemas.item import ItemDetail
 from app.schemas.listing import ListingDetail
-from app.schemas.res import OrderFull, OrderSplit
+from app.schemas.res import (
+    UserDashboardResponse,
+    ItemFull,
+    ListingFull,
+    OrderSplit,
+    ListingArtist,
+    # ListingModalData,
+)
 from app.lib.jwt import get_current_user, get_user_id
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -84,6 +93,66 @@ def get_user_items(
         item.artist = item.release.album.artist
 
     return {item.id: item for item in items}
+
+
+@router.get("/items/unlisted", response_model=dict[str, list[ListingArtist]])
+def get_listing_modal_data(
+    user_id: int = Depends(get_user_id), db: Session = Depends(get_db)
+):
+    stmt = (
+        select(Item)
+        .where(Item.owner_id == user_id)
+        .where(
+            not_(
+                select(Listing)
+                .where(Listing.item_id == Item.id)
+                .where(Listing.active.is_(True))
+                .exists()
+            )
+        )
+        .options(
+            joinedload(Item.listing),
+            joinedload(Item.release).joinedload(Release.album).joinedload(Album.artist),
+        )
+    )
+
+    items = db.execute(stmt).scalars().all()
+
+    artist_map = {}
+
+    for item in items:
+        release = item.release
+        album = release.album
+        artist = album.artist
+
+        # Get or create the artist entry
+        if artist.id not in artist_map:
+            artist_entry = Artist(id=artist.id, name=artist.name, albums=[])
+            artist_map[artist.id] = artist_entry
+
+        artist_entry = artist_map[artist.id]
+
+        # Get or create the album entry
+        album_map = {album.id: album for album in artist_entry.albums}
+        if album.id not in album_map:
+            album_entry = Album(id=album.id, title=album.title, releases=[])
+            artist_entry.albums.append(album_entry)
+        else:
+            album_entry = album_map[album.id]
+
+        # Add the release entry
+        album_entry.releases.append(
+            Release(
+                id=release.id,
+                media_type=release.media_type,
+                variant=release.variant,
+                items=[item],
+            )
+        )
+    print(artist_map.values())
+
+    # Convert the artist map into the ListingModalData response
+    return {"artists": artist_map.values()}
 
 
 @router.get("/listings", response_model=dict[int, ListingFull])

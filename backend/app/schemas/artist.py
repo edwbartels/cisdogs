@@ -7,20 +7,20 @@ if TYPE_CHECKING:
 
 class ArtistBase(BaseModel):
     name: str
-    model_config = {"from_attributes": True}
+    # model_config = {"from_attributes": True}
 
 
 class ArtistCreate(ArtistBase):
     pass
-    model_config = {"from_attributes": True}
+    # model_config = {"from_attributes": True}
 
 
 class ArtistRead(ArtistBase):
     id: int
 
-    model_config = {"from_attributes": True}
+    # model_config = {"from_attributes": True}
 
 
 class ArtistDetails(ArtistRead):
     albums: list["AlbumRead"] = []
-    model_config = {"from_attributes": True}
+    # model_config = {"from_attributes": True}

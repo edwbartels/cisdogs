@@ -1,8 +1,9 @@
 from pydantic import BaseModel, RootModel
 from typing import TYPE_CHECKING
 
-from app.schemas.user import UserReadBrief
-from app.schemas.release import ReleaseRead
+if TYPE_CHECKING:
+    from app.schemas.user import UserReadBrief
+    from app.schemas.release import ReleaseRead
 
 
 class ItemBase(BaseModel):

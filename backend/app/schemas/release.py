@@ -1,7 +1,6 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import TYPE_CHECKING, Literal, Optional
 
-
 from app.schemas.album import AlbumRead
 from app.schemas.artist import ArtistRead
 

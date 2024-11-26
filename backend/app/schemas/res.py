@@ -1,11 +1,12 @@
 from pydantic import BaseModel, RootModel
-from app.schemas.item import ItemDetail, ItemRead, ItemCreate
+from typing import Optional
+from app.schemas.item import ItemDetail, ItemRead
 from app.schemas.listing import ListingDetail, ListingRead, ListingWithSeller
-from app.schemas.user import UserReadBrief, UserBase
+from app.schemas.user import UserReadBrief
 from app.schemas.release import ReleaseRead, ReleaseBase
-from app.schemas.artist import ArtistRead, ArtistBase
-from app.schemas.album import AlbumRead, AlbumBase, AlbumReadTemp
-from app.schemas.order import OrderRead, OrderBase
+from app.schemas.artist import ArtistRead
+from app.schemas.album import AlbumRead
+from app.schemas.order import OrderBase
 from app.schemas.review import ReviewRead
 
 
@@ -77,21 +78,28 @@ class OrderFull(OrderBase):
 class OrderSplit(BaseModel):
     sales: dict[int, OrderFull]
     purchases: dict[int, OrderFull]
+    model_config = {"from_attributes": True}
 
-    # {
-    #     id: int,
-    #     media_type: str,
-    #     variant: str,
-    #     album: {
-    #         id: int,
-    #         title: str,
-    #         track_data: {
-    #             int: str,
-    #             ...
-    #         }
-    #     }
-    #     artist: {
-    #         id: int,
-    #         name: str
-    #     }
-    # }
+
+class ListingItem(BaseModel):
+    id: int
+
+
+class ListingRelease(BaseModel):
+    id: int
+    media_type: str
+    variant: Optional[str] = None
+    items: list[ListingItem]
+
+
+class ListingAlbum(BaseModel):
+    id: int
+    title: str
+    releases: list[ListingRelease]
+
+
+class ListingArtist(BaseModel):
+    id: int
+    name: str
+    albums: list[ListingAlbum]
+    model_config = {"from_attributes": True}

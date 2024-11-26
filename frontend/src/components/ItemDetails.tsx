@@ -16,7 +16,8 @@ const ItemDetails: React.FC = () => {
 
 	useEffect(() => {
 		getFocus(itemId)
-	}, [getFocus])
+		return () => useItemStore.setState({ focus: null })
+	}, [])
 
 	if (!item) return <div>Loading...</div>
 

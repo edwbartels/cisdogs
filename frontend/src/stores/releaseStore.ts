@@ -39,13 +39,18 @@ export type Release = {
 }
 interface ReleaseStore {
 	focus: Release | null
+	releases: {
+		[key: number]: Release
+	}
 	getFocus: (id: number) => Promise<void>
+	getReleases: () => void
 }
 
 const useReleaseStore = create(
 	devtools<ReleaseStore>(
 		(set) => ({
 			focus: null,
+			releases: {},
 			getFocus: async (id) => {
 				try {
 					const url = `/api/releases/${id}`
@@ -56,6 +61,19 @@ const useReleaseStore = create(
 					const release = await res.json()
 					console.log(release)
 					set({ focus: release })
+				} catch (e) {
+					console.error(e)
+				}
+			},
+			getReleases: async () => {
+				try {
+					const url = '/api/releases/'
+					const res = await fetch(url)
+					if (!res.ok) {
+						throw new Error(`Failed to get all releases`)
+					}
+					const data = await res.json()
+					set({ releases: data })
 				} catch (e) {
 					console.error(e)
 				}

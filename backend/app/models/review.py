@@ -9,7 +9,7 @@ class Review(Base, TimestampMixin):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     rating: Mapped[int] = mapped_column(Integer)
-    comment: Mapped[str] = mapped_column(String, nullable=True)
+    comment: Mapped[str] = mapped_column(String(100), nullable=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), index=True)
     order_id: Mapped[int] = mapped_column(Integer, ForeignKey("orders.id"))
 

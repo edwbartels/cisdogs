@@ -41,16 +41,16 @@ class ListingFull(ListingRead):
 class ReleaseFull(ReleaseRead):
     album: AlbumRead
     artist: ArtistRead
-    items: dict[int, UserReadBrief] | None
-    listings: dict[int, ListingWithSeller] | None
+    items: dict[int, UserReadBrief] | None = None
+    listings: dict[int, ListingWithSeller] | None = None
     model_config = {"from_attributes": True}
 
 
 class AlbumFull(AlbumRead):
     artist: ArtistRead
-    releases: dict[int, ReleaseBase] | None
-    items: dict[int, UserReadBrief] | None
-    listings: dict[int, ListingWithSeller] | None
+    releases: dict[int, ReleaseBase] | None = None
+    items: dict[int, UserReadBrief] | None = None
+    listings: dict[int, ListingWithSeller] | None = None
     model_config = {"from_attributes": True}
 
 

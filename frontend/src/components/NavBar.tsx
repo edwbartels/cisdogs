@@ -28,8 +28,8 @@ const Navbar: React.FC = () => {
 							Wax Exchange
 						</NavLink>
 					</div>
-					<QuickCreate />
 					<NavUser />
+					<QuickCreate />
 					{/* <div className="flex-col items-center justify-between hidden md:flex">
 						<div className="font-bold text-xl border-b-2 border-wax-silver w-full text-center px-4">
 							Add a...

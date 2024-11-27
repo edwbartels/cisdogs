@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import and_
-from sqlalchemy.orm import Session, selectinload, joinedload
+from sqlalchemy.orm import Session, selectinload, joinedload, aliased
 from sqlalchemy.future import select
 from app.database import get_db
 from app.models import Release, Artist, Album, User, Item, Listing
 from app.schemas.item import ItemRead
-from app.schemas.release import ReleaseRead, ReleaseCreateFull
+from app.schemas.release import ReleaseRead, ReleaseCreateFull, ReleaseDetails
 from app.schemas.listing import ListingWithSeller
 from app.schemas.res import ReleaseFull
 from app.lib.jwt import get_current_user
@@ -16,12 +16,20 @@ router = APIRouter(prefix="/releases", tags=["releases"])
 # * GET Routes
 
 
-@router.get("/", response_model=list[ReleaseRead])
+@router.get("/", response_model=dict[int, ReleaseDetails])
 def get_all_releases(db: Session = Depends(get_db)):
-    releases = db.query(Release).all()
+    stmt = select(Release).options(
+        joinedload(Release.album).joinedload(Album.artist),
+    )
+    releases = db.execute(stmt).scalars().unique().all()
+    print(jsonable_encoder(releases[0]))
     if not releases:
         raise HTTPException(status_code=404, detail="No releases found")
-    return releases
+
+    for release in releases:
+        release.artist = release.album.artist
+
+    return {release.id: release for release in releases}
 
 
 @router.get("/{release_id}", response_model=ReleaseFull)

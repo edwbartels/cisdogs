@@ -25,6 +25,7 @@ const WatchlistListingTile: React.FC<WatchlistListingTileProps> = ({
 	const [activeDropdown, setActiveDropdown] = useState<DropdownOptions>(null)
 	// const menuOptions = [{ label: 'Remove', value: 'remove' }]
 	const extraOptions = [
+		{ label: 'Listing', value: 'listing' },
 		{ label: 'Item', value: 'item' },
 		{ label: 'Release', value: 'release' },
 		{ label: 'Album', value: 'album' },
@@ -36,6 +37,9 @@ const WatchlistListingTile: React.FC<WatchlistListingTileProps> = ({
 			// case 'remove':
 			// 	removeListing(listingId)
 			// 	break
+			case 'listing':
+				navigate(`/listing/${listing.id}`)
+				break
 			case 'item':
 				navigate(`/item/${listing.id}`)
 				break

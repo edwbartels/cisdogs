@@ -9,8 +9,8 @@ class Listing(Base, TimestampMixin):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     price: Mapped[float] = mapped_column(Float)
-    quality: Mapped[str] = mapped_column(String)
-    description: Mapped[str] = mapped_column(String, nullable=True)
+    quality: Mapped[str] = mapped_column(String(10))
+    description: Mapped[str] = mapped_column(String(100), nullable=True)
     seller_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), index=True)
     item_id: Mapped[int] = mapped_column(Integer, ForeignKey("items.id"))
     status: Mapped[str] = mapped_column(String)

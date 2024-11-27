@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import useAuthStore from '../stores/authStore'
 import fetchWithAuth from '../utils/fetch'
+import { stringify } from 'querystring'
 
 interface SignInModalProps {
 	isOpen: boolean
@@ -12,6 +13,17 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 		credential: '',
 		password: '',
 	})
+	const [errors, setErrors] = useState<{
+		fetch?: any
+		credential?: string
+		password?: string
+	}>({})
+
+	const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+	const MIN_USERNAME_LENGTH = 4
+	const MAX_USERNAME_LENGTH = 30
+	const MIN_PASSWORD_LENGTH = 8
+	const MAX_PASSWORD_LENGTH = 128
 
 	const handleFormChange =
 		(loginFormField: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,9 +32,46 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 				[loginFormField]: e.target.value,
 			})
 		}
+	const handleClose = () => {
+		setLoginForm({
+			credential: '',
+			password: '',
+		})
+		setErrors({})
+		onClose()
+	}
+
+	const validateForm = () => {
+		const newErrors: { credential?: string; password?: string } = {}
+
+		if (!loginForm.credential) {
+			newErrors.credential = 'Username or email is required.'
+		} else if (EMAIL_REGEX.test(loginForm.credential)) {
+		} else if (
+			loginForm.credential.length < MIN_USERNAME_LENGTH ||
+			loginForm.credential.length > MAX_USERNAME_LENGTH
+		) {
+			newErrors.credential = `User name must be between ${MIN_USERNAME_LENGTH} and ${MAX_USERNAME_LENGTH} characters`
+		}
+
+		if (!loginForm.password) {
+			newErrors.password = 'Password is required.'
+		} else if (
+			loginForm.password.length < MIN_PASSWORD_LENGTH ||
+			loginForm.password.length > MAX_PASSWORD_LENGTH
+		) {
+			newErrors.password = `Password must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters.`
+		}
+
+		setErrors(newErrors)
+		return Object.keys(newErrors).length === 0
+	}
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
+		if (!validateForm()) {
+			return
+		}
 		const url = '/api/login'
 		try {
 			const res = await fetchWithAuth(url, {
@@ -30,6 +79,8 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 				body: JSON.stringify(loginForm),
 			})
 			if (!res.ok) {
+				const error = await res.json()
+				setErrors({ ...errors, fetch: error })
 				throw new Error('Login failed')
 			}
 
@@ -37,7 +88,8 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 			useAuthStore.getState().login(remaining, access_token)
 			onClose()
 		} catch (e) {
-			console.error(e)
+			setErrors({ ...errors, fetch: 'Invalid credentials' })
+			console.log(e)
 		}
 	}
 
@@ -75,23 +127,42 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 				<h2 className="mb-4 text-xl font-bold border-b-2 text-wax-black border-wax-black">
 					Sign In
 				</h2>
+				{errors.fetch && (
+					<div className="text-wax-red text-base font-bold italic mb-2">
+						{errors.fetch}
+					</div>
+				)}
 				<form onSubmit={handleSubmit}>
 					<input
 						type="text"
 						onChange={handleFormChange('credential')}
 						value={loginForm.credential}
 						placeholder="Username or Email"
-						className="block w-full p-2 mb-2 border rounded text-wax-black"
+						className={`block w-full p-2 mb-2 border rounded text-wax-black ${
+							errors.credential ? 'border-wax-red' : ''
+						}`}
 						required
 					/>
+					{errors.credential && (
+						<div className="text-wax-red text-sm font-bold italic mb-2">
+							{errors.credential}
+						</div>
+					)}
 					<input
 						type="password"
 						onChange={handleFormChange('password')}
 						value={loginForm.password}
 						placeholder="Password"
-						className="block w-full p-2 mb-2 border rounded text-wax-black"
+						className={`block w-full p-2 mb-2 border rounded text-wax-black ${
+							errors.password ? 'border-wax-red' : ''
+						}`}
 						required
 					/>
+					{errors.password && (
+						<div className="text-wax-red font-bold italic text-sm mb-2">
+							{errors.password}
+						</div>
+					)}
 					<button
 						type="submit"
 						className="w-full py-2 border-4 rounded bg-wax-blue text-wax-cream border-wax-silver hover:border-wax-blue"
@@ -107,7 +178,7 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 						Demo
 					</button>
 					<button
-						onClick={onClose}
+						onClick={handleClose}
 						className="w-full px-5 py-2 mx-2 mt-3 border-4 rounded bg-wax-red text-wax-cream border-wax-silver hover:border-wax-red"
 					>
 						Close

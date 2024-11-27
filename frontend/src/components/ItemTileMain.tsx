@@ -26,11 +26,17 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 		{ label: 'Album', value: 'album' },
 		{ label: 'Artist', value: 'artist' },
 	]
+	if (item?.listing)
+		extraOptions.unshift({ label: 'Listing', value: 'listing' })
+
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
 			// case 'remove':
 			// 	removeItem(itemId)
 			// 	break
+			case 'listing':
+				navigate(`/listing/${item.listing?.id}`)
+				break
 			case 'item':
 				navigate(`/item/${item.id}`)
 				break

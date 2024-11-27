@@ -111,6 +111,12 @@ def signup(req: UserCreate, db: Session = Depends(get_db)):
 
     if not user:
         new_user = User(username=req.username, email=req.email, password=req.password)
+        try:
+            new_user.validate_username()
+            new_user.validate_email()
+        except ValueError as e:
+            print(f"Validation error: {e}")
+
         db.add(new_user)
         db.commit()
         db.refresh(new_user)

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import useListingStore from '../stores/listingStore'
 import useAuthStore from '../stores/authStore'
+import ListingDetailsForm from './ListingDetailsForm'
 
 const ListingDetails: React.FC = () => {
 	const { id } = useParams<{ id: string }>()
@@ -19,9 +20,7 @@ const ListingDetails: React.FC = () => {
 
 	if (!listing) return <div>Loading...</div>
 
-	return (
-		<div>{`ID: ${listing.id} Price: $${listing.price} Album: ${listing.album.title}`}</div>
-	)
+	return <ListingDetailsForm listing={listing} />
 }
 
 export default ListingDetails

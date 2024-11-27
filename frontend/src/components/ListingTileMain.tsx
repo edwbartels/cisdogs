@@ -30,6 +30,7 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 		addOptions.push({ label: 'To Collection', value: 'collection' })
 
 	const extraOptions = [
+		{ label: 'Listing', value: 'listing' },
 		{ label: 'Item', value: 'item' },
 		{ label: 'Release', value: 'release' },
 		{ label: 'Album', value: 'album' },
@@ -54,6 +55,9 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 					album: listing.album.title,
 					artist: listing.artist.name,
 				})
+				break
+			case 'listing':
+				navigate(`/listing/${listing.id}`)
 				break
 			case 'item':
 				navigate(`/item/${listing.item.id}`)

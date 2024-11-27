@@ -38,11 +38,11 @@ def seed_data() -> None:
                 *artists,
                 *albums,
                 *releases,
-                *items,
-                *listings,
+                # *items,
+                # *listings,
                 # *orders,
-                *reviews,
-                *entries,
+                # *reviews,
+                # *entries,
             ]
         )
         session.commit()

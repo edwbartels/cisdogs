@@ -16,6 +16,8 @@ import ArtistDetails from './components/ArtistDetails'
 import Watchlist from './components/Watchlist'
 import { initializeSubscriptions } from './stores/subscriptions'
 import Releases from './components/Releases'
+import Albums from './components/Albums'
+import Artists from './components/Artists'
 
 const Layout = () => {
 	return (
@@ -46,6 +48,8 @@ const router = createBrowserRouter([
 			{ path: '/artist/:id', element: <ArtistDetails /> },
 			{ path: '/watchlist', element: <Watchlist /> },
 			{ path: '/releases', element: <Releases /> },
+			{ path: '/albums', element: <Albums /> },
+			{ path: '/artists', element: <Artists /> },
 		],
 	},
 ])

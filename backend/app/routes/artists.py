@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session, selectinload, joinedload
 from sqlalchemy.future import select
 from app.database import get_db
@@ -11,7 +12,9 @@ router = APIRouter(prefix="/artists", tags=["artists"])
 
 @router.get("/", response_model=list[ArtistRead])
 def get_all_artists(db: Session = Depends(get_db)):
-    artists = db.query(Artist).all()
+    stmt = select(Artist)
+    artists = db.execute(stmt).scalars().all()
+    print(jsonable_encoder(artists))
     if not artists:
         raise HTTPException(status_code=404, detail="No artists found")
     return artists

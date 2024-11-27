@@ -18,7 +18,7 @@ class ArtistCreate(ArtistBase):
 class ArtistRead(ArtistBase):
     id: int
 
-    # model_config = {"from_attributes": True}
+    model_config = {"from_attributes": True}
 
 
 class ArtistDetails(ArtistRead):

@@ -5,16 +5,18 @@ from sqlalchemy.future import select
 from app.database import get_db
 from app.models import Album, Artist, Release, Item
 from app.schemas.album import AlbumRead, AlbumCreate
-from app.schemas.res import AlbumFull
+from app.schemas.res import AlbumFull, AlbumDetails
 
 router = APIRouter(prefix="/albums", tags=["albums"])
 
 
-@router.get("/", response_model=list[AlbumRead])
+@router.get("/", response_model=list[AlbumDetails])
 def get_all_albums(db: Session = Depends(get_db)):
-    albums = db.query(Album).all()
+    stmt = select(Album).options(joinedload(Album.artist), joinedload(Album.releases))
+    albums = db.execute(stmt).scalars().unique().all()
     if not albums:
         raise HTTPException(status_code=404, detail="No albums found")
+
     return albums
 
 

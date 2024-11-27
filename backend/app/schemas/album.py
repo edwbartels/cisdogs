@@ -39,12 +39,6 @@ class AlbumReadTemp(BaseModel):
 #     model_config = {"from_attributes": True}
 
 
-class AlbumDetails(AlbumRead):
-    # artist: "ArtistRead"
-    releases: list["ReleaseRead"] = []
-    model_config = {"from_attributes": True}
-
-
 class AlbumPlusReleases(AlbumRead):
     releases: dict[int, "ReleaseRead"] | None
     model_config = {"from_attributes": True}

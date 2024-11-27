@@ -42,13 +42,18 @@ export type Album = {
 
 interface AlbumStore {
 	focus: Album | null
+	albums: {
+		[key: number]: Album
+	}
 	getFocus: (id: number) => Promise<void>
+	getAlbums: () => void
 }
 
 const useAlbumStore = create(
 	devtools<AlbumStore>(
 		(set) => ({
 			focus: null,
+			albums: {},
 			getFocus: async (id) => {
 				try {
 					const url = `/api/albums/${id}`
@@ -59,6 +64,19 @@ const useAlbumStore = create(
 					const album = await res.json()
 					console.log(album)
 					set({ focus: album })
+				} catch (e) {
+					console.error(e)
+				}
+			},
+			getAlbums: async () => {
+				try {
+					const url = 'api/albums/'
+					const res = await fetch(url)
+					if (!res.ok) {
+						throw new Error('Failed to get all albums')
+					}
+					const data = await res.json()
+					set({ albums: data })
 				} catch (e) {
 					console.error(e)
 				}

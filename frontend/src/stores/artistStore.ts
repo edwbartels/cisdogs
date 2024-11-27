@@ -44,13 +44,18 @@ export type Artist = {
 
 interface ArtistStore {
 	focus: Artist | null
+	artists: {
+		[key: number]: Artist
+	}
 	getFocus: (id: number) => Promise<void>
+	getArtists: () => void
 }
 
 const useArtistStore = create(
 	devtools<ArtistStore>(
 		(set) => ({
 			focus: null,
+			artists: {},
 			getFocus: async (id) => {
 				try {
 					const url = `/api/artists/${id}`
@@ -61,6 +66,19 @@ const useArtistStore = create(
 					const artist = await res.json()
 					console.log(artist)
 					set({ focus: artist })
+				} catch (e) {
+					console.error(e)
+				}
+			},
+			getArtists: async () => {
+				try {
+					const url = '/api/artists'
+					const res = await fetch(url)
+					if (!res.ok) {
+						throw new Error('Failed to get all artists')
+					}
+					const data = await res.json()
+					set({ artists: data })
 				} catch (e) {
 					console.error(e)
 				}

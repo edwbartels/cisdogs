@@ -103,3 +103,9 @@ class ListingArtist(BaseModel):
     name: str
     albums: list[ListingAlbum]
     model_config = {"from_attributes": True}
+
+
+class AlbumDetails(AlbumRead):
+    artist: "ArtistRead"
+    releases: list["ReleaseRead"] = []
+    model_config = {"from_attributes": True}

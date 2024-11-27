@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import useItemStore, { Item } from '../stores/itemStore'
-import useAuthStore from '../stores/authStore'
 import ItemDetailsForm from './ItemDetailsForm'
 
 const ItemDetails: React.FC = () => {
@@ -11,8 +10,7 @@ const ItemDetails: React.FC = () => {
 		return <p>Invalid Item Id</p>
 	}
 	const getFocus = useItemStore((state) => state.getFocus)
-	const item = useItemStore((state) => state.focus)
-	const userId = useAuthStore((state) => state.user?.id)
+	const item: Item | null = useItemStore((state) => state.focus)
 
 	useEffect(() => {
 		getFocus(itemId)

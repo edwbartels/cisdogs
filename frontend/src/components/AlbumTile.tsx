@@ -2,11 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAlbumStore, { Album } from '../stores/albumStore'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faMinus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
-import useUserStore from '../stores/userStore'
-import useAuthStore from '../stores/authStore'
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons'
 import DropdownMenu from './DropdownMenu'
-import EyeIcon from './EyeIcon'
 
 interface AlbumTileProps {
 	albumId: number
@@ -14,7 +11,7 @@ interface AlbumTileProps {
 type DropdownOptions = 'remove' | 'extra' | null
 
 const AlbumTile: React.FC<AlbumTileProps> = ({ albumId }) => {
-	const userId = useAuthStore((state) => state.user?.id)
+	// const userId = useAuthStore((state) => state.user?.id)
 	const album: Album = useAlbumStore((state) => state.albums[albumId])
 	// const { collection, addToCollection } = useUserStore((state) => state)
 	const navigate = useNavigate()

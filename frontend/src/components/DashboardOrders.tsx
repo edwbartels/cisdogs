@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import useAuthStore from '../stores/authStore'
 import useUserStore from '../stores/userStore'
 import DashboardOrderTile from './DashboardOrderTile'
 
@@ -9,7 +8,6 @@ const DashboardOrders = () => {
 	console.log(sales)
 	const purchases = useUserStore((state) => state.orders.purchases)
 	console.log(purchases)
-	const userId = useAuthStore((state) => state.user?.id)
 	useEffect(() => {
 		getOrders()
 	}, [])

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import SessionManagement from './SessionManagement'
 import LogoIcon from './LogoIcon'
-import { Link, NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import CartDropdown from './CartDropdown'
 import useAuthStore from '../stores/authStore'
 import QuickCreate from './QuickCreate'
@@ -15,7 +15,7 @@ const Navbar: React.FC = () => {
 		<nav className="bg-wax-black text-wax-silver">
 			<div className="px-2 mx-auto m-w-screen-lg sm:px-4 lg:px-6">
 				<div className="flex items-center justify-between text-3xl">
-					<div className="flex items-center h-16">
+					<div className="flex items-end h-16">
 						<NavLink className="h-full pr-2" to="/">
 							{({ isActive }) => (
 								<LogoIcon
@@ -24,7 +24,7 @@ const Navbar: React.FC = () => {
 								/>
 							)}
 						</NavLink>
-						<NavLink className="font-bold pb-1  hover:text-wax-amber" to="/">
+						<NavLink className="font-bold  hover:text-wax-amber" to="/">
 							Wax Exchange
 						</NavLink>
 					</div>

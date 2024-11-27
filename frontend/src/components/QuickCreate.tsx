@@ -4,8 +4,6 @@ import ListingModal from './ListingModal'
 import SignInModal from './SignInModal'
 import useAuthStore from '../stores/authStore'
 import fetchWithAuth from '../utils/fetch'
-import { Item } from './ListingModal'
-import useItemStore from '../stores/itemStore'
 
 const QuickCreate: React.FC = () => {
 	const [activeModal, setActiveModal] = useState<'listing' | 'signIn' | null>(
@@ -62,7 +60,6 @@ const QuickCreate: React.FC = () => {
 					// useItemStore.setState({ focus: null })
 				}}
 				data={listingModalData}
-				item={null}
 			/>
 		</div>
 	)

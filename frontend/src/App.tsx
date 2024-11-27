@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom'
 import useAuthStore from './stores/authStore'
 import './App.css'

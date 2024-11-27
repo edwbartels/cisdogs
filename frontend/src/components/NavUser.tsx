@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
+import React from 'react'
 import NavUserLink from './NavUserLink'
-import SignInModal from './SignInModal'
 
 const NavUser: React.FC = () => {
 	return (
 		<>
-			<div className="flex  p-3 text-xl font-bold  text-wax-silver">
+			<div className="flex  pt-3 px-3 text-xl font-bold self-end text-wax-silver">
 				<NavUserLink to="/dashboard" title="Dashboard" />
+				<div className="self-center">|</div>
 				<NavUserLink to="/watchlist" title="Watchlist" />
 			</div>
 		</>

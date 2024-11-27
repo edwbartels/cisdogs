@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import useReleaseStore, { Release } from '../stores/releaseStore'
+import React from 'react'
+import { Release } from '../stores/releaseStore'
 
 interface ReleaseDetailsFormProps {
 	release: Release

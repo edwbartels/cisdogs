@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import useAuthStore from '../stores/authStore'
 import SignInModal from './SignInModal'
-import { Sign } from 'crypto'
 
 interface NavUserLinkProps {
 	title: string
@@ -24,7 +23,7 @@ const NavUserLink: React.FC<NavUserLinkProps> = ({ title, to }) => {
 	}
 	return (
 		<>
-			<a href={to} onClick={handleClick} className="p-2 hover:text-wax-amber">
+			<a href={to} onClick={handleClick} className="px-2  hover:text-wax-amber">
 				{title}
 			</a>
 			<SignInModal

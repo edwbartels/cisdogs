@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import useUserStore from './userStore'
 import fetchWithAuth from '../utils/fetch'
 import { Listing } from './listingStore'
 

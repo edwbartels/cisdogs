@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import useArtistStore, { Artist } from '../stores/artistStore'
-import useAuthStore from '../stores/authStore'
+import useArtistStore from '../stores/artistStore'
 import ArtistDetailsForm from './ArtistDetailsForm'
 
 const ArtistDetails: React.FC = () => {
@@ -12,7 +11,7 @@ const ArtistDetails: React.FC = () => {
 	}
 	const getFocus = useArtistStore((state) => state.getFocus)
 	const artist = useArtistStore((state) => state.focus)
-	const userId = useAuthStore((state) => state.user?.id)
+	// const userId = useAuthStore((state) => state.user?.id)
 
 	useEffect(() => {
 		getFocus(artistId)

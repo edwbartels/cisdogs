@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import useArtistStore, { Artist } from '../stores/artistStore'
+import React from 'react'
+import { Artist } from '../stores/artistStore'
 
 interface ArtistDetailsFormProps {
 	artist: Artist

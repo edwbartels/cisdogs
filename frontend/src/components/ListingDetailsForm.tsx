@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import useListingStore, { Listing } from '../stores/listingStore'
+import React, { useState } from 'react'
+import { Listing } from '../stores/listingStore'
 import useAuthStore from '../stores/authStore'
 import ListingModal from './ListingModal'
 import fetchWithAuth from '../utils/fetch'
@@ -193,7 +193,6 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 						isOpen={activeModal === 'listing'}
 						onClose={() => setActiveModal(null)}
 						data={null}
-						item={null}
 					/>
 				</div>
 			</div>

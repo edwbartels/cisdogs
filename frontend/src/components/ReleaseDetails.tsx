@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import useReleaseStore, { Release } from '../stores/releaseStore'
-import useAuthStore from '../stores/authStore'
+import useReleaseStore from '../stores/releaseStore'
 import ReleaseDetailsForm from './ReleaseDetailsForm'
 
 const ReleaseDetails: React.FC = () => {
@@ -12,7 +11,6 @@ const ReleaseDetails: React.FC = () => {
 	}
 	const getFocus = useReleaseStore((state) => state.getFocus)
 	const release = useReleaseStore((state) => state.focus)
-	const userId = useAuthStore((state) => state.user?.id)
 
 	useEffect(() => {
 		getFocus(releaseId)

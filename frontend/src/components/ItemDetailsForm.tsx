@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import useItemStore, { Item } from '../stores/itemStore'
+import React, { useState } from 'react'
+import { Item } from '../stores/itemStore'
 import useAuthStore from '../stores/authStore'
 import ListingModal from './ListingModal'
 
 interface ItemDetailsFormProps {
-	item: Item
+	item: Item | null
 }
 
 const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
-	const isOwner = item.owner.id === useAuthStore((state) => state.user?.id)
+	const isOwner = item?.owner.id === useAuthStore((state) => state.user?.id)
 	const [activeModal, setActiveModal] = useState<'listing' | null>(null)
 	return (
 		<div className="flex mt-8 border bg-wax-gray bg-opacity-15 border-wax-silver">
@@ -23,19 +23,19 @@ const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
 						<div>
 							<div className="flex flex-col w-4/5 ">
 								<div className="ml-2 font-semibold">Artist</div>
-								<div className="pl-2">{item.artist.name}</div>
+								<div className="pl-2">{item?.artist.name}</div>
 							</div>
 							<div className="flex flex-col w-4/5 ">
 								<div className="mt-1 ml-2 font-semibold">Album</div>
-								<div className="pl-2">{item.album.title}</div>
+								<div className="pl-2">{item?.album.title}</div>
 							</div>
 							<div className="flex flex-col w-4/5 ">
 								<div className="mt-1 ml-2 font-semibold">Release Variant</div>
-								<div className="pl-2">{item.release.variant}</div>
+								<div className="pl-2">{item?.release.variant}</div>
 							</div>
 							<div className="flex flex-col w-4/5">
 								<div className="mt-1 ml-2 font-semibold">Format</div>
-								<div className="pl-2">{item.release.media_type}</div>
+								<div className="pl-2">{item?.release.media_type}</div>
 							</div>
 						</div>
 						{isOwner && (
@@ -52,11 +52,12 @@ const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
 					<div className="flex flex-col items-center justify-between w-1/2">
 						<div className="font-semibold">Track List</div>
 						<div className="pt-1 text-sm text-left">
-							{Object.values(item.album.track_data).map((track, index) => (
-								<div key={index}>
-									{index + 1}: {track}
-								</div>
-							))}
+							{item &&
+								Object.values(item.album.track_data).map((track, index) => (
+									<div key={index}>
+										{index + 1}: {track}
+									</div>
+								))}
 						</div>
 
 						<div
@@ -70,7 +71,6 @@ const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
 						isOpen={activeModal === 'listing'}
 						onClose={() => setActiveModal(null)}
 						data={null}
-						item={item}
 					/>
 				</div>
 			</div>

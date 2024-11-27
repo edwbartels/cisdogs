@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import useAlbumStore, { Album } from '../stores/albumStore'
-import useAuthStore from '../stores/authStore'
+import useAlbumStore from '../stores/albumStore'
 import AlbumDetailsForm from './AlbumDetailsForm'
 
 const AlbumDetails: React.FC = () => {
@@ -12,7 +11,7 @@ const AlbumDetails: React.FC = () => {
 	}
 	const getFocus = useAlbumStore((state) => state.getFocus)
 	const album = useAlbumStore((state) => state.focus)
-	const userId = useAuthStore((state) => state.user?.id)
+	// const userId = useAuthStore((state) => state.user?.id)
 
 	useEffect(() => {
 		getFocus(albumId)

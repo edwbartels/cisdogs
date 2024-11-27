@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { devtools, subscribeWithSelector } from 'zustand/middleware'
+import { devtools } from 'zustand/middleware'
 import useAuthStore from './authStore'
 import useItemStore, { Item } from './itemStore'
 import useListingStore, { Listing } from './listingStore'

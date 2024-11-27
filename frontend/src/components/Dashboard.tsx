@@ -6,7 +6,6 @@ import { useState } from 'react'
 import DashboardItems from './DashboardItems'
 import DashboardListings from './DashboardListings'
 import DashboardOrders from './DashboardOrders'
-import { Link } from 'react-router-dom'
 
 const Dashboard = () => {
 	const [activeTab, setActiveTab] = useState('items')
@@ -58,17 +57,17 @@ const Dashboard = () => {
 						>
 							Orders
 						</button>
-						<Link to="#">
+						{/* <Link to="#">
 							<button className="w-24 mb-1 ml-8 bg-green-700 rounded-md ring-2 ring-wax-cream text-wax-cream hover:ring-wax-gray">
 								Sell
 							</button>
-						</Link>
+						</Link> */}
 					</div>
-					<Link to="/submissions">
+					{/* <Link to="/submissions">
 						<button className="mb-1 ml-8 bg-green-700 rounded-md ring-2 ring-wax-cream w-36 text-wax-cream hover:ring-wax-gray">
 							Add a release
 						</button>
-					</Link>
+					</Link> */}
 				</div>
 			</div>
 			{/* Tab Content */}

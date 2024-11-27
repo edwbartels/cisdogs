@@ -1,10 +1,9 @@
 import { useEffect } from 'react'
 import AlbumTile from './AlbumTile'
 import useAlbumStore from '../stores/albumStore'
-import useAuthStore from '../stores/authStore'
 
 const Albums: React.FC = () => {
-	const userId = useAuthStore((state) => state.user?.id)
+	// const userId = useAuthStore((state) => state.user?.id)
 	const { albums, getAlbums } = useAlbumStore((state) => state)
 
 	useEffect(() => {

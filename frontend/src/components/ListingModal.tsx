@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react'
 import useItemStore from '../stores/itemStore'
 import useAuthStore from '../stores/authStore'
 import fetchWithAuth from '../utils/fetch'
-import { release } from 'os'
 
 export type Item = {
 	id: number
@@ -31,7 +30,6 @@ type Release = {
 interface ListingModalProps {
 	isOpen: boolean
 	onClose: () => void
-	item: Item | null
 	data: {
 		artists: Artist[]
 	} | null

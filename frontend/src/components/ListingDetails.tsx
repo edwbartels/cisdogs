@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import useListingStore from '../stores/listingStore'
-import useAuthStore from '../stores/authStore'
 import ListingDetailsForm from './ListingDetailsForm'
 
 const ListingDetails: React.FC = () => {
@@ -12,7 +11,6 @@ const ListingDetails: React.FC = () => {
 	}
 	const getFocus = useListingStore((state) => state.getFocus)
 	const listing = useListingStore((state) => state.focus)
-	const userId = useAuthStore((state) => state.user?.id)
 
 	useEffect(() => {
 		getFocus(listingId)

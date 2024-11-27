@@ -1,10 +1,8 @@
 import { useEffect } from 'react'
 import ReleaseTile from './ReleaseTile'
 import useReleaseStore from '../stores/releaseStore'
-import useAuthStore from '../stores/authStore'
 
 const Releases: React.FC = () => {
-	const userId = useAuthStore((state) => state.user?.id)
 	const { releases, getReleases } = useReleaseStore((state) => state)
 
 	useEffect(() => {

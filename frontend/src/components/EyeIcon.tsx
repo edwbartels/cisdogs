@@ -1,10 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons'
-import {
-	faEye as faEyeSolid,
-	faEyeSlash as faEyeSlashSolid,
-} from '@fortawesome/free-solid-svg-icons'
+import { faEyeSlash } from '@fortawesome/free-regular-svg-icons'
+import { faEye as faEyeSolid } from '@fortawesome/free-solid-svg-icons'
 import useAuthStore from '../stores/authStore'
 import useUserStore from '../stores/userStore'
 

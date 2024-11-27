@@ -1,7 +1,5 @@
 import { useEffect } from 'react'
-import ItemTileMain from './ItemTileMain'
 import useUserStore from '../stores/userStore'
-import useAuthStore from '../stores/authStore'
 import DashboardItemTile from './DashboardItemTile'
 
 const DashboardItems = () => {

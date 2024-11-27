@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import load_dotenv
 import os
@@ -6,13 +6,16 @@ import os
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./dev.db")
+SCHEMA = os.getenv("SCHEMA", None)
 
 engine = create_engine(
     DATABASE_URL,
     connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {},
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+
+metadata = MetaData(schema=SCHEMA) if SCHEMA else None
+Base = declarative_base(metadata=metadata)
 
 
 def get_db():

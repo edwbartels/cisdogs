@@ -75,10 +75,12 @@ const useListingStore = create(
 				}
 			},
 			getByListings: async (parent, id) => {
+				set({ listings: {} })
 				try {
 					const url = `/api/listings/${parent}/${id}`
 					const res = await fetch(url)
 					if (!res.ok) {
+						if (res.status === 404) set({ listings: {} })
 						throw new Error(`Failed to get listings by ${parent}.`)
 					}
 					const data = await res.json()
@@ -88,7 +90,7 @@ const useListingStore = create(
 				}
 			},
 		}),
-		{ name: 'listingStore' }
+		{ name: 'Listings' }
 	)
 )
 

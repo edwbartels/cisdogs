@@ -81,6 +81,7 @@ const useReleaseStore = create(
 				}
 			},
 			getByReleases: async (parent, id) => {
+				set({ releases: {} })
 				try {
 					const url = `/api/releases/${parent}/${id}`
 					const res = await fetch(url)

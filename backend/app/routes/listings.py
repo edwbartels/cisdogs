@@ -54,31 +54,6 @@ def get_listing_by_id(listing_id: int, db: Session = Depends(get_db)):
     return listing
 
 
-@router.get("/album/{album_id}", response_model=dict[int, ListingFull])
-def get_listings_by_album(album_id: int, db: Session = Depends(get_db)):
-    listings = (
-        db.query(Listing)
-        .filter(Listing.active == 1)
-        .options(
-            joinedload(Listing.item)
-            .joinedload(Item.release)
-            .joinedload(Release.album)
-            .joinedload(Album.artist)
-        )
-        .filter(Listing.item, Item.release, Release.album_id == album_id)
-        .all()
-    )
-    if not listings:
-        raise HTTPException(status_code=404, detail="No listings found.")
-
-    for listing in listings:
-        listing.release = listing.item.release
-        listing.album = listing.item.release.album
-        listing.artist = listing.item.release.album.artist
-
-    return {listing.id: listing for listing in listings}
-
-
 @router.get("/artist/{artist_id}", response_model=dict[int, ListingFull])
 def get_listings_by_artist(artist_id: int, db: Session = Depends(get_db)):
     listings = (
@@ -93,6 +68,58 @@ def get_listings_by_artist(artist_id: int, db: Session = Depends(get_db)):
         .filter(Listing.item, Item.release, Release.album, Album.artist_id == artist_id)
     ).all()
 
+    if not listings:
+        raise HTTPException(status_code=404, detail="No listings found.")
+
+    for listing in listings:
+        listing.release = listing.item.release
+        listing.album = listing.item.release.album
+        listing.artist = listing.item.release.album.artist
+
+    return {listing.id: listing for listing in listings}
+
+
+@router.get("/album/{album_id}", response_model=dict[int, ListingFull])
+def get_listings_by_album(album_id: int, db: Session = Depends(get_db)):
+    listings = (
+        db.query(Listing)
+        .filter(Listing.active == 1)
+        .options(
+            joinedload(Listing.item)
+            .joinedload(Item.release)
+            .joinedload(Release.album)
+            .joinedload(Album.artist)
+        )
+        .filter(Listing.item, Item.release, Release.album_id == album_id)
+        .all()
+    )
+    print(listings)
+    if not listings:
+        raise HTTPException(status_code=404, detail="No listings found.")
+
+    for listing in listings:
+        listing.release = listing.item.release
+        listing.album = listing.item.release.album
+        listing.artist = listing.item.release.album.artist
+
+    return {listing.id: listing for listing in listings}
+
+
+@router.get("/release/{release_id}", response_model=dict[int, ListingFull])
+def get_listings_by_release(release_id: int, db: Session = Depends(get_db)):
+    listings = (
+        db.query(Listing)
+        .filter(Listing.active == 1)
+        .options(
+            joinedload(Listing.item)
+            .joinedload(Item.release)
+            .joinedload(Release.album)
+            .joinedload(Album.artist)
+        )
+        .filter(Listing.item, Item.release_id == release_id)
+        .all()
+    )
+    print("im in baby")
     if not listings:
         raise HTTPException(status_code=404, detail="No listings found.")
 

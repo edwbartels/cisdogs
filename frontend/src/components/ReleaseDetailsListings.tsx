@@ -1,15 +1,15 @@
 import { useEffect } from 'react'
-import useAlbumStore from '../stores/albumStore'
+import useReleaseStore from '../stores/releaseStore'
 import useListingStore from '../stores/listingStore'
 import ListingTile from './ListingTileMain'
 
-const AlbumDetailsListings = () => {
-	const albumId = useAlbumStore((state) => state.focus?.id)
+const ReleaseDetailsListings = () => {
+	const releaseId = useReleaseStore((state) => state.focus?.id)
 	const { listings, getByListings } = useListingStore((state) => state)
 
 	useEffect(() => {
-		getByListings('album', Number(albumId))
-	}, [albumId])
+		getByListings('release', Number(releaseId))
+	}, [releaseId])
 
 	if (!Object.keys(listings).length)
 		return <div className="m-4">No listings found.</div>
@@ -24,4 +24,4 @@ const AlbumDetailsListings = () => {
 	)
 }
 
-export default AlbumDetailsListings
+export default ReleaseDetailsListings

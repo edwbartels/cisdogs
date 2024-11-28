@@ -11,6 +11,8 @@ const ArtistDetailsListings = () => {
 		getByListings('artist', Number(artistId))
 	}, [getByListings])
 
+	if (!Object.keys(listings).length)
+		return <div className="m-4">No listings found.</div>
 	return (
 		<div className="flex flex-col self-center">
 			<div className="flex flex-wrap justify-start gap-4 p-4">

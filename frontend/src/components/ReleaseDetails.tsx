@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import useReleaseStore from '../stores/releaseStore'
 import ReleaseDetailsForm from './ReleaseDetailsForm'
+import ReleaseDetailsContainer from './ReleaseDetailsContainer'
 
 const ReleaseDetails: React.FC = () => {
 	const { id } = useParams<{ id: string }>()
@@ -18,7 +19,12 @@ const ReleaseDetails: React.FC = () => {
 
 	if (!release) return <div>Loading...</div>
 
-	return <ReleaseDetailsForm release={release} />
+	return (
+		<>
+			<ReleaseDetailsForm release={release} />
+			<ReleaseDetailsContainer />
+		</>
+	)
 }
 
 export default ReleaseDetails

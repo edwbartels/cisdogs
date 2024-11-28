@@ -1,11 +1,13 @@
 import React from 'react'
 import { Release } from '../stores/releaseStore'
+import { useNavigate } from 'react-router-dom'
 
 interface ReleaseDetailsFormProps {
 	release: Release
 }
 
 const ReleaseDetailsForm: React.FC<ReleaseDetailsFormProps> = ({ release }) => {
+	const navigate = useNavigate()
 	return (
 		<div className="flex mt-8 border bg-wax-gray bg-opacity-15 border-wax-silver">
 			<div className="flex flex-col p-4">
@@ -19,11 +21,21 @@ const ReleaseDetailsForm: React.FC<ReleaseDetailsFormProps> = ({ release }) => {
 						<div>
 							<div className="flex flex-col w-4/5 ">
 								<div className="ml-2 font-semibold">Artist</div>
-								<div className="pl-2">{release.artist.name}</div>
+								<div
+									className="pl-2 cursor-pointer hover:underline"
+									onClick={() => navigate(`/artist/${release.artist.id}`)}
+								>
+									{release.artist.name}
+								</div>
 							</div>
 							<div className="flex flex-col w-4/5 ">
 								<div className="mt-1 ml-2 font-semibold">Album</div>
-								<div className="pl-2">{release.album.title}</div>
+								<div
+									className="pl-2 cursor-pointer hover:underline"
+									onClick={() => navigate(`/album/${release.album.id}`)}
+								>
+									{release.album.title}
+								</div>
 							</div>
 							<div className="flex flex-col w-4/5 ">
 								<div className="mt-1 ml-2 font-semibold">Release Variant</div>

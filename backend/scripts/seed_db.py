@@ -29,19 +29,6 @@ load_dotenv()
 def seed_data() -> None:
     session: Session = SessionLocal()
     try:
-        # Example data
-
-        # session.add_all(
-        #     [
-        #         *users,
-        #         *artists,
-        #         *albums,
-        #         *releases,
-        #         *items,
-        #         *entries,
-        #     ]
-        # )
-        # session.commit()
         session.add_all(users)
         session.commit()
         print(f"Seeded {len(users)} users.")
@@ -58,7 +45,7 @@ def seed_data() -> None:
         session.commit()
         print(f"Seeded {len(items)} items.")
         seed_listings(session)
-        seed_orders(session)
+        # seed_orders(session)
         session.add_all(entries)
         session.commit()
         print(f"Seeded {len(entries)} watchlist entries.")

@@ -1,15 +1,17 @@
 import React from 'react'
 import { Album } from '../stores/albumStore'
+import { useNavigate } from 'react-router-dom'
 
 interface AlbumDetailsFormProps {
 	album: Album
 }
 
 const AlbumDetailsForm: React.FC<AlbumDetailsFormProps> = ({ album }) => {
+	const navigate = useNavigate()
 	return (
 		<div className="flex flex-col self-center">
-			<div className="flex mt-8 self-center border  border-wax-silver w-4/5 text-xl">
-				<div className="flex p-4  items-center  bg-wax-gray bg-opacity-15">
+			<div className="flex mt-8 self-center border  border-wax-silver w-4/5 text-xl min-w-[800px]">
+				<div className="flex p-4 min-w-[300px] items-center  bg-wax-gray bg-opacity-15">
 					<img src={album.art || '/tile-background.png'} />
 				</div>
 				<div className="flex  py-4 px-8 bg-wax-gray bg-opacity-30 justify-around flex-grow">
@@ -17,7 +19,12 @@ const AlbumDetailsForm: React.FC<AlbumDetailsFormProps> = ({ album }) => {
 						<div>
 							<div className="flex flex-col">
 								<div className="ml-2 font-semibold underline">Artist</div>
-								<div className="pl-2">{album.artist.name}</div>
+								<div
+									className="pl-2 cursor-pointer hover:underline"
+									onClick={() => navigate(`/artist/${album.artist.id}`)}
+								>
+									{album.artist.name}
+								</div>
 							</div>
 							<div className="flex flex-col">
 								<div className="mt-1 ml-2 font-semibold underline">Album</div>

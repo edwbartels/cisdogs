@@ -48,6 +48,7 @@ interface AlbumStore {
 	}
 	getFocus: (id: number) => Promise<void>
 	getAlbums: () => void
+	getByAlbums: (parent: string, id: number) => void
 }
 
 const useAlbumStore = create(
@@ -71,10 +72,23 @@ const useAlbumStore = create(
 			},
 			getAlbums: async () => {
 				try {
-					const url = 'api/albums/'
+					const url = '/api/albums/'
 					const res = await fetch(url)
 					if (!res.ok) {
 						throw new Error('Failed to get all albums')
+					}
+					const data = await res.json()
+					set({ albums: data })
+				} catch (e) {
+					console.error(e)
+				}
+			},
+			getByAlbums: async (parent, id) => {
+				try {
+					const url = `/api/albums/${parent}/${id}`
+					const res = await fetch(url)
+					if (!res.ok) {
+						throw new Error(`Failed to get albums by ${parent}.`)
 					}
 					const data = await res.json()
 					set({ albums: data })

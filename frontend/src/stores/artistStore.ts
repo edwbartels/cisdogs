@@ -72,7 +72,7 @@ const useArtistStore = create(
 			},
 			getArtists: async () => {
 				try {
-					const url = '/api/artists'
+					const url = '/api/artists/'
 					const res = await fetch(url)
 					if (!res.ok) {
 						throw new Error('Failed to get all artists')

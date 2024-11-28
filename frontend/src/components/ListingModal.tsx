@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react'
 import useItemStore from '../stores/itemStore'
 import useAuthStore from '../stores/authStore'
 import fetchWithAuth from '../utils/fetch'
+import { capitalizeFirst } from '../utils/capitalize'
 
 export type Item = {
 	id: number
@@ -34,6 +35,7 @@ interface ListingModalProps {
 		artists: Artist[]
 	} | null
 }
+
 const ListingModal: React.FC<ListingModalProps> = ({
 	isOpen,
 	onClose,
@@ -41,13 +43,13 @@ const ListingModal: React.FC<ListingModalProps> = ({
 }) => {
 	const userId = useAuthStore((state) => state.user?.id)
 	const item = useItemStore((state) => state.focus) || null
+	// if
 	const [listingDetails, setListingDetails] = useState({
 		item_id: item?.id || null,
 		seller_id: item?.owner.id,
 		price: 0,
 		quality: '',
 		description: '',
-		status: 'available',
 	})
 	const [selectedArtist, setSelectedArtist] = useState<number | null>(null)
 	const [selectedAlbum, setSelectedAlbum] = useState<number | null>(null)
@@ -112,6 +114,7 @@ const ListingModal: React.FC<ListingModalProps> = ({
 			seller_id: userId,
 		})
 	}
+
 	// }
 	const handleFormChange =
 		(listingDetailsField: string) =>
@@ -154,7 +157,7 @@ const ListingModal: React.FC<ListingModalProps> = ({
 			onClick={onClose}
 		>
 			<div
-				className="flex flex-col w-1/2 p-4 border-4 rounded shadow-lg bg-wax-silver border-wax-gray"
+				className="flex flex-col w-1/2 p-4 border-4 rounded shadow-lg bg-wax-silver border-wax-gray space-y-1"
 				onClick={(e) => e.stopPropagation()}
 			>
 				<strong className="text-wax-black border-b-2 border-wax-black pb-1 mb-4">
@@ -170,12 +173,13 @@ const ListingModal: React.FC<ListingModalProps> = ({
 						</div>
 					</>
 				) : (
-					<>
-						<div>
-							<label>Artist</label>
+					<div className="flex flex-col items-center space-y-2 text-wax-gray">
+						<div className="w-3/5">
+							{/* <label>Artist</label> */}
 							<select
 								value={selectedArtist || ''}
 								onChange={(e) => handleArtistChange(Number(e.target.value))}
+								className="block w-full p-2  border rounded text-wax-black"
 							>
 								<option value="">Select Artist</option>
 								{data?.artists.map((artist) => (
@@ -185,11 +189,12 @@ const ListingModal: React.FC<ListingModalProps> = ({
 								))}
 							</select>
 						</div>
-						<div>
-							<label>Album</label>
+						<div className="w-3/5">
+							{/* <label>Album</label> */}
 							<select
 								value={selectedAlbum || ''}
 								onChange={(e) => handleAlbumChange(Number(e.target.value))}
+								className="block w-full p-2 border rounded text-wax-black"
 								disabled={!selectedArtist}
 							>
 								<option value="">Select Album</option>
@@ -200,24 +205,28 @@ const ListingModal: React.FC<ListingModalProps> = ({
 								))}
 							</select>
 						</div>
-						<div>
-							<label>Release</label>
+						<div className="w-3/5">
+							{/* <label>Release</label> */}
 							<select
 								value={selectedRelease || ''}
 								onChange={(e) => handleReleaseChange(Number(e.target.value))}
+								className="block w-full p-2 border rounded text-wax-black"
 								disabled={!selectedAlbum}
 							>
 								<option value="">Select Release</option>
 								{filteredReleases.map((release) => (
 									<option key={release.id} value={release.id}>
-										{release.variant}
+										{capitalizeFirst(release.variant)}
 									</option>
 								))}
 							</select>
 						</div>
-					</>
+					</div>
 				)}
-				<form className="flex flex-col items-center" onSubmit={handleSubmit}>
+				<form
+					className="flex flex-col items-center pt-1"
+					onSubmit={handleSubmit}
+				>
 					<select
 						onChange={handleFormChange('quality')}
 						defaultValue={listingDetails.quality}

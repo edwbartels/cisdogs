@@ -40,6 +40,7 @@ interface ListingStore {
 	}
 	getFocus: (id: number) => Promise<void>
 	updateListings: () => Promise<void>
+	getByListings: (parent: string, id: number) => void
 }
 
 const useListingStore = create(
@@ -69,6 +70,19 @@ const useListingStore = create(
 					}
 					const allListings = await res.json()
 					set({ listings: allListings })
+				} catch (e) {
+					console.error(e)
+				}
+			},
+			getByListings: async (parent, id) => {
+				try {
+					const url = `/api/listings/${parent}/${id}`
+					const res = await fetch(url)
+					if (!res.ok) {
+						throw new Error(`Failed to get listings by ${parent}.`)
+					}
+					const data = await res.json()
+					set({ listings: data })
 				} catch (e) {
 					console.error(e)
 				}

@@ -2,14 +2,17 @@ import React, { useState } from 'react'
 import { Item } from '../stores/itemStore'
 import useAuthStore from '../stores/authStore'
 import ListingModal from './ListingModal'
+import { useModalStore } from '../stores/modalStore'
+import { useNavigate } from 'react-router-dom'
 
 interface ItemDetailsFormProps {
 	item: Item | null
 }
 
 const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
+	const navigate = useNavigate()
 	const isOwner = item?.owner.id === useAuthStore((state) => state.user?.id)
-	const [activeModal, setActiveModal] = useState<'listing' | null>(null)
+	const { activeModal, setActiveModal } = useModalStore((state) => state)
 	return (
 		<div className="flex mt-8 border bg-wax-gray bg-opacity-15 border-wax-silver">
 			<div className="flex flex-col p-4">
@@ -38,7 +41,14 @@ const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
 								<div className="pl-2">{item?.release.media_type}</div>
 							</div>
 						</div>
-						{isOwner && (
+						{isOwner && item?.listing ? (
+							<button
+								className="w-24 mt-4 ml-8 bg-green-700 rounded-md ring-2 ring-wax-cream text-wax-cream hover:ring-wax-gray"
+								onClick={() => navigate(`/listing/${item?.listing?.id}`)}
+							>
+								View Listing
+							</button>
+						) : (
 							<button
 								className="w-24 mt-4 ml-8 bg-green-700 rounded-md ring-2 ring-wax-cream text-wax-cream hover:ring-wax-gray"
 								onClick={() => {

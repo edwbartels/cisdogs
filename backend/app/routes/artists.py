@@ -14,7 +14,6 @@ router = APIRouter(prefix="/artists", tags=["artists"])
 def get_all_artists(db: Session = Depends(get_db)):
     stmt = select(Artist)
     artists = db.execute(stmt).scalars().all()
-    print(jsonable_encoder(artists))
     if not artists:
         raise HTTPException(status_code=404, detail="No artists found")
     return artists

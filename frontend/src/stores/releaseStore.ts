@@ -45,6 +45,7 @@ interface ReleaseStore {
 	}
 	getFocus: (id: number) => Promise<void>
 	getReleases: () => void
+	getByReleases: (parent: string, id: number) => void
 }
 
 const useReleaseStore = create(
@@ -72,6 +73,19 @@ const useReleaseStore = create(
 					const res = await fetch(url)
 					if (!res.ok) {
 						throw new Error(`Failed to get all releases`)
+					}
+					const data = await res.json()
+					set({ releases: data })
+				} catch (e) {
+					console.error(e)
+				}
+			},
+			getByReleases: async (parent, id) => {
+				try {
+					const url = `/api/releases/${parent}/${id}`
+					const res = await fetch(url)
+					if (!res.ok) {
+						throw new Error(`Failed to get releases by ${parent}.`)
 					}
 					const data = await res.json()
 					set({ releases: data })

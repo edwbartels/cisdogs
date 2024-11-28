@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import update
+from sqlalchemy import update, and_
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.future import select
 from app.database import get_db
@@ -9,6 +9,8 @@ from app.schemas.res import ListingFull
 from app.lib.jwt import get_current_user, get_user_id
 
 router = APIRouter(prefix="/listings", tags=["listings"])
+
+# * GET Routes
 
 
 @router.get("/", response_model=dict[int, ListingDetail])
@@ -52,6 +54,59 @@ def get_listing_by_id(listing_id: int, db: Session = Depends(get_db)):
     return listing
 
 
+@router.get("/album/{album_id}", response_model=dict[int, ListingFull])
+def get_listings_by_album(album_id: int, db: Session = Depends(get_db)):
+    listings = (
+        db.query(Listing)
+        .filter(Listing.active == 1)
+        .options(
+            joinedload(Listing.item)
+            .joinedload(Item.release)
+            .joinedload(Release.album)
+            .joinedload(Album.artist)
+        )
+        .filter(Listing.item, Item.release, Release.album_id == album_id)
+        .all()
+    )
+    if not listings:
+        raise HTTPException(status_code=404, detail="No listings found.")
+
+    for listing in listings:
+        listing.release = listing.item.release
+        listing.album = listing.item.release.album
+        listing.artist = listing.item.release.album.artist
+
+    return {listing.id: listing for listing in listings}
+
+
+@router.get("/artist/{artist_id}", response_model=dict[int, ListingFull])
+def get_listings_by_artist(artist_id: int, db: Session = Depends(get_db)):
+    listings = (
+        db.query(Listing)
+        .filter(Listing.active == 1)
+        .options(
+            joinedload(Listing.item)
+            .joinedload(Item.release)
+            .joinedload(Release.album)
+            .joinedload(Album.artist)
+        )
+        .filter(Listing.item, Item.release, Release.album, Album.artist_id == artist_id)
+    ).all()
+
+    if not listings:
+        raise HTTPException(status_code=404, detail="No listings found.")
+
+    for listing in listings:
+        listing.release = listing.item.release
+        listing.album = listing.item.release.album
+        listing.artist = listing.item.release.album.artist
+
+    return {listing.id: listing for listing in listings}
+
+
+# * POST Routes
+
+
 @router.post("/", response_model=ListingRead)
 def create_listing(
     listing: ListingCreate,
@@ -74,7 +129,6 @@ def create_listing(
         price=listing.price,
         quality=listing.quality,
         description=listing.description,
-        status=listing.status,
         seller_id=listing.seller_id,
         item_id=listing.item_id,
     )
@@ -130,5 +184,5 @@ def delete_listing(
         raise HTTPException(status_code=403, detail="Not Authorized")
 
     db.delete(listing)
-    db.commit
+    db.commit()
     return {"message": "Listing deleted successfully"}

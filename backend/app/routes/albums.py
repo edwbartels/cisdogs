@@ -9,6 +9,8 @@ from app.schemas.res import AlbumFull, AlbumDetails
 
 router = APIRouter(prefix="/albums", tags=["albums"])
 
+# * GET Routes
+
 
 @router.get("/", response_model=list[AlbumDetails])
 def get_all_albums(db: Session = Depends(get_db)):
@@ -52,6 +54,19 @@ def get_album_by_id(album_id: int, db: Session = Depends(get_db)):
     releases = {release.id: release for release in album.releases}
 
     return (album, {"releases": releases})
+
+
+@router.get("/artist/{artist_id}", response_model=dict[int, AlbumDetails])
+def get_albums_by_artist(artist_id: int, db: Session = Depends(get_db)):
+    albums = db.query(Album).filter(Album.artist_id == artist_id).all()
+
+    if not albums:
+        raise HTTPException(status_code=404, detail="No albums found")
+
+    return {album.id: album for album in albums}
+
+
+# * POST Routes
 
 
 @router.post("/", response_model=AlbumRead)

@@ -16,7 +16,7 @@ class ReleaseBase(BaseModel):
         if media_type == "vinyl" and variant is None:
             raise ValueError("variant cannot be None when media_type is 'vinyl'")
         if media_type != "vinyl":
-            return None
+            return media_type
         return variant
 
 

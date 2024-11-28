@@ -68,6 +68,35 @@ def get_release_by_id(release_id: int, db: Session = Depends(get_db)):
     return (release, release_extras)
 
 
+@router.get("/album/{album_id}", response_model=dict[int, ReleaseDetails])
+def get_releases_by_album(album_id: int, db: Session = Depends(get_db)):
+    releases = db.query(Release).filter(Release.album_id == album_id).all()
+
+    if not releases:
+        raise HTTPException(status_code=404, detail="No Releases found")
+    for release in releases:
+        release.artist = release.album.artist
+
+    return {release.id: release for release in releases}
+
+
+@router.get("/artist/{artist_id}", response_model=dict[int, ReleaseDetails])
+def get_releases_by_artist(artist_id: int, db: Session = Depends(get_db)):
+    releases = (
+        db.query(Release)
+        .options(joinedload(Release.album).joinedload(Album.artist))
+        .filter(Release.album, Album.artist_id == artist_id)
+    ).all()
+
+    if not releases:
+        raise HTTPException(status_code=404, detail="No Releases found")
+
+    for release in releases:
+        release.artist = release.album.artist
+
+    return {release.id: release for release in releases}
+
+
 # * POST ROUTES
 
 

@@ -12,6 +12,7 @@ class TrackData:
 class AlbumBase(BaseModel):
     title: str
     track_data: dict[int, str] | None
+    art: str | None
     # model_config = {"from_attributes": True}
 
 

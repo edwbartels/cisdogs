@@ -4,7 +4,6 @@ import { devtools } from 'zustand/middleware'
 export type Listing = {
 	id: number
 	active: boolean
-	status: 'available' | 'closed'
 	price: number
 	quality: 'm' | 'vg' | 'g' | 'f' | 'ng'
 	description: string | null
@@ -26,6 +25,7 @@ export type Listing = {
 		track_data: {
 			tracks: string[]
 		}
+		art: string | null
 	}
 	artist: {
 		id: number

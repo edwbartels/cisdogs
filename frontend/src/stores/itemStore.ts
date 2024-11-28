@@ -24,6 +24,7 @@ export type Item = {
 		id: number
 		title: string
 		track_data: string[] | Record<number, string>
+		art: string | null
 	}
 	artist: {
 		id: number

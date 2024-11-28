@@ -11,10 +11,9 @@ class Listing(Base, TimestampMixin):
     price: Mapped[float] = mapped_column(Float)
     quality: Mapped[str] = mapped_column(String(10))
     description: Mapped[str] = mapped_column(String(100), nullable=True)
-    seller_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), index=True)
-    item_id: Mapped[int] = mapped_column(Integer, ForeignKey("items.id"))
-    status: Mapped[str] = mapped_column(String)
     active: Mapped[bool] = mapped_column(Boolean, default=True)
+    seller_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), index=True)
+    item_id: Mapped[int] = mapped_column(Integer, ForeignKey("items.id"), index=True)
 
     seller: Mapped["User"] = relationship("User", back_populates="listings")
     item: Mapped["Item"] = relationship("Item", back_populates="listing")

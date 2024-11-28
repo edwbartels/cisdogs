@@ -6,6 +6,7 @@ import useUserStore from '../stores/userStore'
 import { Item } from '../stores/itemStore'
 import DropdownMenu from './DropdownMenu'
 import EyeIcon from './EyeIcon'
+import { capitalizeFirst } from '../utils/capitalize'
 
 interface DashboardItemTitleProps {
 	itemId: number
@@ -32,8 +33,6 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 	]
 	if (item?.listing)
 		extraOptions.unshift({ label: 'Listing', value: 'listing' })
-
-	// const toggleDropdown = (drop: DropdownOptions) => setActiveDropdown(drop)
 
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
@@ -92,13 +91,12 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 	return (
 		<>
 			<div
-				className={`flex flex-col items-center justify-between w-56 h-64 m-1 rounded border-6 bg-wax-cream border-wax-amber ring-8 ${
+				className={`tile-container ${
 					item.listing ? 'ring-green-700' : 'ring-wax-gray'
 				}`}
 			>
 				{' '}
-				{`Release ID: ${item.release.id}`}
-				<div className="flex justify-between w-full h-6 px-1 bg-wax-amber">
+				<div className="tile-title-bar">
 					<div className="relative flex space-x-1">
 						<EyeIcon id={item.release.id} />
 
@@ -152,23 +150,39 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 					</div>
 				</div>
 				<div
-					className="flex flex-col justify-between w-full h-56 text-wax-gray "
+					className="tile-art-container"
 					style={{
-						backgroundImage: "url('/tile-background.png')",
+						backgroundImage: item.album.art
+							? `url(${item.album.art})`
+							: `url(/tile-background.png')`,
 						backgroundSize: 'contain',
 						backgroundPosition: 'center',
 					}}
+					onClick={() => navigate(`/item/${item.id}`)}
 				>
-					<div className="w-full font-semibold text-center cursor-default bg-opacity-60 text-wax-black bg-wax-silver">
-						{item.album.title}
-					</div>
+					<div className="tile-art-title-bar">{item.album.title}</div>
 					<div></div>
 				</div>
-				<div className="flex items-end justify-between w-full h-6 px-2 font-semibold bg-wax-gray text-wax-amber">
-					<div className="cursor-pointer">{item.artist.name}</div>
-					{item.listing && (
-						<div className="cursor-pointer">$ {item.listing.price}</div>
-					)}
+				<div className="tile-footer-2">
+					<div
+						className="cursor-pointer self-center hover:text-wax-cream"
+						onClick={() => navigate(`/artist/${item.artist.id}`)}
+					>
+						{item.artist.name}
+					</div>
+					<div className="flex justify-center cursor-pointer ">
+						<div
+							className="truncate hover:text-wax-cream"
+							onClick={() => navigate(`/release/${item.release.id}`)}
+						>
+							{`${item.release.media_type.toUpperCase()}`}{' '}
+							{item.release.media_type == 'vinyl' &&
+								` | ${capitalizeFirst(item.release.variant)}`}
+						</div>
+						{/* {item.listing && <div className="cursor-pointer hover:text-wax-cream">
+							{`${item.listing.price}`}}
+						</div> */}
+					</div>
 				</div>
 			</div>
 		</>

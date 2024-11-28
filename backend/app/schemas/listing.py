@@ -9,7 +9,6 @@ class ListingBase(BaseModel):
     price: float
     quality: Literal["m", "vg", "g", "f", "ng"]
     description: str | None
-    status: Literal["available", "closed", "sold"]
     model_config = {"from_attributes": True}
 
 

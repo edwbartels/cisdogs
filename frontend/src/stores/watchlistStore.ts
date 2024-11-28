@@ -13,6 +13,7 @@ export type WatchlistRelease = {
 		track_data: {
 			[key: number]: string
 		}
+		art: string | null
 	}
 	artist: {
 		id: number

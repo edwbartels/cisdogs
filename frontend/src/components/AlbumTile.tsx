@@ -11,35 +11,17 @@ interface AlbumTileProps {
 type DropdownOptions = 'remove' | 'extra' | null
 
 const AlbumTile: React.FC<AlbumTileProps> = ({ albumId }) => {
-	// const userId = useAuthStore((state) => state.user?.id)
 	const album: Album = useAlbumStore((state) => state.albums[albumId])
-	// const { collection, addToCollection } = useUserStore((state) => state)
 	const navigate = useNavigate()
 
 	const [activeDropdown, setActiveDropdown] = useState<DropdownOptions>(null)
 	const extraOptions = [
-		// { label: 'Item', value: 'item' },
-		// { label: 'Album', value: 'release' },
 		{ label: 'Album', value: 'album' },
 		{ label: 'Artist', value: 'artist' },
 	]
-	// if (release?.listing)
-	// 	extraOptions.unshift({ label: 'Listing', value: 'listing' })
 
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
-			// case 'remove':
-			// 	removeAlbum(releaseId)
-			// 	break
-			// case 'listing':
-			// 	navigate(`/listing/${item.listing?.id}`)
-			// 	break
-			// case 'item':
-			// 	navigate(`/item/${item.id}`)
-			// 	break
-			// case 'release':
-			// 	navigate(`/release/${release.id}`)
-			// 	break
 			case 'album':
 				navigate(`/album/${album.id}`)
 				break
@@ -77,27 +59,16 @@ const AlbumTile: React.FC<AlbumTileProps> = ({ albumId }) => {
 	}
 	return (
 		<>
-			<div className="flex flex-col items-center justify-between w-56 h-64 m-1 rounded border-6 bg-wax-cream border-wax-amber ring-8 ring-wax-gray ">
-				{`Album ID: ${album.id}`}
-				<div className="flex justify-end w-full h-6 px-1 bg-wax-amber">
-					{/* <div className="space-x-1">
-						<EyeIcon id={release.id} />
-						{!collection.has(release.id) && (
-							<FontAwesomeIcon
-								icon={faPlus}
-								size="xl"
-								className="cursor-pointer hover:text-wax-cream"
-								onClick={() =>
-									userId &&
-									addToCollection({
-										release_id: release.id,
-										owner_id: userId,
-									})
-								}
-							/>
-						)}
-					</div> */}
-					<div className="relative flex flex-col  extra-dropdown">
+			<div className="tile-container ring-wax-gray">
+				<div className="tile-title-bar">
+					<div
+						className="font-bold text-lg truncate cursor-pointer hover:text-wax-cream"
+						onClick={() => navigate(`/artist/${album.artist.id}`)}
+					>
+						{album.artist?.name}
+					</div>
+
+					<div className="relative flex flex-col extra-dropdown">
 						<FontAwesomeIcon
 							icon={faEllipsis}
 							size="xl"
@@ -114,24 +85,25 @@ const AlbumTile: React.FC<AlbumTileProps> = ({ albumId }) => {
 					</div>
 				</div>
 				<div
-					className="flex flex-col justify-between w-full h-56 text-wax-gray "
+					className="tile-art-container"
 					style={{
-						backgroundImage: "url('/tile-background.png')",
+						backgroundImage: album.art
+							? `url(${album.art})`
+							: "url('/tile-background.png')",
 						backgroundSize: 'contain',
 						backgroundPosition: 'center',
 					}}
-				>
-					{/* {listing.album.art && <img src=`${listing.album.art}` className='object-contain w-full aspect-square'} */}
-
-					<div className="w-full font-semibold text-center bg-opacity-60 text-wax-black bg-wax-silver">
+					onClick={() => navigate(`/album/${album.id}`)}
+				></div>
+				{/* <div className="w-full h-8 bg-wax-gray text-wax-amber"> */}
+				<div className="tile-footer-1">
+					{/* <div className="cursor-pointer">{`$${listing.price}`}</div> */}
+					<div
+						className="cursor-pointer self-center hover:text-wax-cream"
+						onClick={() => navigate(`/album/${album.id}`)}
+					>
 						{album?.title}
 					</div>
-					<div></div>
-				</div>
-				{/* <div className="w-full h-8 bg-wax-gray text-wax-amber"> */}
-				<div className="flex items-end justify-between w-full h-6 px-2 font-semibold bg-wax-gray text-wax-amber">
-					{/* <div className="cursor-pointer">{`$${listing.price}`}</div> */}
-					<div className="cursor-pointer">{album.artist?.name}</div>
 					{/* </div> */}
 				</div>
 			</div>

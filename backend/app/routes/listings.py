@@ -13,7 +13,7 @@ router = APIRouter(prefix="/listings", tags=["listings"])
 
 @router.get("/", response_model=dict[int, ListingDetail])
 def get_all_listings(db: Session = Depends(get_db)):
-    listings = db.query(Listing).filter(Listing.active == True).all()
+    listings = db.query(Listing).filter(Listing.active == 1).all()
     if not listings:
         raise HTTPException(status_code=404, detail="No listings found")
     return {listing.id: listing for listing in listings}
@@ -23,7 +23,7 @@ def get_all_listings(db: Session = Depends(get_db)):
 def get_all_listings_full(db: Session = Depends(get_db)):
     listings = (
         db.query(Listing)
-        .filter(Listing.active == True)
+        .filter(Listing.active == 1)
         .options(
             joinedload(Listing.item)
             .joinedload(Item.release)

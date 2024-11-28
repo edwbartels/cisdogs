@@ -7,6 +7,7 @@ import useUserStore from '../stores/userStore'
 import useAuthStore from '../stores/authStore'
 import DropdownMenu from './DropdownMenu'
 import EyeIcon from './EyeIcon'
+import { capitalizeFirst } from '../utils/capitalize'
 
 interface ReleaseTileProps {
 	releaseId: number
@@ -21,25 +22,13 @@ const ReleaseTile: React.FC<ReleaseTileProps> = ({ releaseId }) => {
 
 	const [activeDropdown, setActiveDropdown] = useState<DropdownOptions>(null)
 	const extraOptions = [
-		// { label: 'Item', value: 'item' },
 		{ label: 'Release', value: 'release' },
 		{ label: 'Album', value: 'album' },
 		{ label: 'Artist', value: 'artist' },
 	]
-	// if (release?.listing)
-	// 	extraOptions.unshift({ label: 'Listing', value: 'listing' })
 
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
-			// case 'remove':
-			// 	removeRelease(releaseId)
-			// 	break
-			// case 'listing':
-			// 	navigate(`/listing/${item.listing?.id}`)
-			// 	break
-			// case 'item':
-			// 	navigate(`/item/${item.id}`)
-			// 	break
 			case 'release':
 				navigate(`/release/${release.id}`)
 				break
@@ -80,9 +69,8 @@ const ReleaseTile: React.FC<ReleaseTileProps> = ({ releaseId }) => {
 	}
 	return (
 		<>
-			<div className="flex flex-col items-center justify-between w-56 h-64 m-1 rounded border-6 bg-wax-cream border-wax-amber ring-8 ring-wax-gray ">
-				{`Release ID: ${release.id}`}
-				<div className="flex justify-between w-full h-6 px-1 bg-wax-amber">
+			<div className="tile-container ring-wax-gray">
+				<div className="tile-title-bar">
 					<div className="space-x-1">
 						<EyeIcon id={release.id} />
 						{!collection.has(release.id) && (
@@ -117,25 +105,36 @@ const ReleaseTile: React.FC<ReleaseTileProps> = ({ releaseId }) => {
 					</div>
 				</div>
 				<div
-					className="flex flex-col justify-between w-full h-56 text-wax-gray "
+					className="tile-art-container"
 					style={{
-						backgroundImage: "url('/tile-background.png')",
+						backgroundImage: release.album.art
+							? `url(${release.album.art})`
+							: `url(/tile-background.png')`,
 						backgroundSize: 'contain',
 						backgroundPosition: 'center',
 					}}
+					onClick={() => navigate(`/release/${release.id}`)}
 				>
 					{/* {listing.album.art && <img src=`${listing.album.art}` className='object-contain w-full aspect-square'} */}
 
-					<div className="w-full font-semibold text-center bg-opacity-60 text-wax-black bg-wax-silver">
-						{release.album?.title}
-					</div>
+					<div className="tile-art-title-bar">{release.album?.title}</div>
 					<div></div>
 				</div>
-				{/* <div className="w-full h-8 bg-wax-gray text-wax-amber"> */}
-				<div className="flex items-end justify-between w-full h-6 px-2 font-semibold bg-wax-gray text-wax-amber">
-					{/* <div className="cursor-pointer">{`$${listing.price}`}</div> */}
-					<div className="cursor-pointer">{release.artist?.name}</div>
-					{/* </div> */}
+				<div className="tile-footer-2">
+					<div
+						className="cursor-pointer w-fit self-center hover:text-wax-cream"
+						onClick={() => navigate(`/artist/${release.artist.id}`)}
+					>
+						{release.artist?.name}
+					</div>
+					<div
+						className="cursor-pointer self-center truncate hover:text-wax-cream"
+						onClick={() => navigate(`/release/${release.id}`)}
+					>
+						{`${release.media_type.toUpperCase()}`}{' '}
+						{release.media_type == 'vinyl' &&
+							` | ${capitalizeFirst(release.variant)}`}
+					</div>
 				</div>
 			</div>
 		</>

@@ -1,16 +1,15 @@
 from app.database import SessionLocal
 
-# from app.models import Album, Artist, Item, Listing, Release, Review, Order, User
 from app.seeders import (
-    albums,
-    artists,
-    items,
-    listings,
-    releases,
-    reviews,
-    # orders,
     users,
+    artists,
+    albums,
+    releases,
+    items,
+    seed_listings,
+    seed_orders,
     entries,
+    # reviews,
 )
 
 # from app.seeders import albums
@@ -32,20 +31,37 @@ def seed_data() -> None:
     try:
         # Example data
 
-        session.add_all(
-            [
-                *users,
-                *artists,
-                *albums,
-                *releases,
-                # *items,
-                # *listings,
-                # *orders,
-                # *reviews,
-                # *entries,
-            ]
-        )
+        # session.add_all(
+        #     [
+        #         *users,
+        #         *artists,
+        #         *albums,
+        #         *releases,
+        #         *items,
+        #         *entries,
+        #     ]
+        # )
+        # session.commit()
+        session.add_all(users)
         session.commit()
+        print(f"Seeded {len(users)} users.")
+        session.add_all(artists)
+        session.commit()
+        print(f"Seeded {len(artists)} artists.")
+        session.add_all(albums)
+        session.commit()
+        print(f"Seeded {len(albums)} albums.")
+        session.add_all(releases)
+        session.commit()
+        print(f"Seeded {len(releases)} releases.")
+        session.add_all(items)
+        session.commit()
+        print(f"Seeded {len(items)} items.")
+        seed_listings(session)
+        seed_orders(session)
+        session.add_all(entries)
+        session.commit()
+        print(f"Seeded {len(entries)} watchlist entries.")
         print("Seed data added successfully.")
     except Exception as e:
         session.rollback()

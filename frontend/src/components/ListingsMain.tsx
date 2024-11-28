@@ -16,10 +16,7 @@ const ListingsMain = () => {
 			}
 		})
 	}, [updateListings])
-	// const dummyIds: number[] = Array.from(
-	// 	{ length: 16 },
-	// 	(_: unknown, i: number) => i + 1
-	// )
+
 	const dummyIds: number[] = Object.keys(
 		useListingStore((state) => state.listings)
 	)

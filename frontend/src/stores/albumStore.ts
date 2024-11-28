@@ -7,6 +7,7 @@ export type Album = {
 	track_data: {
 		[key: number]: string
 	}
+	art: string | null
 	artist: {
 		id: number
 		name: string

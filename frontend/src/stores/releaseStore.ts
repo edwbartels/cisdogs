@@ -11,6 +11,7 @@ export type Release = {
 		track_data: {
 			[key: number]: string
 		}
+		art: string | null
 	}
 	artist: {
 		id: number

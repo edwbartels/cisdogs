@@ -16,10 +16,9 @@ const Browse: React.FC = () => {
 			}
 		})
 	}, [updateItems])
-	const dummyIds: number[] = Array.from(
-		{ length: 50 },
-		(_: unknown, i: number) => i + 1
-	)
+	const dummyIds: number[] = Object.keys(useItemStore((state) => state.items))
+		.slice(0, 30)
+		.map(Number)
 	return (
 		<div className="flex flex-col self-center">
 			<div className="pb-8 text-center text-9xl">Homepage</div>

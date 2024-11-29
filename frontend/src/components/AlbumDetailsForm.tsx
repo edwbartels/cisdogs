@@ -20,7 +20,7 @@ const AlbumDetailsForm: React.FC<AlbumDetailsFormProps> = ({ album }) => {
 							<div className="flex flex-col">
 								<div className="ml-2 font-semibold underline">Artist</div>
 								<div
-									className="pl-2 cursor-pointer hover:underline"
+									className="pl-2 cursor-pointer max-w-fit hover:underline"
 									onClick={() => navigate(`/artist/${album.artist.id}`)}
 								>
 									{album.artist.name}

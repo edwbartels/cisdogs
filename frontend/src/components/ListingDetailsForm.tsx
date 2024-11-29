@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Listing } from '../stores/listingStore'
 import useAuthStore from '../stores/authStore'
 import ListingModal from './ListingModal'
@@ -9,7 +10,9 @@ interface ListingDetailsFormProps {
 }
 
 const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
+	const navigate = useNavigate()
 	const isOwner = listing.seller.id === useAuthStore((state) => state.user?.id)
+	const { cart, addToCart, removeFromCart } = useAuthStore((state) => state)
 	const [activeModal, setActiveModal] = useState<'listing' | null>(null)
 	const [isEditing, setIsEditing] = useState<boolean>(false)
 	const [editDetails, setEditDetails] = useState({
@@ -63,8 +66,8 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 	return (
 		<div className="flex mt-8 border bg-wax-gray bg-opacity-15 border-wax-silver">
 			<div className="flex flex-col p-4">
-				<div className="p-10 text-center border w-96 border-wax-black aspect-video">
-					Image Upload tbd...
+				<div className="flex p-4 min-w-[300px] items-center  bg-wax-gray bg-opacity-15">
+					<img src={listing.album.art || '/tile-background.png'} />
 				</div>
 			</div>
 			<div className="flex w-full justify-evenly">
@@ -72,20 +75,35 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 					<div className="flex flex-col justify-between w-1/2">
 						<div>
 							<div className="flex flex-col w-4/5 ">
-								<div className="ml-2 font-semibold">Artist</div>
-								<div className="pl-2">{listing.artist.name}</div>
+								<div className="ml-2 font-semibold underline">Artist</div>
+								<div
+									className="pl-2 max-w-fit cursor-pointer hover:underline"
+									onClick={() => navigate(`/artist/${listing.artist.id}`)}
+								>
+									{listing.artist.name}
+								</div>
 							</div>
 							<div className="flex flex-col w-4/5 ">
 								<div className="mt-1 ml-2 font-semibold">Album</div>
-								<div className="pl-2">{listing.album.title}</div>
-							</div>
-							<div className="flex flex-col w-4/5 ">
-								<div className="mt-1 ml-2 font-semibold">Release Variant</div>
-								<div className="pl-2">{listing.release.variant}</div>
+								<div
+									className="pl-2 max-w-fit cursor-pointer hover:underline"
+									onClick={() => navigate(`/album/${listing.album.id}`)}
+								>
+									{listing.album.title}
+								</div>
 							</div>
 							<div className="flex flex-col w-4/5">
 								<div className="mt-1 ml-2 font-semibold">Format</div>
 								<div className="pl-2">{listing.release.media_type}</div>
+							</div>
+							<div className="flex flex-col w-4/5 ">
+								<div className="mt-1 ml-2 font-semibold">Release / Variant</div>
+								<div
+									className="max-w-fit pl-2 cursor-pointer hover:underline"
+									onClick={() => navigate(`/release/${listing.release.id}`)}
+								>
+									{listing.release.variant}
+								</div>
 							</div>
 						</div>
 					</div>
@@ -142,8 +160,8 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 							</div>
 						</div>
 						<div className="flex">
-							{isOwner &&
-								(isEditing ? (
+							{isOwner ? (
+								isEditing ? (
 									<>
 										<button
 											className="w-28 mt-4 ml-8 bg-green-700 rounded-md ring-2 ring-wax-cream text-wax-cream hover:ring-wax-gray"
@@ -169,10 +187,43 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 									>
 										Edit Listing
 									</button>
-								))}
+								)
+							) : Object.keys(cart).includes(listing.id.toString()) ? (
+								<button
+									className="w-40 mt-4 ml-8 bg-green-700 rounded-md ring-2 ring-wax-cream text-wax-cream hover:ring-wax-gray"
+									onClick={() => {
+										removeFromCart({
+											id: listing.id,
+											seller_id: listing.seller.id,
+											price: listing.price,
+											release: listing.release.variant || '',
+											album: listing.album.title,
+											artist: listing.artist.name,
+										})
+									}}
+								>
+									Remove from Cart
+								</button>
+							) : (
+								<button
+									className="w-24 mt-4 ml-8 bg-green-700 rounded-md ring-2 ring-wax-cream text-wax-cream hover:ring-wax-gray"
+									onClick={() => {
+										addToCart({
+											id: listing.id,
+											seller_id: listing.seller.id,
+											price: listing.price,
+											release: listing.release.variant || '',
+											album: listing.album.title,
+											artist: listing.artist.name,
+										})
+									}}
+								>
+									Add to Cart
+								</button>
+							)}
 						</div>
 					</div>
-					<div className="flex flex-col items-center justify-between w-1/2">
+					<div className="flex flex-col items-center  w-1/2">
 						<div className="font-semibold">Track List</div>
 						<div className="pt-1 text-sm text-left">
 							{Object.values(listing.album.track_data).map((track, index) => (

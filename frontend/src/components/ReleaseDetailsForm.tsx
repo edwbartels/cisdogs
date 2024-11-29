@@ -22,7 +22,7 @@ const ReleaseDetailsForm: React.FC<ReleaseDetailsFormProps> = ({ release }) => {
 							<div className="flex flex-col w-4/5 ">
 								<div className="ml-2 font-semibold">Artist</div>
 								<div
-									className="pl-2 cursor-pointer hover:underline"
+									className="pl-2 cursor-pointer max-w-fit hover:underline"
 									onClick={() => navigate(`/artist/${release.artist.id}`)}
 								>
 									{release.artist.name}
@@ -31,19 +31,19 @@ const ReleaseDetailsForm: React.FC<ReleaseDetailsFormProps> = ({ release }) => {
 							<div className="flex flex-col w-4/5 ">
 								<div className="mt-1 ml-2 font-semibold">Album</div>
 								<div
-									className="pl-2 cursor-pointer hover:underline"
+									className="pl-2 cursor-pointer max-w-fit hover:underline"
 									onClick={() => navigate(`/album/${release.album.id}`)}
 								>
 									{release.album.title}
 								</div>
 							</div>
-							<div className="flex flex-col w-4/5 ">
-								<div className="mt-1 ml-2 font-semibold">Release Variant</div>
-								<div className="pl-2">{release.variant}</div>
-							</div>
 							<div className="flex flex-col w-4/5">
 								<div className="mt-1 ml-2 font-semibold">Format</div>
 								<div className="pl-2">{release.media_type}</div>
+							</div>
+							<div className="flex flex-col w-4/5 ">
+								<div className="mt-1 ml-2 font-semibold">Release Variant</div>
+								<div className="pl-2">{release.variant}</div>
 							</div>
 						</div>
 					</div>

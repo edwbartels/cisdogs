@@ -17,4 +17,3 @@ class Listing(Base, TimestampMixin):
 
     seller: Mapped["User"] = relationship("User", back_populates="listings")
     item: Mapped["Item"] = relationship("Item", back_populates="listing")
-    orders: Mapped[list["Order"]] = relationship("Order", back_populates="listing")

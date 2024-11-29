@@ -44,13 +44,19 @@ def create_order(
 
     new_order = Order(
         price=existing_listing.price,
+        quality=existing_listing.quality,
+        description=existing_listing.description,
+        release_id=order.release_id,
         seller_id=order.seller_id,
         buyer_id=order.buyer_id,
-        listing_id=order.listing_id,
     )
-
-    db.add(new_order)
-    db.commit()
-    db.refresh(new_order)
+    try:
+        db.add(new_order)
+        db.delete(existing_listing)
+        db.commit()
+        db.refresh(new_order)
+    except Exception as e:
+        db.rollback()
+        print(f"Failed to update database: {e}")
 
     return new_order

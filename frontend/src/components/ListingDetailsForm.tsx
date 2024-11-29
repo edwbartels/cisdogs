@@ -232,13 +232,6 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 								</div>
 							))}
 						</div>
-
-						{/* <div
-							// onClick={getTracks}
-							className="w-3/5 mt-4 text-center rounded-md cursor-pointer ring-2 ring-wax-silver text-wax-gray bg-wax-cream hover:ring-4"
-						>
-							Update Track Data
-						</div> */}
 					</div>
 					<ListingModal
 						isOpen={activeModal === 'listing'}

@@ -45,7 +45,7 @@ def seed_data() -> None:
         session.commit()
         print(f"Seeded {len(items)} items.")
         seed_listings(session)
-        # seed_orders(session)
+        seed_orders(session)
         session.add_all(entries)
         session.commit()
         print(f"Seeded {len(entries)} watchlist entries.")

@@ -14,3 +14,4 @@ class Release(Base, TimestampMixin):
 
     album: Mapped["Album"] = relationship("Album", back_populates="releases")
     items: Mapped[list["Item"]] = relationship("Item", back_populates="release")
+    orders: Mapped[list["Order"]] = relationship("Order", back_populates="release")

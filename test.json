@@ -1,29 +1,564 @@
 {
-	"album_id": 11,
-	"id": 1,
-	"variant": null,
-	"media_type": "cd",
-	"created": "2024-11-27T00:46:54",
-	"updated": "2024-11-27T00:46:54",
-	"album": {
-		"id": 11,
-		"title": "Purple Rain",
-		"artist_id": 14,
-		"track_data": {
-			"1": "Let's Go Crazy",
-			"2": "Take Me With U",
-			"3": "The Beautiful Ones",
-			"4": "Computer Blue",
-			"5": "Darling Nikki",
-			"6": "When Doves Cry",
-			"7": "I Would Die 4 U",
-			"8": "Baby I'm a Star",
-			"9": "Purple Rain"
+	"sales": {
+		"10": {
+			"price": 67.55,
+			"quality": "vg",
+			"buyer_id": 16,
+			"seller_id": 1,
+			"created": "2024-11-29T04:07:21",
+			"id": 10,
+			"description": "Terrible!",
+			"release_id": 25,
+			"updated": "2024-11-29T04:07:21",
+			"seller": {
+				"id": 1,
+				"hashed_password": "$2b$12$1E6VBn8LGD0v.2mVweKPkOYJNQix.g.YkMk4aCbYEcDhQ0sHgFumG",
+				"created": "2024-11-29T04:07:20",
+				"username": "admin",
+				"email": "admin@example.com",
+				"updated": "2024-11-29T04:07:20"
+			},
+			"release": {
+				"id": 25,
+				"variant": "cassette",
+				"updated": "2024-11-29T04:07:20",
+				"album_id": 20,
+				"media_type": "cassette",
+				"created": "2024-11-29T04:07:20",
+				"album": {
+					"title": "OK Computer",
+					"id": 20,
+					"artist_id": 28,
+					"track_data": {
+						"1": "Airbag",
+						"2": "Paranoid Android",
+						"3": "Subterranean Homesick Alien",
+						"4": "Exit Music (For a Film)",
+						"5": "Let Down",
+						"6": "Karma Police",
+						"7": "Fitter Happier",
+						"8": "Electioneering",
+						"9": "Climbing Up the Walls",
+						"10": "No Surprises",
+						"11": "Lucky",
+						"12": "The Tourist"
+					},
+					"art": "https://lastfm.freetls.fastly.net//i//u//300x300//62d26c6cb4ac4bdccb8f3a2a0fd55421.png",
+					"artist": {
+						"name": "Radiohead",
+						"id": 28
+					}
+				}
+			},
+			"buyer": {
+				"id": 16,
+				"hashed_password": "$2b$12$i6cThCG5129b.46szvFSvOaJ.LruufC3vESkambiaaOAIEDmJg.hu",
+				"created": "2024-11-29T04:07:20",
+				"username": "acdc_power",
+				"email": "acdc_power@example.com",
+				"updated": "2024-11-29T04:07:20"
+			},
+			"album": {
+				"title": "OK Computer",
+				"id": 20,
+				"artist_id": 28,
+				"track_data": {
+					"1": "Airbag",
+					"2": "Paranoid Android",
+					"3": "Subterranean Homesick Alien",
+					"4": "Exit Music (For a Film)",
+					"5": "Let Down",
+					"6": "Karma Police",
+					"7": "Fitter Happier",
+					"8": "Electioneering",
+					"9": "Climbing Up the Walls",
+					"10": "No Surprises",
+					"11": "Lucky",
+					"12": "The Tourist"
+				},
+				"art": "https://lastfm.freetls.fastly.net//i//u//300x300//62d26c6cb4ac4bdccb8f3a2a0fd55421.png",
+				"artist": {
+					"name": "Radiohead",
+					"id": 28
+				}
+			},
+			"artist": {
+				"name": "Radiohead",
+				"id": 28
+			}
 		},
-		"artist": {
-			"id": 14,
-			"name": "Prince"
+		"12": {
+			"price": 98.18,
+			"quality": "vg",
+			"buyer_id": 7,
+			"seller_id": 1,
+			"created": "2024-11-29T04:07:21",
+			"id": 12,
+			"description": null,
+			"release_id": 16,
+			"updated": "2024-11-29T04:07:21",
+			"seller": {
+				"id": 1,
+				"hashed_password": "$2b$12$1E6VBn8LGD0v.2mVweKPkOYJNQix.g.YkMk4aCbYEcDhQ0sHgFumG",
+				"created": "2024-11-29T04:07:20",
+				"username": "admin",
+				"email": "admin@example.com",
+				"updated": "2024-11-29T04:07:20"
+			},
+			"release": {
+				"id": 16,
+				"variant": "cassette",
+				"updated": "2024-11-29T04:07:20",
+				"album_id": 11,
+				"media_type": "cassette",
+				"created": "2024-11-29T04:07:20",
+				"album": {
+					"title": "Purple Rain",
+					"id": 11,
+					"artist_id": 14,
+					"track_data": {
+						"1": "Let's Go Crazy",
+						"2": "Take Me With U",
+						"3": "The Beautiful Ones",
+						"4": "Computer Blue",
+						"5": "Darling Nikki",
+						"6": "When Doves Cry",
+						"7": "I Would Die 4 U",
+						"8": "Baby I'm a Star",
+						"9": "Purple Rain"
+					},
+					"art": "https://lastfm.freetls.fastly.net//i//u//300x300//2a783d64b0ea6d133eb7f6258ec1b6b0.jpg",
+					"artist": {
+						"name": "Prince",
+						"id": 14
+					}
+				}
+			},
+			"buyer": {
+				"id": 7,
+				"hashed_password": "$2b$12$7XvKfmjmI.5ARGKUi4ItXOtvSqh4q769wXssNczqR9T8Jioswqa1K",
+				"created": "2024-11-29T04:07:20",
+				"username": "pinkfloydlover",
+				"email": "pinkfloydlover@example.com",
+				"updated": "2024-11-29T04:07:20"
+			},
+			"album": {
+				"title": "Purple Rain",
+				"id": 11,
+				"artist_id": 14,
+				"track_data": {
+					"1": "Let's Go Crazy",
+					"2": "Take Me With U",
+					"3": "The Beautiful Ones",
+					"4": "Computer Blue",
+					"5": "Darling Nikki",
+					"6": "When Doves Cry",
+					"7": "I Would Die 4 U",
+					"8": "Baby I'm a Star",
+					"9": "Purple Rain"
+				},
+				"art": "https://lastfm.freetls.fastly.net//i//u//300x300//2a783d64b0ea6d133eb7f6258ec1b6b0.jpg",
+				"artist": {
+					"name": "Prince",
+					"id": 14
+				}
+			},
+			"artist": {
+				"name": "Prince",
+				"id": 14
+			}
+		},
+		"13": {
+			"price": 11.05,
+			"quality": "g",
+			"buyer_id": 11,
+			"seller_id": 1,
+			"created": "2024-11-29T04:07:21",
+			"id": 13,
+			"description": "Nice!",
+			"release_id": 70,
+			"updated": "2024-11-29T04:07:21",
+			"seller": {
+				"id": 1,
+				"hashed_password": "$2b$12$1E6VBn8LGD0v.2mVweKPkOYJNQix.g.YkMk4aCbYEcDhQ0sHgFumG",
+				"created": "2024-11-29T04:07:20",
+				"username": "admin",
+				"email": "admin@example.com",
+				"updated": "2024-11-29T04:07:20"
+			},
+			"release": {
+				"id": 70,
+				"variant": "limited edition",
+				"updated": "2024-11-29T04:07:20",
+				"album_id": 27,
+				"media_type": "vinyl",
+				"created": "2024-11-29T04:07:20",
+				"album": {
+					"title": "Graceland",
+					"id": 27,
+					"artist_id": 31,
+					"track_data": {
+						"1": "The Boy in the Bubble",
+						"2": "Graceland",
+						"3": "I Know What I Know",
+						"4": "Gumboots",
+						"5": "Diamonds on the Soles of Her Shoes",
+						"6": "You Can Call Me Al",
+						"7": "Under African Skies",
+						"8": "Homeless",
+						"9": "Crazy Love, Vol. II",
+						"10": "That Was Your Mother",
+						"11": "All Around the World or the Myth of Fingerprints"
+					},
+					"art": "https://lastfm.freetls.fastly.net//i//u//300x300//6dcd4921856a43fec390a969e8346838.png",
+					"artist": {
+						"name": "Paul Simon",
+						"id": 31
+					}
+				}
+			},
+			"buyer": {
+				"id": 11,
+				"hashed_password": "$2b$12$kDn/M9AKE1LQnFh3TGlNx.V7dX7BLUlBhGyOvhCWkQh8AFlm29FgC",
+				"created": "2024-11-29T04:07:20",
+				"username": "springsteen_rules",
+				"email": "springsteen_rules@example.com",
+				"updated": "2024-11-29T04:07:20"
+			},
+			"album": {
+				"title": "Graceland",
+				"id": 27,
+				"artist_id": 31,
+				"track_data": {
+					"1": "The Boy in the Bubble",
+					"2": "Graceland",
+					"3": "I Know What I Know",
+					"4": "Gumboots",
+					"5": "Diamonds on the Soles of Her Shoes",
+					"6": "You Can Call Me Al",
+					"7": "Under African Skies",
+					"8": "Homeless",
+					"9": "Crazy Love, Vol. II",
+					"10": "That Was Your Mother",
+					"11": "All Around the World or the Myth of Fingerprints"
+				},
+				"art": "https://lastfm.freetls.fastly.net//i//u//300x300//6dcd4921856a43fec390a969e8346838.png",
+				"artist": {
+					"name": "Paul Simon",
+					"id": 31
+				}
+			},
+			"artist": {
+				"name": "Paul Simon",
+				"id": 31
+			}
+		},
+		"36": {
+			"price": 35.14,
+			"quality": "ng",
+			"buyer_id": 6,
+			"seller_id": 1,
+			"created": "2024-11-29T04:07:21",
+			"id": 36,
+			"description": "Terrible!",
+			"release_id": 83,
+			"updated": "2024-11-29T04:07:21",
+			"seller": {
+				"id": 1,
+				"hashed_password": "$2b$12$1E6VBn8LGD0v.2mVweKPkOYJNQix.g.YkMk4aCbYEcDhQ0sHgFumG",
+				"created": "2024-11-29T04:07:20",
+				"username": "admin",
+				"email": "admin@example.com",
+				"updated": "2024-11-29T04:07:20"
+			},
+			"release": {
+				"id": 83,
+				"variant": "cd",
+				"updated": "2024-11-29T04:07:20",
+				"album_id": 21,
+				"media_type": "cd",
+				"created": "2024-11-29T04:07:20",
+				"album": {
+					"title": "Revolver",
+					"id": 21,
+					"artist_id": 2,
+					"track_data": {
+						"1": "Taxman",
+						"2": "Eleanor Rigby",
+						"3": "I'm Only Sleeping",
+						"4": "Love You To",
+						"5": "Here, There and Everywhere",
+						"6": "Yellow Submarine",
+						"7": "She Said She Said",
+						"8": "Good Day Sunshine",
+						"9": "And Your Bird Can Sing",
+						"10": "For No One",
+						"11": "Doctor Robert",
+						"12": "I Want to Tell You",
+						"13": "Got to Get You into My Life",
+						"14": "Tomorrow Never Knows"
+					},
+					"art": "https://lastfm.freetls.fastly.net//i//u//300x300//deaec2d4735bea0d1c45fc75261624ae.jpg",
+					"artist": {
+						"name": "The Beatles",
+						"id": 2
+					}
+				}
+			},
+			"buyer": {
+				"id": 6,
+				"hashed_password": "$2b$12$C2hRtfQEteM/BCUAMgi44OhmwrD.uB77ZKjQ2acdkt1np./QXnIUC",
+				"created": "2024-11-29T04:07:20",
+				"username": "beatlesfan",
+				"email": "beatlesfan@example.com",
+				"updated": "2024-11-29T04:07:20"
+			},
+			"album": {
+				"title": "Revolver",
+				"id": 21,
+				"artist_id": 2,
+				"track_data": {
+					"1": "Taxman",
+					"2": "Eleanor Rigby",
+					"3": "I'm Only Sleeping",
+					"4": "Love You To",
+					"5": "Here, There and Everywhere",
+					"6": "Yellow Submarine",
+					"7": "She Said She Said",
+					"8": "Good Day Sunshine",
+					"9": "And Your Bird Can Sing",
+					"10": "For No One",
+					"11": "Doctor Robert",
+					"12": "I Want to Tell You",
+					"13": "Got to Get You into My Life",
+					"14": "Tomorrow Never Knows"
+				},
+				"art": "https://lastfm.freetls.fastly.net//i//u//300x300//deaec2d4735bea0d1c45fc75261624ae.jpg",
+				"artist": {
+					"name": "The Beatles",
+					"id": 2
+				}
+			},
+			"artist": {
+				"name": "The Beatles",
+				"id": 2
+			}
+		},
+		"37": {
+			"price": 78.24,
+			"quality": "vg",
+			"buyer_id": 2,
+			"seller_id": 1,
+			"created": "2024-11-29T04:07:21",
+			"id": 37,
+			"description": "Nice!",
+			"release_id": 34,
+			"updated": "2024-11-29T04:07:21",
+			"seller": {
+				"id": 1,
+				"hashed_password": "$2b$12$1E6VBn8LGD0v.2mVweKPkOYJNQix.g.YkMk4aCbYEcDhQ0sHgFumG",
+				"created": "2024-11-29T04:07:20",
+				"username": "admin",
+				"email": "admin@example.com",
+				"updated": "2024-11-29T04:07:20"
+			},
+			"release": {
+				"id": 34,
+				"variant": "deluxe",
+				"updated": "2024-11-29T04:07:20",
+				"album_id": 15,
+				"media_type": "vinyl",
+				"created": "2024-11-29T04:07:20",
+				"album": {
+					"title": "The Wall",
+					"id": 15,
+					"artist_id": 3,
+					"track_data": {
+						"1": "In the Flesh?",
+						"2": "The Thin Ice",
+						"3": "Another Brick in the Wall, Part 1",
+						"4": "The Happiest Days of Our Lives",
+						"5": "Another Brick in the Wall, Part 2",
+						"6": "Mother",
+						"7": "Goodbye Blue Sky",
+						"8": "Empty Spaces",
+						"9": "Young Lust",
+						"10": "One of My Turns",
+						"11": "Don't Leave Me Now",
+						"12": "Another Brick in the Wall, Part 3",
+						"13": "Goodbye Cruel World",
+						"14": "Hey You",
+						"15": "Is There Anybody Out There?",
+						"16": "Nobody Home",
+						"17": "Vera",
+						"18": "Bring the Boys Back Home",
+						"19": "Comfortably Numb",
+						"20": "The Show Must Go On",
+						"21": "In the Flesh",
+						"22": "Run Like Hell",
+						"23": "Waiting for the Worms",
+						"24": "Stop",
+						"25": "The Trial",
+						"26": "Outside the Wall"
+					},
+					"art": "https://lastfm.freetls.fastly.net//i//u//300x300//efc14f4cddf71190ca3a84d7779d98f6.jpg",
+					"artist": {
+						"name": "Pink Floyd",
+						"id": 3
+					}
+				}
+			},
+			"buyer": {
+				"id": 2,
+				"hashed_password": "$2b$12$h1cm768752URJTtw5z.BGeL5sHPJaqytE5ziharFmrxrgPMd9qES6",
+				"created": "2024-11-29T04:07:20",
+				"username": "music_lover1",
+				"email": "music_lover1@example.com",
+				"updated": "2024-11-29T04:07:20"
+			},
+			"album": {
+				"title": "The Wall",
+				"id": 15,
+				"artist_id": 3,
+				"track_data": {
+					"1": "In the Flesh?",
+					"2": "The Thin Ice",
+					"3": "Another Brick in the Wall, Part 1",
+					"4": "The Happiest Days of Our Lives",
+					"5": "Another Brick in the Wall, Part 2",
+					"6": "Mother",
+					"7": "Goodbye Blue Sky",
+					"8": "Empty Spaces",
+					"9": "Young Lust",
+					"10": "One of My Turns",
+					"11": "Don't Leave Me Now",
+					"12": "Another Brick in the Wall, Part 3",
+					"13": "Goodbye Cruel World",
+					"14": "Hey You",
+					"15": "Is There Anybody Out There?",
+					"16": "Nobody Home",
+					"17": "Vera",
+					"18": "Bring the Boys Back Home",
+					"19": "Comfortably Numb",
+					"20": "The Show Must Go On",
+					"21": "In the Flesh",
+					"22": "Run Like Hell",
+					"23": "Waiting for the Worms",
+					"24": "Stop",
+					"25": "The Trial",
+					"26": "Outside the Wall"
+				},
+				"art": "https://lastfm.freetls.fastly.net//i//u//300x300//efc14f4cddf71190ca3a84d7779d98f6.jpg",
+				"artist": {
+					"name": "Pink Floyd",
+					"id": 3
+				}
+			},
+			"artist": {
+				"name": "Pink Floyd",
+				"id": 3
+			}
 		}
 	},
-	"items": []
+	"purchases": {
+		"41": {
+			"price": 93.95,
+			"quality": "vg",
+			"buyer_id": 1,
+			"seller_id": 24,
+			"created": "2024-11-29T04:07:21",
+			"id": 41,
+			"description": "Nice!",
+			"release_id": 30,
+			"updated": "2024-11-29T04:07:21",
+			"seller": {
+				"id": 24,
+				"hashed_password": "$2b$12$MZ7wMag/FmJXrRA/cirH3.UbpnonLt234qo2hvCXETDgaMjB8x16O",
+				"created": "2024-11-29T04:07:20",
+				"username": "ledzep_life",
+				"email": "ledzep_life@example.com",
+				"updated": "2024-11-29T04:07:20"
+			},
+			"release": {
+				"id": 30,
+				"variant": "cassette",
+				"updated": "2024-11-29T04:07:20",
+				"album_id": 19,
+				"media_type": "cassette",
+				"created": "2024-11-29T04:07:20",
+				"album": {
+					"title": "Exile on Main St.",
+					"id": 19,
+					"artist_id": 1,
+					"track_data": {
+						"1": "Rocks Off",
+						"2": "Rip This Joint",
+						"3": "Shake Your Hips",
+						"4": "Casino Boogie",
+						"5": "Tumbling Dice",
+						"6": "Sweet Virginia",
+						"7": "Torn and Frayed",
+						"8": "Sweet Black Angel",
+						"9": "Loving Cup",
+						"10": "Happy",
+						"11": "Turd on the Run",
+						"12": "Ventilator Blues",
+						"13": "I Just Want to See His Face",
+						"14": "Let It Loose",
+						"15": "All Down the Line",
+						"16": "Stop Breaking Down",
+						"17": "Shine a Light",
+						"18": "Soul Survivor"
+					},
+					"art": "https://lastfm.freetls.fastly.net//i//u//300x300//fb57a2f660324cbacc8837ccdf5442a7.png",
+					"artist": {
+						"name": "The Rolling Stones",
+						"id": 1
+					}
+				}
+			},
+			"buyer": {
+				"id": 1,
+				"hashed_password": "$2b$12$1E6VBn8LGD0v.2mVweKPkOYJNQix.g.YkMk4aCbYEcDhQ0sHgFumG",
+				"created": "2024-11-29T04:07:20",
+				"username": "admin",
+				"email": "admin@example.com",
+				"updated": "2024-11-29T04:07:20"
+			},
+			"album": {
+				"title": "Exile on Main St.",
+				"id": 19,
+				"artist_id": 1,
+				"track_data": {
+					"1": "Rocks Off",
+					"2": "Rip This Joint",
+					"3": "Shake Your Hips",
+					"4": "Casino Boogie",
+					"5": "Tumbling Dice",
+					"6": "Sweet Virginia",
+					"7": "Torn and Frayed",
+					"8": "Sweet Black Angel",
+					"9": "Loving Cup",
+					"10": "Happy",
+					"11": "Turd on the Run",
+					"12": "Ventilator Blues",
+					"13": "I Just Want to See His Face",
+					"14": "Let It Loose",
+					"15": "All Down the Line",
+					"16": "Stop Breaking Down",
+					"17": "Shine a Light",
+					"18": "Soul Survivor"
+				},
+				"art": "https://lastfm.freetls.fastly.net//i//u//300x300//fb57a2f660324cbacc8837ccdf5442a7.png",
+				"artist": {
+					"name": "The Rolling Stones",
+					"id": 1
+				}
+			},
+			"artist": {
+				"name": "The Rolling Stones",
+				"id": 1
+			}
+		}
+	}
 }

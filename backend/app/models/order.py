@@ -27,14 +27,14 @@ class Order(Base, TimestampMixin):
     release: Mapped["Release"] = relationship("Release", back_populates="orders")
     reviews: Mapped[list["Review"]] = relationship("Review", back_populates="order")
 
-    @hybrid_property
-    def item(self):
-        return self.listing.item
+    # # @hybrid_property
+    # # def item(self):
+    # #     return self.listing.item
 
-    @hybrid_property
-    def album(self):
-        return self.listing.item.release.album
+    # @hybrid_property
+    # def album(self):
+    #     return self.release.album
 
-    @hybrid_property
-    def artist(self):
-        return self.listing.item.release.album.artist
+    # @hybrid_property
+    # def artist(self):
+    #     return self.release.album.artist

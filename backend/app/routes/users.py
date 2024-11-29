@@ -7,11 +7,13 @@ from sqlalchemy.future import select
 from app.database import get_db
 from app.models import User, Item, Listing, Album, Release, Order, Review, Artist
 from app.schemas.user import UserRead
+import json
 
 # from app.schemas.release import ReleaseRead
 # from app.schemas.album import AlbumDetailsBrief
 from app.schemas.item import ItemDetail
 from app.schemas.listing import ListingDetail
+from app.schemas.order import OrderDetails
 from app.schemas.res import (
     UserDashboardResponse,
     ItemFull,
@@ -183,32 +185,45 @@ def get_user_listings(
 @router.get("/orders", response_model=OrderSplit)
 def get_user_orders(
     db: Session = Depends(get_db), user_id: int = Depends(get_user_id)
-) -> OrderSplit:
+) -> dict[str, dict[int, Order]]:
     if not user_id:
         raise HTTPException(
             status_code=401, detail="Not authenticated (no active user)"
         )
-    stmt = select(Order).where(
-        or_(Order.buyer_id == user_id, Order.seller_id == user_id)
+    sales = (
+        db.query(Order)
+        .filter(Order.seller_id == user_id)
+        .options(
+            joinedload(Order.release)
+            .joinedload(Release.album)
+            .joinedload(Album.artist),
+            joinedload(Order.buyer),
+            joinedload(Order.seller),
+        )
+        .all()
     )
-    sales_stmt = select(Order).where(Order.seller_id == user_id)
-    purchases_stmt = select(Order).where(Order.buyer_id == user_id)
-
-    sales = db.execute(sales_stmt).scalars().all()
-    purchases = db.execute(purchases_stmt).scalars().all()
-    # orders = db.execute(stmt).scalars().all()
-    # sales = {order.id: order for order in sales}
-    # purchases = {order.id: order for order in purchases}
-    # orders = {"sales": sales, "purchases": purchases}
-    # orders = {"sales": {}, "purchases": {}}
-    # orders["sales"] = {order.id: order for order in sales}
-    # orders["purchases"] = {order.id: order for order in purchases}
-    # print(jsonable_encoder(orders["sales"]))
-    response = OrderSplit(
-        sales={order.id: order for order in sales},
-        purchases={order.id: order for order in purchases},
+    purchases = (
+        db.query(Order)
+        .filter(Order.buyer_id == user_id)
+        .options(
+            joinedload(Order.release)
+            .joinedload(Release.album)
+            .joinedload(Album.artist),
+            joinedload(Order.buyer),
+            joinedload(Order.seller),
+        )
+        .all()
     )
+    for sale in sales:
+        sale.album = sale.release.album
+        sale.artist = sale.release.album.artist
+    for purchase in purchases:
+        purchase.album = purchase.release.album
+        purchase.artist = purchase.release.album.artist
 
-    # order.reviews = {review.id: review for order in orders for review in order.reviews}
+    response = {
+        "sales": {order.id: order for order in sales},
+        "purchases": {order.id: order for order in purchases},
+    }
+    # print(json.dumps(jsonable_encoder(response)))
     return response
-    # review_stmt = select(Review).where()

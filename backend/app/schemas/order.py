@@ -1,5 +1,6 @@
 from pydantic import BaseModel
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+from datetime import datetime
 
 if TYPE_CHECKING:
     from app.schemas.user import UserRead
@@ -7,11 +8,14 @@ if TYPE_CHECKING:
 
 
 class OrderBase(BaseModel):
-    pass
+    price: float
+    quality: str
+    description: Optional[str]
+    created: datetime
     model_config = {"from_attributes": True}
 
 
-class OrderCreate(OrderBase):
+class OrderCreate(BaseModel):
     seller_id: int
     buyer_id: int
     listing_id: int
@@ -27,7 +31,8 @@ class OrderRead(OrderBase):
     model_config = {"from_attributes": True}
 
 
-class OrderDetails(OrderRead):
+class OrderDetails(OrderBase):
+    id: int
     seller: "UserRead"
     buyer: "UserRead"
     release: "ReleaseRead"

@@ -6,7 +6,7 @@ from app.schemas.user import UserReadBrief
 from app.schemas.release import ReleaseRead, ReleaseBase
 from app.schemas.artist import ArtistRead
 from app.schemas.album import AlbumRead
-from app.schemas.order import OrderBase
+from app.schemas.order import OrderBase, OrderRead
 from app.schemas.review import ReviewRead
 
 
@@ -66,8 +66,6 @@ class OrderFull(OrderBase):
     id: int
     seller: UserReadBrief
     buyer: UserReadBrief
-    listing: ListingRead
-    item: ItemRead
     reviews: list[ReviewRead] | None
     release: ReleaseRead
     album: AlbumRead

@@ -3,6 +3,10 @@ import { devtools } from 'zustand/middleware'
 
 export type Order = {
 	id: number
+	price: number
+	quality: string
+	description: string
+	created: string
 	seller: {
 		id: number
 		username: string

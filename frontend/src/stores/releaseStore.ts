@@ -86,6 +86,8 @@ const useReleaseStore = create(
 					const url = `/api/releases/${parent}/${id}`
 					const res = await fetch(url)
 					if (!res.ok) {
+						if (res.status === 404) set({ releases: {} })
+						return
 						throw new Error(`Failed to get releases by ${parent}.`)
 					}
 					const data = await res.json()

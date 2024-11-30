@@ -81,6 +81,7 @@ const useListingStore = create(
 					const res = await fetch(url)
 					if (!res.ok) {
 						if (res.status === 404) set({ listings: {} })
+						return
 						throw new Error(`Failed to get listings by ${parent}.`)
 					}
 					const data = await res.json()

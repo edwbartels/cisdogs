@@ -11,8 +11,8 @@ const ReleaseDetailsForm: React.FC<ReleaseDetailsFormProps> = ({ release }) => {
 	return (
 		<div className="flex mt-8 border bg-wax-gray bg-opacity-15 border-wax-silver">
 			<div className="flex flex-col p-4">
-				<div className="p-10 text-center border w-96 border-wax-black aspect-video">
-					Image Upload tbd...
+				<div className="flex p-4 min-w-[300px] items-center  bg-wax-gray bg-opacity-15">
+					<img src={release.album.art || '/tile-background.png'} />
 				</div>
 			</div>
 			<div className="flex w-full">

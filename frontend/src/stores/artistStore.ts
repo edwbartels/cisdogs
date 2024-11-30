@@ -1,5 +1,7 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
+import fetchWithAuth from '../utils/fetch'
+import { json } from 'stream/consumers'
 
 export type Artist = {
 	id: number
@@ -47,6 +49,9 @@ interface ArtistStore {
 	artists: {
 		[key: number]: Artist
 	}
+	addArtist: (
+		name: string
+	) => Promise<{ [key: number]: { id: number; name: string } }>
 	getFocus: (id: number) => Promise<void>
 	getArtists: () => void
 }
@@ -79,6 +84,25 @@ const useArtistStore = create(
 					}
 					const data = await res.json()
 					set({ artists: data })
+					return data
+				} catch (e) {
+					console.error(e)
+				}
+			},
+			addArtist: async (name) => {
+				try {
+					const url = '/api/artists/'
+					const res = await fetchWithAuth(url, {
+						method: 'POST',
+						body: JSON.stringify({ name: name }),
+						credentials: 'include',
+					})
+					if (!res.ok) {
+						throw new Error('Failed to add artist')
+					}
+					const data = await res.json()
+					set((state) => ({ artists: { ...state.artists, ...data } }))
+					return data
 				} catch (e) {
 					console.error(e)
 				}

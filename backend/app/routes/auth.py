@@ -135,16 +135,23 @@ def signup(req: UserCreate, db: Session = Depends(get_db)):
 
 @router.get("/track_data/{artist:str}/{album:str}")
 async def get_track_list(artist: str, album: str):
-    print(LM_KEY)
     res = requests.get(
         f"https://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key={LM_KEY}&artist={artist}&album={album}&format=json"
     )
     if res.status_code == 200:
-        print("hello!")
         details = res.json()
         track_data = {
             track["@attr"]["rank"]: track["name"]
             for track in details["album"]["tracks"]["track"]
         }
-        print(track_data)
-        return track_data
+
+        def get_art():
+            for image in details["album"]["image"]:
+                if image["size"] == "extralarge":
+                    return image["#text"]
+
+        art = get_art()
+
+        extras = {"track_data": track_data, "art": art}
+
+        return extras

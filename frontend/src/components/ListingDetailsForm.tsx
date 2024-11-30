@@ -4,6 +4,7 @@ import { Listing } from '../stores/listingStore'
 import useAuthStore from '../stores/authStore'
 import ListingModal from './ListingModal'
 import fetchWithAuth from '../utils/fetch'
+import { capitalizeFirst } from '../utils/capitalize'
 
 interface ListingDetailsFormProps {
 	listing: Listing
@@ -80,7 +81,7 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 									className="pl-2 max-w-fit cursor-pointer hover:underline"
 									onClick={() => navigate(`/artist/${listing.artist.id}`)}
 								>
-									{listing.artist.name}
+									{capitalizeFirst(listing.artist.name)}
 								</div>
 							</div>
 							<div className="flex flex-col w-4/5 ">
@@ -89,12 +90,14 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 									className="pl-2 max-w-fit cursor-pointer hover:underline"
 									onClick={() => navigate(`/album/${listing.album.id}`)}
 								>
-									{listing.album.title}
+									{capitalizeFirst(listing.album.title)}
 								</div>
 							</div>
 							<div className="flex flex-col w-4/5">
 								<div className="mt-1 ml-2 font-semibold">Format</div>
-								<div className="pl-2">{listing.release.media_type}</div>
+								<div className="pl-2">
+									{capitalizeFirst(listing.release.media_type)}
+								</div>
 							</div>
 							<div className="flex flex-col w-4/5 ">
 								<div className="mt-1 ml-2 font-semibold">Release / Variant</div>
@@ -102,7 +105,7 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 									className="max-w-fit pl-2 cursor-pointer hover:underline"
 									onClick={() => navigate(`/release/${listing.release.id}`)}
 								>
-									{listing.release.variant}
+									{capitalizeFirst(listing.release.variant)}
 								</div>
 							</div>
 						</div>
@@ -144,7 +147,7 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 										<option value="ng">Not Good</option>
 									</select>
 								) : (
-									<div className="pl-2">{listing.quality}</div>
+									<div className="pl-2">{listing.quality.toUpperCase()}</div>
 								)}
 							</div>
 							<div className="flex flex-col">

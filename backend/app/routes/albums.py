@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
+from sqlalchemy import func
 from sqlalchemy.orm import Session, selectinload, joinedload
 from sqlalchemy.future import select
 from app.database import get_db
@@ -12,14 +13,15 @@ router = APIRouter(prefix="/albums", tags=["albums"])
 # * GET Routes
 
 
-@router.get("/", response_model=list[AlbumDetails])
+@router.get("/", response_model=dict[int, AlbumDetails])
 def get_all_albums(db: Session = Depends(get_db)):
-    stmt = select(Album).options(joinedload(Album.artist), joinedload(Album.releases))
-    albums = db.execute(stmt).scalars().unique().all()
+    albums = db.query(Album).options(
+        joinedload(Album.artist), joinedload(Album.releases)
+    )
     if not albums:
         raise HTTPException(status_code=404, detail="No albums found")
 
-    return albums
+    return {album.id: album for album in albums}
 
 
 @router.get("/{album_id}", response_model=AlbumFull)
@@ -69,16 +71,27 @@ def get_albums_by_artist(artist_id: int, db: Session = Depends(get_db)):
 # * POST Routes
 
 
-@router.post("/", response_model=AlbumRead)
+@router.post("/", response_model=dict[int, AlbumRead])
 def create_album(album: AlbumCreate, db: Session = Depends(get_db)):
-    existing_album = db.query(Album).filter(Album.title == album.title).first()
+    print(album)
+    existing_album = (
+        db.query(Album)
+        .filter(func.lower(Album.title) == func.lower(album.title))
+        .first()
+    )
     if existing_album:
-        raise HTTPException(status_code=400, detail="Album already exists")
+        return {existing_album.id: existing_album}
 
-    new_album = Album(name=album.title, artist_id=album.artist_id)
+    new_album = Album(
+        title=album.title,
+        artist_id=album.artist_id,
+        track_data=album.track_data,
+        art=album.art,
+    )
 
     db.add(new_album)
     db.commit()
     db.refresh(new_album)
+    print(new_album)
 
-    return new_album
+    return {new_album.id: new_album}

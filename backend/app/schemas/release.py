@@ -21,8 +21,8 @@ class ReleaseBase(BaseModel):
 
 
 class ReleaseCreate(ReleaseBase):
-    artist: str
-    album: str
+    artist_id: int
+    album_id: int
     model_config = {"from_attributes": True}
 
 

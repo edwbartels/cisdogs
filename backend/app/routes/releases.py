@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import and_
+from sqlalchemy import and_, func
 from sqlalchemy.orm import Session, selectinload, joinedload, aliased
 from sqlalchemy.future import select
 from app.database import get_db
@@ -102,32 +102,25 @@ def get_releases_by_artist(artist_id: int, db: Session = Depends(get_db)):
 
 @router.post("/", response_model=ReleaseFull)
 def create_release(release: ReleaseCreateFull, db: Session = Depends(get_db)):
-    existing_artist = db.query(Artist).filter(Artist.name == release.artist).first()
+    print("im in")
+    existing_artist: Artist | None = (
+        db.query(Artist).filter(Artist.id == release.artist_id).first()
+    )
     if not existing_artist:
-        new_artist = Artist(name=release.artist)
-        db.add(new_artist)
-        db.commit()
-        db.refresh(new_artist)
-        print("Refreshed artist id---->", new_artist.id)
-    else:
-        new_artist = existing_artist
-    print("RIGHT BEFORE ALBUM QUERY ----> ARTIST.ID ----> ", new_artist.id)
-    existing_album = db.query(Album).filter(Album.title == release.album).first()
-    if not existing_album:
-        new_album = Album(
-            title=release.album, artist_id=new_artist.id, track_data=release.track_data
-        )
-        db.add(new_album)
-        db.commit()
-        db.refresh(new_album)
-    else:
-        new_album = existing_album
+        raise HTTPException(status_code=404, detail="Artist not found")
+    print("RIGHT BEFORE ALBUM QUERY ----> ARTIST.ID ----> ", existing_artist.id)
 
-    existing_release = (
+    existing_album: Album | None = (
+        db.query(Album).filter(Album.id == release.album_id).first()
+    )
+    if not existing_album:
+        raise HTTPException(status_code=404, detail="Album not found")
+    print("got past album")
+    existing_release: Release | None = (
         db.query(Release)
         .filter(
             and_(
-                Release.album_id == new_album.id,
+                Release.album_id == existing_album.id,
                 Release.media_type == release.media_type,
                 Release.variant == release.variant,
             )
@@ -139,14 +132,19 @@ def create_release(release: ReleaseCreateFull, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Release already exists")
 
     new_release = Release(
-        album_id=new_album.id,
+        album_id=existing_album.id,
         media_type=release.media_type,
         variant=release.variant,
     )
-
+    print("made the release!")
     db.add(new_release)
     db.commit()
+    print("commit to db")
     db.refresh(new_release)
-    new_release.artist = new_artist
+    new_release.artist = existing_artist
+    items = new_release.items
+    release_extras = {
+        "items": {item.id: item.owner for item in items},
+    }
 
-    return new_release
+    return (new_release, release_extras)

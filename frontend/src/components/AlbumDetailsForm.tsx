@@ -10,7 +10,7 @@ const AlbumDetailsForm: React.FC<AlbumDetailsFormProps> = ({ album }) => {
 	const navigate = useNavigate()
 	return (
 		<div className="flex flex-col self-center">
-			<div className="flex mt-8 self-center border  border-wax-silver w-4/5 text-xl min-w-[800px]">
+			<div className="flex mt-8 self-center border  border-wax-silver w-[90%] text-xl min-w-[800px]">
 				<div className="flex p-4 min-w-[300px] items-center  bg-wax-gray bg-opacity-15">
 					<img src={album.art || '/tile-background.png'} />
 				</div>

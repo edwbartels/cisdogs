@@ -17,14 +17,20 @@ const fetchWithAuth = async (
 		headers,
 	}
 
-	const response = await fetch(url, fetchOptions)
+	try {
+		const response = await fetch(url, fetchOptions)
 
-	if (!response.ok) {
-		console.error(`Fetch error: ${response.status} - ${response.statusText}`)
-		throw new Error(`Error: ${response.status}`)
+		if (!response.ok) {
+			console.error(`Fetch error: ${response.status} - ${response.statusText}`)
+			if (response.status === 400) alert('Already exists!')
+			throw new Error(`Error: ${response.status}`)
+		}
+
+		return response
+	} catch (e) {
+		console.error('FetchWithAuth error', e)
+		throw e
 	}
-
-	return response
 }
 
 export default fetchWithAuth

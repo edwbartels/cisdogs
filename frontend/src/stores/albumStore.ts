@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
+import fetchWithAuth from '../utils/fetch'
 
 export type Album = {
 	id: number
@@ -49,6 +50,21 @@ interface AlbumStore {
 	getFocus: (id: number) => Promise<void>
 	getAlbums: () => void
 	getByAlbums: (parent: string, id: number) => void
+	clearAlbums: () => void
+	addAlbum: (album: {
+		artist_id: number
+		title: string
+		track_data: { [key: number]: string }
+		art: string
+	}) => Promise<{
+		[key: number]: {
+			id: number
+			artist_id: number
+			title: string
+			track_data: { [key: number]: string }
+			art: string
+		}
+	}>
 }
 
 const useAlbumStore = create(
@@ -92,6 +108,27 @@ const useAlbumStore = create(
 					}
 					const data = await res.json()
 					set({ albums: data })
+				} catch (e) {
+					console.error(e)
+				}
+			},
+			clearAlbums: () => {
+				set({ albums: {} })
+			},
+			addAlbum: async (album) => {
+				try {
+					const url = '/api/albums/'
+					const res = await fetchWithAuth(url, {
+						method: 'POST',
+						body: JSON.stringify({ ...album }),
+						credentials: 'include',
+					})
+					if (!res.ok) {
+						throw new Error('Failed to add album')
+					}
+					const data = await res.json()
+					set((state) => ({ albums: { ...state.albums, data } }))
+					return data
 				} catch (e) {
 					console.error(e)
 				}

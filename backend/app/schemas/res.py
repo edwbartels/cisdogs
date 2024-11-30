@@ -42,7 +42,6 @@ class ReleaseFull(ReleaseRead):
     album: AlbumRead
     artist: ArtistRead
     items: dict[int, UserReadBrief] | None = None
-    listings: dict[int, ListingWithSeller] | None = None
     model_config = {"from_attributes": True}
 
 

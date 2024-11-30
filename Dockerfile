@@ -12,11 +12,6 @@ RUN pip install psycopg2
 
 COPY backend/ .
 
-
-# RUN alembic downgrade base
-# RUN alembic upgrade head
-# RUN python -m scripts.seed_db
-
 EXPOSE 8000
 
-CMD alembic downgrade base && alembic upgrade head && python -m scripts.seed_db && uvicorn app:main
+CMD alembic downgrade base && alembic upgrade head && python -m scripts.seed_db && uvicorn app:main --port 8000

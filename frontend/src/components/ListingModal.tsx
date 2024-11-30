@@ -238,13 +238,13 @@ const ListingModal: React.FC<ListingModalProps> = ({
 					</div>
 				)}
 				<form
-					className="flex flex-col items-center pt-1"
+					className="flex flex-col self-center w-3/5 pt-1"
 					onSubmit={handleSubmit}
 				>
 					<select
 						onChange={handleFormChange('quality')}
 						defaultValue={listingDetails.quality}
-						className="block w-3/5 p-2 mb-2 border rounded text-wax-black"
+						className="block w-full p-2 mb-2 border rounded text-wax-black"
 						required
 					>
 						<option value="" disabled>
@@ -260,30 +260,30 @@ const ListingModal: React.FC<ListingModalProps> = ({
 						onChange={handleFormChange('description')}
 						defaultValue={listingDetails.description}
 						placeholder="Description"
-						className="block w-3/5 p-1 mb-2 border rounded text-wax-black max-h-60"
+						className="block w-full p-1 mb-2 border rounded text-wax-black max-h-60"
 						rows={5}
 						required
 					/>
-					<div className="relative w3/5 mb-2">
-						<span className=" absolute inset-y-0 left-0 items-center pl-2 text-wax-gray">
+					<div className="relative w-full mb-2">
+						<span className="absolute inset-y-0 left-0 box-content self-center pl-2 text-wax-silver">
 							$
 						</span>
 						<input
 							type="number"
 							onChange={handleFormChange('price')}
 							defaultValue={listingDetails.price}
-							className="block w-full pl-6 p-1 border rounded text-wax-black"
+							className="block w-full box-content pl-6 p-1 border rounded text-wax-black"
 						/>
 					</div>
 					<button
 						type="submit"
-						className="w-2/5 py-2 mt-2 bg-green-700 border-4 rounded border-wax-silver text-wax-cream hover:border-green-700"
+						className="w-4/5 self-center py-2 mt-2 bg-green-700 border-4 rounded border-wax-silver text-wax-cream hover:border-green-700"
 					>
 						Post
 					</button>
 					<button
 						onClick={onClose}
-						className="w-1/5 px-4 py-2 mt-2 text-white border-4 rounded border-wax-silver bg-wax-red hover:border-wax-red"
+						className="w-3/5 self-center px-4 py-2 mt-2 text-white border-4 rounded border-wax-silver bg-wax-red hover:border-wax-red"
 					>
 						Close
 					</button>

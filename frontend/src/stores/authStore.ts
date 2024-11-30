@@ -5,7 +5,6 @@ import useItemStore from './itemStore'
 import useListingStore from './listingStore'
 import { jwtDecode } from 'jwt-decode'
 import fetchWithAuth from '../utils/fetch'
-import { get } from 'http'
 
 export type User = {
 	id: number

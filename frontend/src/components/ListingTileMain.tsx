@@ -26,8 +26,7 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 
 	const [activeDropdown, setActiveDropdown] = useState<DropdownOptions>(null)
 	const addOptions = []
-	if (!cart[listing.item.id])
-		addOptions.push({ label: 'To Cart', value: 'cart' })
+	if (!cart[listing.id]) addOptions.push({ label: 'To Cart', value: 'cart' })
 	// const addOptions = [{ label: 'To Cart', value: 'cart' }]
 	if (!collection?.has(listing?.release?.id))
 		addOptions.push({ label: 'To Collection', value: 'collection' })

@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import update, and_
 from sqlalchemy.orm import Session, joinedload
@@ -14,16 +15,16 @@ router = APIRouter(prefix="/listings", tags=["listings"])
 
 
 @router.get("/", response_model=dict[int, ListingDetail])
-def get_all_listings(db: Session = Depends(get_db)):
-    listings = db.query(Listing).filter(Listing.active).all()
+def get_all_listings(db: Session = Depends(get_db)) -> dict[int, ListingDetail]:
+    listings: List[Listing] = db.query(Listing).filter(Listing.active).all()
     if not listings:
         raise HTTPException(status_code=404, detail="No listings found")
     return {listing.id: listing for listing in listings}
 
 
 @router.get("/full", response_model=dict[int, ListingFull])
-def get_all_listings_full(db: Session = Depends(get_db)):
-    listings = (
+def get_all_listings_full(db: Session = Depends(get_db)) -> dict[int, ListingFull]:
+    listings: List[Listing] = (
         db.query(Listing)
         .filter(Listing.active)
         .options(
@@ -43,8 +44,8 @@ def get_all_listings_full(db: Session = Depends(get_db)):
 
 
 @router.get("/{listing_id}", response_model=ListingFull)
-def get_listing_by_id(listing_id: int, db: Session = Depends(get_db)):
-    listing = db.query(Listing).filter(Listing.id == listing_id).first()
+def get_listing_by_id(listing_id: int, db: Session = Depends(get_db)) -> ListingFull:
+    listing: Listing | None = db.query(Listing).filter(Listing.id == listing_id).first()
     if not listing:
         raise HTTPException(status_code=404, detail="Listing not found")
 
@@ -55,8 +56,10 @@ def get_listing_by_id(listing_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/artist/{artist_id}", response_model=dict[int, ListingFull])
-def get_listings_by_artist(artist_id: int, db: Session = Depends(get_db)):
-    listings = (
+def get_listings_by_artist(
+    artist_id: int, db: Session = Depends(get_db)
+) -> dict[int, ListingFull]:
+    listings: List[Listing] = (
         db.query(Listing)
         .filter(Listing.active)
         .options(

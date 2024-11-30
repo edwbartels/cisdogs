@@ -19,6 +19,7 @@ def get_watchlist(db, user_id):
     items: List[Row[Tuple[int]]] = (
         db.query(Watchlist.release_id).filter(Watchlist.user_id == user_id).all()
     )
+    print("In helper function --->", items)
     return [item.release_id for item in items]
 
 
@@ -37,6 +38,7 @@ def get_user_collection(
     # )
     if user_id:
         return [item.release_id for item in collection]
+    return []
 
 
 @router.get("/watchlist", response_model=list[int])
@@ -45,6 +47,7 @@ def get_user_watchlist(
 ) -> list[int] | None:
     if user_id:
         return get_watchlist(db, user_id)
+    return []
 
 
 # * POST Routes

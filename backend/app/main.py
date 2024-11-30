@@ -29,11 +29,14 @@ async def read_root():
 
 @app.get("/{full_path:path}")
 async def serve_frontend(full_path: str):
-    # Check if the requested file exists in the static directory
+    # Serve index.html only for non-API routes
+    if full_path.startswith("api/"):
+        return {
+            "detail": "Not Found"
+        }  # Optional: FastAPI will handle 404s automatically if omitted
     static_file = f"app/static/{full_path}"
     if os.path.exists(static_file):
         return FileResponse(static_file)
-    # If not, return index.html for frontend routing
     return FileResponse("app/static/index.html")
 
 

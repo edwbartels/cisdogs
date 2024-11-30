@@ -269,7 +269,9 @@ const ListingModal: React.FC<ListingModalProps> = ({
 						onChange={handleFormChange('price')}
 						defaultValue={listingDetails.price}
 						className="block w-3/5 p-1 mb-2 border rounded text-wax-black"
-					/>
+					>
+						${' '}
+					</input>
 					<button
 						type="submit"
 						className="w-2/5 py-2 mt-2 bg-green-700 border-4 rounded border-wax-silver text-wax-cream hover:border-green-700"

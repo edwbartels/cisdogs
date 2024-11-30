@@ -76,7 +76,7 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 					<div className="flex flex-col justify-between w-1/2">
 						<div>
 							<div className="flex flex-col w-4/5 ">
-								<div className="ml-2 font-semibold underline">Artist</div>
+								<div className="ml-2 font-semibold">Artist</div>
 								<div
 									className="pl-2 max-w-fit cursor-pointer hover:underline"
 									onClick={() => navigate(`/artist/${listing.artist.id}`)}

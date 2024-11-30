@@ -3,6 +3,7 @@ import { Item } from '../stores/itemStore'
 import useAuthStore from '../stores/authStore'
 import useModalStore from '../stores/modalStore'
 import { useNavigate } from 'react-router-dom'
+import { capitalizeFirst } from '../utils/capitalize'
 
 interface ItemDetailsFormProps {
 	item: Item | null
@@ -25,19 +26,34 @@ const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
 						<div>
 							<div className="flex flex-col w-4/5 ">
 								<div className="ml-2 font-semibold">Artist</div>
-								<div className="pl-2">{item?.artist.name}</div>
+								<div
+									className="pl-2 max-w-fit cursor-pointer hover:underline"
+									onClick={() => navigate(`/artist/${item?.artist.id}`)}
+								>
+									{item && capitalizeFirst(item.artist.name)}
+								</div>
 							</div>
 							<div className="flex flex-col w-4/5 ">
 								<div className="mt-1 ml-2 font-semibold">Album</div>
-								<div className="pl-2">{item?.album.title}</div>
-							</div>
-							<div className="flex flex-col w-4/5 ">
-								<div className="mt-1 ml-2 font-semibold">Release Variant</div>
-								<div className="pl-2">{item?.release.variant}</div>
+								<div
+									className="pl-2 max-w-fit cursor-pointer hover:underline"
+									onClick={() => navigate(`/album/${item?.album.id}`)}
+								>
+									{item && capitalizeFirst(item?.album.title)}
+								</div>
 							</div>
 							<div className="flex flex-col w-4/5">
 								<div className="mt-1 ml-2 font-semibold">Format</div>
 								<div className="pl-2">{item?.release.media_type}</div>
+							</div>
+							<div className="flex flex-col w-4/5 ">
+								<div className="mt-1 ml-2 font-semibold">Release Variant</div>
+								<div
+									className="max-w-fit pl-2 cursor-pointer hover:underline"
+									onClick={() => navigate(`/release/${item?.release.id}`)}
+								>
+									{item && capitalizeFirst(item?.release.variant)}
+								</div>
 							</div>
 						</div>
 						{item?.listing ? (

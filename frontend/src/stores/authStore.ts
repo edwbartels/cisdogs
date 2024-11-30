@@ -160,7 +160,7 @@ const useAuthStore = create(
 				}),
 				{
 					name: 'authStore',
-					onRehydrateStorage: () => {
+					onRehydrateStorage: () => () => {
 						const authState = useAuthStore.getState()
 						const userStore = useUserStore.getState()
 						if (authState.isLoggedIn) {
@@ -169,8 +169,10 @@ const useAuthStore = create(
 								userStore.getWatchlist()
 							}, 0)
 						} else {
-							useUserStore.setState({ collection: new Set() })
-							useUserStore.setState({ watchlist: new Set() })
+							setTimeout(() => {
+								useUserStore.setState({ collection: new Set() })
+								useUserStore.setState({ watchlist: new Set() })
+							}, 0)
 						}
 					},
 				}

@@ -31,11 +31,8 @@ def get_user_collection(
     collection: List[Row[Tuple[int]]] = (
         db.query(Item.release_id).filter(Item.owner_id == user_id).all()
     )
-    # collection = (
-    #     db.execute(select(Item.release_id).where(Item.owner_id == user_id).distinct())
-    #     .scalars()
-    #     .all()
-    # )
+    print("Collection: post-query --->", collection)
+
     if user_id:
         return [item.release_id for item in collection]
     return []
@@ -45,9 +42,11 @@ def get_user_collection(
 def get_user_watchlist(
     db: Session = Depends(get_db), user_id: int = Depends(get_user_id)
 ) -> list[int] | None:
-    if user_id:
-        return get_watchlist(db, user_id)
-    return []
+    watchlist: List[Row[Tuple[int]]] = (
+        db.query(Watchlist.release_id).filter(Watchlist.user_id == user_id).all()
+    )
+    print("Watchlist: post-query ---> ", watchlist)
+    return [item.release_id for item in watchlist]
 
 
 # * POST Routes
@@ -71,7 +70,11 @@ def add_to_watchlist(
         raise HTTPException(
             status_code=500, detail=f"Failed to add item to watchlist: {str(e)}"
         )
-    return get_watchlist(db, user_id)
+    watchlist: List[Row[Tuple[int]]] = (
+        db.query(Watchlist.release_id).filter(Watchlist.user_id == user_id).all()
+    )
+    print("Watchlist: post-query --->", watchlist)
+    return [item.release_id for item in watchlist]
 
 
 @router.post("/checkout", response_model=list[OrderRead])
@@ -81,7 +84,7 @@ def checkout(
     db: Session = Depends(get_db),
 ) -> list[OrderRead]:
     try:
-        orders = []
+        orders: list[Order | OrderCreate | OrderRead] = []
         for order in cart:
             if user_id != order.buyer_id:
                 raise HTTPException(status_code=403, detail="Not authenticated")
@@ -90,7 +93,7 @@ def checkout(
                     status_code=403, detail="Cannot purchase an item you own"
                 )
 
-            listing = (
+            listing: Listing | None = (
                 db.execute(select(Listing).where(Listing.id == order.listing_id))
                 .scalars()
                 .first()

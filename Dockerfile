@@ -8,7 +8,7 @@ WORKDIR /var/www/backend
 COPY backend/requirements.txt .
 
 RUN pip install -r requirements.txt
-RUN pip install psycopg2
+# RUN pip install psycopg2
 
 COPY backend/ .
 

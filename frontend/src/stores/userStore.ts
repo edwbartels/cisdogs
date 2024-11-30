@@ -120,8 +120,9 @@ const useUserStore = create(
 						throw new Error('Failed to add to watchlist')
 					}
 					const data = await res.json()
+					console.log(data)
 					set({ watchlist: new Set(data) })
-					console.log(new Set(data))
+					// console.log(new Set(data))
 				} catch (e) {
 					console.error(e)
 				}

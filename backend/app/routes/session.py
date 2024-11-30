@@ -18,16 +18,16 @@ def get_watchlist(db, user_id):
 
 
 # * GET Routes
-@router.get("/collection", response_model=set[int])
+@router.get("/collection", response_model=list[int])
 def get_user_collection(
     db: Session = Depends(get_db), user_id: int = Depends(get_user_id)
-) -> set[int]:
+) -> list[int]:
     collection = (
         db.execute(select(Item.release_id).where(Item.owner_id == user_id).distinct())
         .scalars()
         .all()
     )
-    return set(collection)
+    return list(set(collection))
 
 
 @router.get("/watchlist", response_model=set[int])

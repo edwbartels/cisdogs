@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import fetchWithAuth from '../utils/fetch'
-import { json } from 'stream/consumers'
 
 export type Artist = {
 	id: number

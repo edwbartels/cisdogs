@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useUserStore from '../stores/userStore'
-import DashboardOrderTile from './DashboardOrderTile'
 import { Order } from '../stores/orderStore'
 import { capitalizeFirst } from '../utils/capitalize'
 
@@ -9,7 +8,6 @@ const DashboardOrders = () => {
 	const navigate = useNavigate()
 	const { orders, getOrders } = useUserStore((state) => state)
 	const { sales, purchases } = useUserStore((state) => state.orders)
-	// const purchases = useUserStore((state) => state.orders.purchases)
 	const [activeTab, setActiveTab] = useState<'all' | 'sales' | 'purchases'>(
 		'all'
 	)

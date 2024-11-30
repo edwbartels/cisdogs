@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import useAuthStore from '../stores/authStore'
 import fetchWithAuth from '../utils/fetch'
-import SignInModal from './SignInModal'
 import useModalStore from '../stores/modalStore'
 
 interface SignUpModalProps {

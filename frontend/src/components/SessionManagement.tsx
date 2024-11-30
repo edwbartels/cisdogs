@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import SessionButton from './SessionButton'
 import SignInModal from './SignInModal'
 import SignUpModal from './SignUpModal'

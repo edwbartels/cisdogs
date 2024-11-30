@@ -1,18 +1,13 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
 import ListingModal from './ListingModal'
-import SignInModal from './SignInModal'
 import useAuthStore from '../stores/authStore'
 import fetchWithAuth from '../utils/fetch'
 import useModalStore from '../stores/modalStore'
 import NavUserLink from './NavUserLink'
 
 const QuickCreate: React.FC = () => {
-	const navigate = useNavigate()
 	const { isLoggedIn } = useAuthStore()
-	const { activeModal, setActiveModal, next, setNext } = useModalStore(
-		(state) => state
-	)
+	const { activeModal, setActiveModal } = useModalStore((state) => state)
 	const [listingModalData, setListingModalData] = useState(null)
 
 	const handleOpenListingModal = async () => {

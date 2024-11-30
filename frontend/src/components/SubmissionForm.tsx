@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useArtistStore from '../stores/artistStore'
 import useAlbumStore from '../stores/albumStore'
 import useReleaseStore from '../stores/releaseStore'
 import fetchWithAuth from '../utils/fetch'
-import { release } from 'os'
 
 type TrackData = {
 	[key: string]: string
@@ -34,7 +33,6 @@ const SubmissionForm = () => {
 	const getReleases = useReleaseStore((state) => state.getReleases)
 	const [selectedArtist, setSelectedArtist] = useState<number | null>(null)
 	const [selectedAlbum, setSelectedAlbum] = useState<number | null>(null)
-	const [readyForSubmit, setReadyForSubmit] = useState<boolean>(false)
 
 	useEffect(() => {
 		getArtists()

@@ -8,6 +8,7 @@ interface CartItem {
 	seller_id: number
 	price: number
 	release: string
+	release_id: number
 	album: string
 	artist: string
 }

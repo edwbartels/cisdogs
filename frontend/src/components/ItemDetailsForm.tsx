@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Item } from '../stores/itemStore'
 import useAuthStore from '../stores/authStore'
-import ListingModal from './ListingModal'
 import useModalStore from '../stores/modalStore'
 import { useNavigate } from 'react-router-dom'
 
@@ -12,7 +11,7 @@ interface ItemDetailsFormProps {
 const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
 	const navigate = useNavigate()
 	const isOwner = item?.owner.id === useAuthStore((state) => state.user?.id)
-	const { activeModal, setActiveModal } = useModalStore((state) => state)
+	const { setActiveModal } = useModalStore((state) => state)
 	return (
 		<div className="flex mt-8 border bg-wax-gray bg-opacity-15 border-wax-silver">
 			<div className="flex flex-col p-4">

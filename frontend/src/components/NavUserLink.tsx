@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAuthStore from '../stores/authStore'
 import useModalStore from '../stores/modalStore'
-import SignInModal from './SignInModal'
 
 interface NavUserLinkProps {
 	title: string
@@ -12,9 +11,7 @@ interface NavUserLinkProps {
 const NavUserLink: React.FC<NavUserLinkProps> = ({ title, to }) => {
 	const isLoggedIn = useAuthStore((state) => state.isLoggedIn)
 	const navigate = useNavigate()
-	const { activeModal, setActiveModal, next, setNext } = useModalStore(
-		(state) => state
-	)
+	const { setActiveModal, next, setNext } = useModalStore((state) => state)
 	useEffect(() => {
 		if (next) {
 			navigate(next)
@@ -23,10 +20,6 @@ const NavUserLink: React.FC<NavUserLinkProps> = ({ title, to }) => {
 			setNext(null)
 		}
 	}, [isLoggedIn])
-
-	const handleClose = () => {
-		setActiveModal(null)
-	}
 
 	const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
 		e.preventDefault()

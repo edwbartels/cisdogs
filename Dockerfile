@@ -13,8 +13,8 @@ RUN pip install psycopg2
 COPY backend/ .
 
 
-RUN alembic downgrade base
-RUN alembic upgrade head
+# RUN alembic downgrade base
+# RUN alembic upgrade head
 # RUN python -m scripts.seed_db
 
 EXPOSE 8000

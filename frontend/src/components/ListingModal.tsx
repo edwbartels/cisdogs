@@ -46,14 +46,20 @@ const ListingModal: React.FC<ListingModalProps> = ({
 	// if
 	const [listingDetails, setListingDetails] = useState({
 		item_id: item?.id || null,
-		seller_id: item?.owner.id,
+		seller_id: item?.owner.id || null,
 		price: 0,
 		quality: '',
 		description: '',
 	})
-	const [selectedArtist, setSelectedArtist] = useState<number | null>(null)
-	const [selectedAlbum, setSelectedAlbum] = useState<number | null>(null)
-	const [selectedRelease, setSelectedRelease] = useState<number | null>(null)
+	const [selectedArtist, setSelectedArtist] = useState<number | null>(
+		item?.artist.id || null
+	)
+	const [selectedAlbum, setSelectedAlbum] = useState<number | null>(
+		item?.album.id || null
+	)
+	const [selectedRelease, setSelectedRelease] = useState<number | null>(
+		item?.release.id || null
+	)
 	const clearInfo = () => {
 		setSelectedArtist(null)
 		setSelectedAlbum(null)
@@ -111,7 +117,7 @@ const ListingModal: React.FC<ListingModalProps> = ({
 		setListingDetails({
 			...listingDetails,
 			item_id: itemId || null,
-			seller_id: userId,
+			seller_id: userId || null,
 		})
 	}
 

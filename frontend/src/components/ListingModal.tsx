@@ -264,14 +264,17 @@ const ListingModal: React.FC<ListingModalProps> = ({
 						rows={5}
 						required
 					/>
-					<input
-						type="number"
-						onChange={handleFormChange('price')}
-						defaultValue={listingDetails.price}
-						className="block w-3/5 p-1 mb-2 border rounded text-wax-black"
-					>
-						${' '}
-					</input>
+					<div className="relative w3/5 mb-2">
+						<span className=" absolute inset-y-0 left-0 items-center pl-2 text-wax-gray">
+							$
+						</span>
+						<input
+							type="number"
+							onChange={handleFormChange('price')}
+							defaultValue={listingDetails.price}
+							className="block w-full pl-6 p-1 border rounded text-wax-black"
+						/>
+					</div>
 					<button
 						type="submit"
 						className="w-2/5 py-2 mt-2 bg-green-700 border-4 rounded border-wax-silver text-wax-cream hover:border-green-700"

@@ -15,6 +15,7 @@ from app.routes import (
     users,
     watchlist,
 )
+import os
 
 # Initialize app
 app = FastAPI()
@@ -28,6 +29,11 @@ async def read_root():
 
 @app.get("/{full_path:path}")
 async def serve_frontend(full_path: str):
+    # Check if the requested file exists in the static directory
+    static_file = f"app/static/{full_path}"
+    if os.path.exists(static_file):
+        return FileResponse(static_file)
+    # If not, return index.html for frontend routing
     return FileResponse("app/static/index.html")
 
 

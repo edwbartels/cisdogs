@@ -5,6 +5,7 @@ import useItemStore from './itemStore'
 import useListingStore from './listingStore'
 import { jwtDecode } from 'jwt-decode'
 import fetchWithAuth from '../utils/fetch'
+import { get } from 'http'
 
 export type User = {
 	id: number
@@ -161,10 +162,17 @@ const useAuthStore = create(
 				{
 					name: 'authStore',
 					onRehydrateStorage: () => {
-						setTimeout(() => {
-							useUserStore.getState().getCollection()
-							useUserStore.getState().getWatchlist()
-						}, 0)
+						const authState = useAuthStore.getState()
+						const userStore = useUserStore.getState()
+						if (authState.isLoggedIn) {
+							setTimeout(() => {
+								userStore.getCollection()
+								userStore.getWatchlist()
+							}, 0)
+						} else {
+							useUserStore.setState({ collection: new Set() })
+							useUserStore.setState({ watchlist: new Set() })
+						}
 					},
 				}
 			)

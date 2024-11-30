@@ -1,6 +1,8 @@
 import React from 'react'
 import { Release } from '../stores/releaseStore'
 import { useNavigate } from 'react-router-dom'
+import useUserStore from '../stores/userStore'
+import useAuthStore from '../stores/authStore'
 
 interface ReleaseDetailsFormProps {
 	release: Release
@@ -8,6 +10,9 @@ interface ReleaseDetailsFormProps {
 
 const ReleaseDetailsForm: React.FC<ReleaseDetailsFormProps> = ({ release }) => {
 	const navigate = useNavigate()
+	const isLoggedIn = useAuthStore((state) => state.isLoggedIn)
+	const userId = useAuthStore((state) => state.user?.id)
+	const { collection, addToCollection } = useUserStore((state) => state)
 	return (
 		<div className="flex mt-8 border bg-wax-gray bg-opacity-15 border-wax-silver">
 			<div className="flex flex-col p-4">
@@ -45,6 +50,20 @@ const ReleaseDetailsForm: React.FC<ReleaseDetailsFormProps> = ({ release }) => {
 								<div className="mt-1 ml-2 font-semibold">Release Variant</div>
 								<div className="pl-2">{release.variant}</div>
 							</div>
+							{isLoggedIn && userId && !collection?.has(release.id) && (
+								<button
+									type="button"
+									onClick={() =>
+										addToCollection({
+											release_id: release.id,
+											owner_id: userId,
+										})
+									}
+									className="self-center text-center self-center w-3/5 ml-1 rounded-md ring-2 ring-wax-cream text-wax-cream bg-green-700 hover:ring-4 hover:ring-wax-gray cursor-pointer disabled:cursor-default disabled:bg-opacity-50 disabled:hover:ring-2 disabled:hover:ring-wax-cream"
+								>
+									Add to Collection
+								</button>
+							)}
 						</div>
 					</div>
 					<div className="flex flex-col items-center justify-between w-1/2">

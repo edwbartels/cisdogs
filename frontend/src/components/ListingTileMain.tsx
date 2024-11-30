@@ -17,6 +17,7 @@ type DropdownOptions = 'remove' | 'extra' | 'add' | null
 
 const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 	const userId = useAuthStore((state) => state.user?.id)
+	const isLoggedIn = useAuthStore((state) => state.isLoggedIn)
 	const listing: Listing = useListingStore((state) => state.listings[listingId])
 	const { cart, addToCart } = useAuthStore((state) => state)
 
@@ -28,7 +29,7 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 	const addOptions = []
 	if (!cart[listing.id]) addOptions.push({ label: 'To Cart', value: 'cart' })
 	// const addOptions = [{ label: 'To Cart', value: 'cart' }]
-	if (!collection?.has(listing?.release?.id))
+	if (isLoggedIn && !collection?.has(listing?.release?.id))
 		addOptions.push({ label: 'To Collection', value: 'collection' })
 
 	const extraOptions = [

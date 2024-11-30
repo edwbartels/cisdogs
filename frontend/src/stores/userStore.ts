@@ -87,7 +87,7 @@ const useUserStore = create(
 					set((state) => {
 						const updatedSet = new Set(state.collection)
 						console.log(data.release_id)
-						!updatedSet.has(data.release_id) && updatedSet.add(data.release_id)
+						!updatedSet.has(data.release_id) && updatedSet.add(data?.release_id)
 						return { collection: updatedSet }
 					})
 				} catch (e) {

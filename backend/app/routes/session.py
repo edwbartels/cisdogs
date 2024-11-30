@@ -14,27 +14,30 @@ router = APIRouter(tags=["session"])
 # * Helpers
 def get_watchlist(db, user_id):
     stmt = select(Watchlist.release_id).where(Watchlist.user_id == user_id).distinct()
-    return list(set(db.execute(stmt).scalars().all()))
+    response = db.execute(stmt).scalars().all()
+    return list(response)
 
 
 # * GET Routes
 @router.get("/collection", response_model=list[int])
 def get_user_collection(
     db: Session = Depends(get_db), user_id: int = Depends(get_user_id)
-) -> list[int]:
+) -> list[int] | None:
     collection = (
         db.execute(select(Item.release_id).where(Item.owner_id == user_id).distinct())
         .scalars()
         .all()
     )
-    return list(set(collection))
+    if user_id:
+        return list(set(collection))
 
 
 @router.get("/watchlist", response_model=list[int])
 def get_user_watchlist(
     db: Session = Depends(get_db), user_id: int = Depends(get_user_id)
-) -> list[int]:
-    return get_watchlist(db, user_id)
+) -> list[int] | None:
+    if user_id:
+        return get_watchlist(db, user_id)
 
 
 # * POST Routes
@@ -151,12 +154,12 @@ def checkout(
 # * DELETE ROUTES
 
 
-@router.delete("/watchlist", response_model=set[int])
+@router.delete("/watchlist", response_model=list[int])
 def remove_from_watchlist(
     request: WatchReq,
     db: Session = Depends(get_db),
     user_id: int = Depends(get_user_id),
-) -> set[int]:
+) -> list[int]:
     if user_id != request.user_id:
         raise HTTPException(status_code=403, detail="Not authorized")
     stmt = delete(Watchlist).where(

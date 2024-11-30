@@ -26,6 +26,11 @@ async def read_root():
     return FileResponse("app/static/index.html")
 
 
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    return FileResponse("app/static/index.html")
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],

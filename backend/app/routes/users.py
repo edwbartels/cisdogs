@@ -108,7 +108,7 @@ def get_listing_modal_data(
             not_(
                 select(Listing)
                 .where(Listing.item_id == Item.id)
-                .where(Listing.active.is_(True))
+                .where(Listing.active)
                 .exists()
             )
         )

@@ -130,6 +130,8 @@ const ListingModal: React.FC<ListingModalProps> = ({
 		}
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
+		item && setListingDetails({ ...listingDetails, item_id: item.id })
+		userId && setListingDetails({ ...listingDetails, seller_id: userId })
 		try {
 			const url = '/api/listings/'
 			const res = await fetchWithAuth(url, {

@@ -13,8 +13,9 @@ RUN pip install -r requirements.txt
 COPY backend/ .
 
 
-RUN flask db upgrade
-RUN flask seed
+RUN alembic downgrade base
+RUN alembic upgrade head
+RUN python -m scripts.seed_db
 
 EXPOSE 8000
 

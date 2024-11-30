@@ -102,7 +102,7 @@ def logout(response: Response, db: Session = Depends(get_db)):
 
 
 @router.post("/signup", response_model=LoginResponse)
-def signup(req: UserCreate, db: Session = Depends(get_db)):
+def signup(response: Response, req: UserCreate, db: Session = Depends(get_db)):
     user = (
         db.query(User)
         .filter(or_(User.email == req.email, User.username == req.username))
@@ -121,7 +121,18 @@ def signup(req: UserCreate, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(new_user)
 
-        access_token = create_access_token(data={"sub": new_user.id})
+        access_token = create_access_token(data={"sub": str(new_user.id)})
+        refresh_token = create_refresh_token({"sub": str(new_user.id)})
+
+        response.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            httponly=True,
+            secure=True,
+            samesite="strict",
+            max_age=7 * 24 * 60 * 60,
+        )
+
         return (new_user, {"access_token": access_token, "token_type": "bearer"})
     if user.email == req.email:
         raise HTTPException(

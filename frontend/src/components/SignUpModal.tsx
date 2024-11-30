@@ -53,7 +53,6 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 		try {
 			const res = await fetchWithAuth(url, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(signupForm),
 			})
 			if (!res.ok) {
@@ -61,8 +60,8 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 				setErrors({ ...errors, fetch: error })
 				throw new Error('Login failed')
 			}
-			const { access_token, user } = await res.json()
-			useAuthStore.getState().login(user, access_token)
+			const { access_token, token_type, ...remaining } = await res.json()
+			useAuthStore.getState().login(remaining, access_token)
 			handleClose()
 		} catch (e) {
 			setErrors({ ...errors, fetch: 'Invalid credentials' })

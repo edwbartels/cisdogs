@@ -265,14 +265,14 @@ const ListingModal: React.FC<ListingModalProps> = ({
 						required
 					/>
 					<div className="relative w-full mb-2">
-						<span className="absolute inset-y-0 left-0 box-content self-center pl-2 text-wax-silver">
+						<span className="absolute inset-y-0 left-0 self-center pl-2 text-wax-silver">
 							$
 						</span>
 						<input
 							type="number"
 							onChange={handleFormChange('price')}
 							defaultValue={listingDetails.price}
-							className="block w-full box-content pl-6 p-1 border rounded text-wax-black"
+							className="block w-full  pl-6 p-1 border rounded text-wax-black"
 						/>
 					</div>
 					<button

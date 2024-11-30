@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import useItemStore from '../stores/itemStore'
 import useAuthStore from '../stores/authStore'
 import fetchWithAuth from '../utils/fetch'
@@ -60,13 +60,19 @@ const ListingModal: React.FC<ListingModalProps> = ({
 	const [selectedRelease, setSelectedRelease] = useState<number | null>(
 		item?.release.id || null
 	)
+	useEffect(() => {
+		setListingDetails({
+			...listingDetails,
+			item_id: item?.id || null,
+			seller_id: userId || null,
+		})
+	}, [item, userId])
 	const clearInfo = () => {
 		setSelectedArtist(null)
 		setSelectedAlbum(null)
 		setSelectedRelease(null)
 		setListingDetails({
 			...listingDetails,
-			item_id: null,
 			price: 0,
 			quality: '',
 			description: '',

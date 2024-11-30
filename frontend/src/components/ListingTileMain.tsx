@@ -18,14 +18,17 @@ type DropdownOptions = 'remove' | 'extra' | 'add' | null
 const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 	const userId = useAuthStore((state) => state.user?.id)
 	const listing: Listing = useListingStore((state) => state.listings[listingId])
-	const addToCart = useAuthStore((state) => state.addToCart)
+	const { cart, addToCart } = useAuthStore((state) => state)
 
 	const { collection, addToCollection } = useUserStore((state) => state)
 	const userListings: number[] = useUserStore((state) => state.listingIds)
 	const navigate = useNavigate()
 
 	const [activeDropdown, setActiveDropdown] = useState<DropdownOptions>(null)
-	const addOptions = [{ label: 'To Cart', value: 'cart' }]
+	const addOptions = []
+	if (!cart[listing.item.id])
+		addOptions.push({ label: 'To Cart', value: 'cart' })
+	// const addOptions = [{ label: 'To Cart', value: 'cart' }]
 	if (!collection?.has(listing?.release?.id))
 		addOptions.push({ label: 'To Collection', value: 'collection' })
 

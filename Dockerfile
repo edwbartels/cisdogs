@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.11
 
 ARG SCHEMA
 ARG DATABASE_URL
@@ -8,14 +8,14 @@ WORKDIR /var/www/backend
 COPY backend/requirements.txt .
 
 RUN pip install -r requirements.txt
-# RUN pip install psycopg2
+RUN pip install psycopg2
 
 COPY backend/ .
 
 
 RUN alembic downgrade base
 RUN alembic upgrade head
-RUN python -m scripts.seed_db
+RUN python app.scripts.seed_db
 
 EXPOSE 8000
 

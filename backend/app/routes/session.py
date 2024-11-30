@@ -178,10 +178,15 @@ def remove_from_watchlist(
 ) -> list[int]:
     if user_id != request.user_id:
         raise HTTPException(status_code=403, detail="Not authorized")
-    d: Query[Watchlist] = db.query(Watchlist).filter(
-        Watchlist.user_id == user_id, Watchlist.release_id == request.release_id
+    d: Query[Watchlist] = (
+        db.query(Watchlist)
+        .filter(
+            Watchlist.user_id == user_id, Watchlist.release_id == request.release_id
+        )
+        .first()
     )
-
+    if not d:
+        raise HTTPException(status_code=404, detail="Watchlist item not found")
     try:
         db.delete(d)
         db.commit()

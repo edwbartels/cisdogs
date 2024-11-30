@@ -60,11 +60,6 @@ api_router.include_router(watchlist.router)
 app.include_router(api_router)
 
 
-@app.get("/")
-async def read_root():
-    return FileResponse("app/static/index.html")
-
-
 @app.get("/{full_path:path}")
 async def serve_frontend(full_path: str):
     # Serve index.html only for non-API routes
@@ -75,6 +70,11 @@ async def serve_frontend(full_path: str):
     static_file = f"app/static/{full_path}"
     if os.path.exists(static_file):
         return FileResponse(static_file)
+    return FileResponse("app/static/index.html")
+
+
+@app.get("/")
+async def read_root():
     return FileResponse("app/static/index.html")
 
 

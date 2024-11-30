@@ -30,24 +30,6 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 
-@app.get("/")
-async def read_root():
-    return FileResponse("app/static/index.html")
-
-
-@app.get("/{full_path:path}")
-async def serve_frontend(full_path: str):
-    # Serve index.html only for non-API routes
-    # if full_path.startswith("api/"):
-    #     return {
-    #         "detail": "Not Found"
-    #     }  # Optional: FastAPI will handle 404s automatically if omitted
-    static_file = f"app/static/{full_path}"
-    if os.path.exists(static_file):
-        return FileResponse(static_file)
-    return FileResponse("app/static/index.html")
-
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -76,5 +58,24 @@ api_router.include_router(reviews.router)
 api_router.include_router(watchlist.router)
 
 app.include_router(api_router)
+
+
+@app.get("/")
+async def read_root():
+    return FileResponse("app/static/index.html")
+
+
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    # Serve index.html only for non-API routes
+    # if full_path.startswith("api/"):
+    #     return {
+    #         "detail": "Not Found"
+    #     }  # Optional: FastAPI will handle 404s automatically if omitted
+    static_file = f"app/static/{full_path}"
+    if os.path.exists(static_file):
+        return FileResponse(static_file)
+    return FileResponse("app/static/index.html")
+
 
 logger.info("Application is ready and routes are configured.")

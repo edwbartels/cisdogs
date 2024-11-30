@@ -1,6 +1,9 @@
+from typing import List, Tuple
 from fastapi import APIRouter, Depends, Request
 from sqlalchemy import select, insert, delete
+from sqlalchemy.engine.row import Row
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.query import Query
 from app.database import get_db
 from app.models import Item, Listing, Order
 from app.models.watchlist import Watchlist
@@ -13,9 +16,10 @@ router = APIRouter(tags=["session"])
 
 # * Helpers
 def get_watchlist(db, user_id):
-    stmt = select(Watchlist.release_id).where(Watchlist.user_id == user_id).distinct()
-    response = db.execute(stmt).scalars().all()
-    return list(response)
+    items: List[Row[Tuple[int]]] = (
+        db.query(Watchlist.release_id).filter(Watchlist.user_id == user_id).all()
+    )
+    return [item.release_id for item in items]
 
 
 # * GET Routes
@@ -23,13 +27,16 @@ def get_watchlist(db, user_id):
 def get_user_collection(
     db: Session = Depends(get_db), user_id: int = Depends(get_user_id)
 ) -> list[int] | None:
-    collection = (
-        db.execute(select(Item.release_id).where(Item.owner_id == user_id).distinct())
-        .scalars()
-        .all()
+    collection: List[Row[Tuple[int]]] = (
+        db.query(Item.release_id).filter(Item.owner_id == user_id).all()
     )
+    # collection = (
+    #     db.execute(select(Item.release_id).where(Item.owner_id == user_id).distinct())
+    #     .scalars()
+    #     .all()
+    # )
     if user_id:
-        return list(set(collection))
+        return [item.release_id for item in collection]
 
 
 @router.get("/watchlist", response_model=list[int])
@@ -51,10 +58,9 @@ def add_to_watchlist(
 ) -> list[int]:
     if user_id != request.user_id:
         raise HTTPException(status_code=403, detail="Not authorized")
-
-    stmt = insert(Watchlist).values(user_id=user_id, release_id=request.release_id)
+    add = Watchlist(user_id=user_id, release_id=request.release_id)
     try:
-        db.execute(stmt)
+        db.add(add)
         db.commit()
         print(f"Release {request.release_id} add to user {user_id}'s watchlist")
     except Exception as e:
@@ -162,12 +168,12 @@ def remove_from_watchlist(
 ) -> list[int]:
     if user_id != request.user_id:
         raise HTTPException(status_code=403, detail="Not authorized")
-    stmt = delete(Watchlist).where(
+    d: Query[Watchlist] = db.query(Watchlist).filter(
         Watchlist.user_id == user_id, Watchlist.release_id == request.release_id
     )
 
     try:
-        db.execute(stmt)
+        db.delete(d)
         db.commit()
         print(f"Removed release {request.release_id} from user's {user_id} watchlist")
     except Exception as e:

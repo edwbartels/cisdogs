@@ -1,5 +1,8 @@
 FROM python:3.11-slim
 
+ARG SCHEMA
+ARG DATABASE_URL
+
 WORKDIR /var/www/backend
 
 COPY backend/requirements.txt .

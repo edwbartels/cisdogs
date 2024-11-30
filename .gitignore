@@ -31,7 +31,7 @@ coverage/
 *.sqlite3
 *.db
 # Ignore Seed files
-seeders/
+# seeders/
 # Ignore editor-specific files
 .vscode/
 .idea/

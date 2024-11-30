@@ -1,12 +1,21 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import WatchlistReleases from './WatchlistReleases'
 import WatchlistListings from './WatchlistListings'
+import useAuthStore from '../stores/authStore'
 
 const Watchlist = () => {
+	const navigate = useNavigate()
+	const isLoggedIn = useAuthStore((state) => state.isLoggedIn)
 	const [activeTab, setActiveTab] = useState<string>('releases')
 	const handleTabClick = (tab: string) => {
 		setActiveTab(tab)
 	}
+
+	useEffect(() => {
+		!isLoggedIn && navigate('/')
+	}, [isLoggedIn])
+
 	return (
 		<div className="w-full dashboard-container">
 			<div className="pb-8 text-center text-9xl ">Watchlist</div>

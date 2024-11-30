@@ -1,15 +1,20 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import ListingModal from './ListingModal'
 import SignInModal from './SignInModal'
 import useAuthStore from '../stores/authStore'
 import fetchWithAuth from '../utils/fetch'
+import useModalStore from '../stores/modalStore'
+import NavUserLink from './NavUserLink'
 
 const QuickCreate: React.FC = () => {
-	const [activeModal, setActiveModal] = useState<'listing' | 'signIn' | null>(
-		null
+	const navigate = useNavigate()
+	const { isLoggedIn } = useAuthStore()
+	const { activeModal, setActiveModal, next, setNext } = useModalStore(
+		(state) => state
 	)
 	const [listingModalData, setListingModalData] = useState(null)
+
 	const handleOpenListingModal = async () => {
 		const url = '/api/users/items/unlisted'
 		const res = await fetchWithAuth(url)
@@ -23,7 +28,6 @@ const QuickCreate: React.FC = () => {
 
 		setActiveModal('listing')
 	}
-	const { isLoggedIn } = useAuthStore()
 
 	return (
 		<div className="flex-col items-center justify-between hidden md:flex">
@@ -31,11 +35,11 @@ const QuickCreate: React.FC = () => {
 				Add a...
 			</div>
 			<div className="flex space-x-2 text-base self-center ">
-				<div className="flex hover:text-wax-amber self-end">
+				<div className="flex hover:text-wax-amber self-end pr-2">
 					<div
 						className="cursor-pointer"
 						onClick={() =>
-							isLoggedIn ? handleOpenListingModal() : setActiveModal('signIn')
+							isLoggedIn ? handleOpenListingModal() : setActiveModal('login')
 						}
 					>
 						Listing
@@ -43,12 +47,12 @@ const QuickCreate: React.FC = () => {
 				</div>
 				<a className="text-xl">|</a>
 				<div className="flex hover:text-wax-amber self-end">
-					<Link to="submissions">Release</Link>
+					<NavUserLink to="/submissions" title="Release" />
 				</div>
 			</div>
 
 			<SignInModal
-				isOpen={activeModal === 'signIn'}
+				isOpen={activeModal === 'login'}
 				onClose={() => setActiveModal(null)}
 			/>
 

@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAuthStore from '../stores/authStore'
+import useModalStore from '../stores/modalStore'
 import SignInModal from './SignInModal'
 
 interface NavUserLinkProps {
@@ -11,14 +12,29 @@ interface NavUserLinkProps {
 const NavUserLink: React.FC<NavUserLinkProps> = ({ title, to }) => {
 	const isLoggedIn = useAuthStore((state) => state.isLoggedIn)
 	const navigate = useNavigate()
-	const [activeModal, setActiveModal] = useState<'signIn' | null>(null)
+	const { activeModal, setActiveModal, next, setNext } = useModalStore(
+		(state) => state
+	)
+	useEffect(() => {
+		if (next) {
+			navigate(next)
+		}
+		return () => {
+			setNext(null)
+		}
+	}, [isLoggedIn])
+
+	const handleClose = () => {
+		setActiveModal(null)
+	}
 
 	const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
 		e.preventDefault()
 		if (isLoggedIn) {
 			navigate(to)
 		} else {
-			setActiveModal('signIn')
+			setNext(to)
+			setActiveModal('login')
 		}
 	}
 	return (
@@ -26,10 +42,7 @@ const NavUserLink: React.FC<NavUserLinkProps> = ({ title, to }) => {
 			<a href={to} onClick={handleClick} className="px-2  hover:text-wax-amber">
 				{title}
 			</a>
-			<SignInModal
-				isOpen={activeModal === 'signIn'}
-				onClose={() => setActiveModal(null)}
-			/>
+			<SignInModal isOpen={activeModal === 'login'} onClose={handleClose} />
 		</>
 	)
 }

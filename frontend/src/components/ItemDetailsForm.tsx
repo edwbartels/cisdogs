@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Item } from '../stores/itemStore'
 import useAuthStore from '../stores/authStore'
 import ListingModal from './ListingModal'
-import { useModalStore } from '../stores/modalStore'
+import useModalStore from '../stores/modalStore'
 import { useNavigate } from 'react-router-dom'
 
 interface ItemDetailsFormProps {

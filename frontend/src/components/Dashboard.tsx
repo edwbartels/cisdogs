@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 // import ItemTileMain from './ItemTileMain'
 // import useItemStore from '../stores/itemStore'
 // import useUserStore from '../stores/userStore'
@@ -6,12 +7,18 @@ import { useState } from 'react'
 import DashboardItems from './DashboardItems'
 import DashboardListings from './DashboardListings'
 import DashboardOrders from './DashboardOrders'
+import useAuthStore from '../stores/authStore'
 
 const Dashboard = () => {
+	const navigate = useNavigate()
+	const isLoggedIn = useAuthStore((state) => state.isLoggedIn)
 	const [activeTab, setActiveTab] = useState('items')
 	const handleTabClick = (tab: string) => {
 		setActiveTab(tab)
 	}
+	useEffect(() => {
+		!isLoggedIn && navigate('/')
+	}, [isLoggedIn])
 	// const updateDashboard = useUserStore((state) => state.updateDashboard)
 	// const updateItems = useItemStore((state) => state.updateItems)
 	// const updateUserItems = useUserStore((state) => state.updateItemIds)

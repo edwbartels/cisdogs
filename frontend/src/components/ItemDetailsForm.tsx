@@ -40,7 +40,7 @@ const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
 								<div className="pl-2">{item?.release.media_type}</div>
 							</div>
 						</div>
-						{isOwner && item?.listing ? (
+						{item?.listing ? (
 							<button
 								className="w-24 mt-4 ml-8 bg-green-700 rounded-md ring-2 ring-wax-cream text-wax-cream hover:ring-wax-gray"
 								onClick={() => navigate(`/listing/${item?.listing?.id}`)}
@@ -48,14 +48,16 @@ const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
 								View Listing
 							</button>
 						) : (
-							<button
-								className="w-24 mt-4 ml-8 bg-green-700 rounded-md ring-2 ring-wax-cream text-wax-cream hover:ring-wax-gray"
-								onClick={() => {
-									setActiveModal('listing')
-								}}
-							>
-								Post Listing
-							</button>
+							isOwner && (
+								<button
+									className="w-24 mt-4 ml-8 bg-green-700 rounded-md ring-2 ring-wax-cream text-wax-cream hover:ring-wax-gray"
+									onClick={() => {
+										setActiveModal('listing')
+									}}
+								>
+									Post Listing
+								</button>
+							)
 						)}
 					</div>
 					<div className="flex flex-col items-center  w-1/2">

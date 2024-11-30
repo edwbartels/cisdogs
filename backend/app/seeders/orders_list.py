@@ -11,7 +11,7 @@ orders: list[OrderCreate] = []
 
 
 def seed_orders(db: Session, num_orders: int = 50):
-    listings: List[Listing] = db.query(Listing).filter(Listing.active == 1).all()
+    listings: List[Listing] = db.query(Listing).filter(Listing.active).all()
     if not listings:
         raise ValueError("No listings found in the database. Seed listings first!")
     while len(orders) < num_orders:

@@ -15,7 +15,7 @@ router = APIRouter(prefix="/listings", tags=["listings"])
 
 @router.get("/", response_model=dict[int, ListingDetail])
 def get_all_listings(db: Session = Depends(get_db)):
-    listings = db.query(Listing).filter(Listing.active == 1).all()
+    listings = db.query(Listing).filter(Listing.active).all()
     if not listings:
         raise HTTPException(status_code=404, detail="No listings found")
     return {listing.id: listing for listing in listings}
@@ -25,7 +25,7 @@ def get_all_listings(db: Session = Depends(get_db)):
 def get_all_listings_full(db: Session = Depends(get_db)):
     listings = (
         db.query(Listing)
-        .filter(Listing.active == 1)
+        .filter(Listing.active)
         .options(
             joinedload(Listing.item)
             .joinedload(Item.release)
@@ -58,7 +58,7 @@ def get_listing_by_id(listing_id: int, db: Session = Depends(get_db)):
 def get_listings_by_artist(artist_id: int, db: Session = Depends(get_db)):
     listings = (
         db.query(Listing)
-        .filter(Listing.active == 1)
+        .filter(Listing.active)
         .options(
             joinedload(Listing.item)
             .joinedload(Item.release)
@@ -83,7 +83,7 @@ def get_listings_by_artist(artist_id: int, db: Session = Depends(get_db)):
 def get_listings_by_album(album_id: int, db: Session = Depends(get_db)):
     listings = (
         db.query(Listing)
-        .filter(Listing.active == 1)
+        .filter(Listing.active)
         .options(
             joinedload(Listing.item)
             .joinedload(Item.release)
@@ -109,7 +109,7 @@ def get_listings_by_album(album_id: int, db: Session = Depends(get_db)):
 def get_listings_by_release(release_id: int, db: Session = Depends(get_db)):
     listings = (
         db.query(Listing)
-        .filter(Listing.active == 1)
+        .filter(Listing.active)
         .options(
             joinedload(Listing.item)
             .joinedload(Item.release)

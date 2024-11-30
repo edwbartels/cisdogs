@@ -53,7 +53,9 @@ const useUserStore = create(
 			getCollection: async () => {
 				try {
 					const url = '/api/collection'
-					const res = await fetchWithAuth(url)
+					const res = await fetchWithAuth(url, {
+						credentials: 'include',
+					})
 					if (!res.ok) {
 						const error = await res.text()
 						console.log(error)
@@ -95,7 +97,9 @@ const useUserStore = create(
 			getWatchlist: async () => {
 				try {
 					const url = '/api/watchlist'
-					const res = await fetchWithAuth(url)
+					const res = await fetchWithAuth(url, {
+						credentials: 'include',
+					})
 					if (!res.ok) {
 						const error = await res.text()
 						console.log(error)

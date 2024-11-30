@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import useAuthStore from '../stores/authStore'
 import fetchWithAuth from '../utils/fetch'
+import useModalStore from '../stores/modalStore'
 
 interface SignInModalProps {
 	isOpen: boolean
@@ -8,6 +9,7 @@ interface SignInModalProps {
 }
 
 const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
+	const { setActiveModal } = useModalStore((state) => state)
 	const [loginForm, setLoginForm] = useState({
 		credential: '',
 		password: '',
@@ -112,6 +114,7 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 			console.error(e)
 		}
 	}
+
 	if (!isOpen) return null
 
 	return (
@@ -120,10 +123,10 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 			onClick={onClose} // Close modal on background click
 		>
 			<div
-				className="flex flex-col items-center p-8 border-2 rounded shadow-lg bg-wax-silver border-wax-gray"
+				className="flex flex-col items-center p-8 border-4 rounded shadow-lg bg-wax-silver border-wax-gray"
 				onClick={(e) => e.stopPropagation()} // Prevent closing when clicking modal content
 			>
-				<h2 className="mb-4 text-xl font-bold border-b-2 text-wax-black border-wax-black">
+				<h2 className="mb-4 text-3xl font-bold border-b-2 text-wax-black border-wax-black">
 					Sign In
 				</h2>
 				{errors.fetch && (
@@ -164,7 +167,7 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 					)}
 					<button
 						type="submit"
-						className="w-full py-2 border-4 rounded bg-wax-blue text-wax-cream border-wax-silver hover:border-wax-blue"
+						className="w-full py-2 border-4 rounded bg-wax-blue text-wax-cream border-wax-silver hover:border-wax-cream hover:ring-2 hover:ring-wax-blue"
 					>
 						Sign In
 					</button>
@@ -172,17 +175,28 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 				<div className="flex justify-center">
 					<button
 						onClick={handleDemoClick}
-						className="w-full px-5 py-2 mx-2 mt-3 border-4 rounded bg-wax-amber text-wax-cream border-wax-silver hover:border-wax-amber"
+						className="w-full px-5 py-2 mx-2 mt-3 border-4 rounded bg-wax-amber text-wax-cream border-wax-silver hover:border-wax-cream hover:ring-2 hover: ring-wax-amber"
 					>
 						Demo
 					</button>
 					<button
+						type="button"
 						onClick={handleClose}
-						className="w-full px-5 py-2 mx-2 mt-3 border-4 rounded bg-wax-red text-wax-cream border-wax-silver hover:border-wax-red"
+						className="w-full px-5 py-2 mx-2 mt-3 border-4 rounded bg-wax-red text-wax-cream border-wax-silver hover:border-wax-cream hover:ring-2 hover:ring-wax-red"
 					>
 						Close
 					</button>
 				</div>
+				<small className="text-wax-gray text-sm mt-2">
+					Don't have an account? Sign up{' '}
+					<a
+						className="hover:underline text-wax-blue cursor-pointer"
+						onClick={() => setActiveModal('signup')}
+					>
+						here
+					</a>
+					.
+				</small>
 			</div>
 		</div>
 	)

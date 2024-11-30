@@ -42,7 +42,7 @@ const NavUserLink: React.FC<NavUserLinkProps> = ({ title, to }) => {
 			<a href={to} onClick={handleClick} className="px-2  hover:text-wax-amber">
 				{title}
 			</a>
-			<SignInModal isOpen={activeModal === 'login'} onClose={handleClose} />
+			{/* <SignInModal isOpen={activeModal === 'login'} onClose={handleClose} /> */}
 		</>
 	)
 }

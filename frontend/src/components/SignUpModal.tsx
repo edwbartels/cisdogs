@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import useAuthStore from '../stores/authStore'
 import fetchWithAuth from '../utils/fetch'
+import SignInModal from './SignInModal'
+import useModalStore from '../stores/modalStore'
 
 interface SignUpModalProps {
 	isOpen: boolean
 	onClose: () => void
 }
 const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
+	const { setActiveModal } = useModalStore((state) => state)
 	const [signupForm, setSignupForm] = useState({
 		username: '',
 		email: '',
@@ -164,17 +167,28 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 					)}
 					<button
 						type="submit"
-						className="w-full py-2 border-4 rounded border-wax-silver bg-wax-teal text-wax-cream hover:border-wax-teal"
+						className="w-full py-2 border-4 rounded border-wax-silver bg-wax-blue text-wax-cream hover:ring-wax-blue hover:border-wax-cream hover:ring-2"
 					>
 						Sign Up
 					</button>
 				</form>
 				<button
+					type="button"
 					onClick={handleClose}
-					className="w-1/2 px-4 py-2 mt-4 text-white border-4 rounded border-wax-silver bg-wax-red hover:border-wax-red"
+					className="w-1/2 px-4 py-2 mt-4 text-white border-4 rounded border-wax-silver bg-wax-red  hover:border-wax-cream hover:ring-2 hover:ring-wax-red"
 				>
 					Close
 				</button>
+				<small className="text-wax-gray text-sm mt-2">
+					Already have an account? Sign in{' '}
+					<a
+						className="hover:underline text-wax-blue cursor-pointer"
+						onClick={() => setActiveModal('login')}
+					>
+						here
+					</a>
+					.
+				</small>
 			</div>
 		</div>
 	)

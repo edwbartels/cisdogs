@@ -4,13 +4,10 @@ import SignInModal from './SignInModal'
 import SignUpModal from './SignUpModal'
 import useAuthStore from '../stores/authStore'
 import fetchWithAuth from '../utils/fetch'
-
-// interface ActiveModalState = 'signIn'|'signUp'|null(null)
+import useModalStore from '../stores/modalStore'
 
 const SessionManagement: React.FC = () => {
-	const [activeModal, setActiveModal] = useState<'signIn' | 'signUp' | null>(
-		null
-	)
+	const { activeModal, setActiveModal } = useModalStore((state) => state)
 	const { isLoggedIn, logout } = useAuthStore()
 
 	const handleLogout: () => void = async () => {
@@ -31,13 +28,13 @@ const SessionManagement: React.FC = () => {
 				<>
 					<SessionButton
 						onClick={() => {
-							setActiveModal('signUp')
+							setActiveModal('signup')
 						}}
 						title="Sign Up"
 					/>
 					<SessionButton
 						onClick={() => {
-							setActiveModal('signIn')
+							setActiveModal('login')
 						}}
 						title="Log In"
 					/>
@@ -45,11 +42,11 @@ const SessionManagement: React.FC = () => {
 			)}
 
 			<SignUpModal
-				isOpen={activeModal === 'signUp'}
+				isOpen={activeModal === 'signup'}
 				onClose={() => setActiveModal(null)}
 			/>
 			<SignInModal
-				isOpen={activeModal === 'signIn'}
+				isOpen={activeModal === 'login'}
 				onClose={() => setActiveModal(null)}
 			/>
 		</div>

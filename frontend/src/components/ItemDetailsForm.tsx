@@ -70,11 +70,11 @@ const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
 								))}
 						</div>
 					</div>
-					<ListingModal
+					{/* <ListingModal
 						isOpen={activeModal === 'listing'}
 						onClose={() => setActiveModal(null)}
 						data={null}
-					/>
+					/> */}
 				</div>
 			</div>
 		</div>

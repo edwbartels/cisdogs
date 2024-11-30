@@ -14,7 +14,7 @@ router = APIRouter(tags=["session"])
 # * Helpers
 def get_watchlist(db, user_id):
     stmt = select(Watchlist.release_id).where(Watchlist.user_id == user_id).distinct()
-    return set(db.execute(stmt).scalars().all())
+    return list(set(db.execute(stmt).scalars().all()))
 
 
 # * GET Routes
@@ -30,22 +30,22 @@ def get_user_collection(
     return list(set(collection))
 
 
-@router.get("/watchlist", response_model=set[int])
+@router.get("/watchlist", response_model=list[int])
 def get_user_watchlist(
     db: Session = Depends(get_db), user_id: int = Depends(get_user_id)
-) -> set[int]:
+) -> list[int]:
     return get_watchlist(db, user_id)
 
 
 # * POST Routes
 
 
-@router.post("/watchlist", response_model=set[int])
+@router.post("/watchlist", response_model=list[int])
 def add_to_watchlist(
     request: WatchReq,
     db: Session = Depends(get_db),
     user_id: int = Depends(get_user_id),
-) -> set[int]:
+) -> list[int]:
     if user_id != request.user_id:
         raise HTTPException(status_code=403, detail="Not authorized")
 

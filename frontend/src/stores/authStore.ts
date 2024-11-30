@@ -15,6 +15,7 @@ interface Item {
 	id: number
 	seller_id: number
 	price: number
+	release_id: number
 	release: string
 	album: string
 	artist: string
@@ -24,6 +25,7 @@ interface OrderCreate {
 	seller_id: number
 	buyer_id: number | null
 	listing_id: number
+	release_id: number
 }
 
 export interface AuthStore {
@@ -69,6 +71,7 @@ const useAuthStore = create(
 						const reqCart: OrderCreate[] = Object.values(get().cart).map(
 							(cartItem) => {
 								return {
+									...cartItem,
 									buyer_id: get().user?.id || null,
 									seller_id: cartItem.seller_id,
 									listing_id: cartItem.id,

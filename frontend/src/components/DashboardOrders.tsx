@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import useUserStore from '../stores/userStore'
 import DashboardOrderTile from './DashboardOrderTile'
 import { Order } from '../stores/orderStore'
 import { capitalizeFirst } from '../utils/capitalize'
 
 const DashboardOrders = () => {
+	const navigate = useNavigate()
 	const { orders, getOrders } = useUserStore((state) => state)
 	const { sales, purchases } = useUserStore((state) => state.orders)
 	// const purchases = useUserStore((state) => state.orders.purchases)
@@ -74,11 +76,25 @@ const DashboardOrders = () => {
 							<td className="pl-2">
 								{new Date(record.created).toLocaleDateString()}
 							</td>
-							<td className="pl-2">
+							<td
+								className="pl-2 cursor-pointer hover:bg-wax-blue hover:bg-opacity-15"
+								onClick={() => navigate(`/release/${record.release.id}`)}
+							>
 								{capitalizeFirst(record.release.variant)}
 							</td>
-							<td className="pl-2">{capitalizeFirst(record.album.title)}</td>
-							<td className="pl-2">{capitalizeFirst(record.artist.name)}</td>
+
+							<td
+								className="pl-2 cursor-pointer hover:bg-wax-blue hover:bg-opacity-15"
+								onClick={() => navigate(`/album/${record.album.id}`)}
+							>
+								{capitalizeFirst(record.album.title)}
+							</td>
+							<td
+								className="pl-2 cursor-pointer hover:bg-wax-blue hover:bg-opacity-15"
+								onClick={() => navigate(`/artist/${record.artist.id}`)}
+							>
+								{capitalizeFirst(record.artist.name)}
+							</td>
 							<td className="pl-2">{record.quality.toUpperCase()}</td>
 							<td className="pl-2">{record.price}</td>
 							<td className="pl-2">

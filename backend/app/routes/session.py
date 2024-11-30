@@ -89,31 +89,31 @@ def checkout(
                     detail=f"Listing (id: {order.listing_id}) not found",
                 )
 
-            existing_order = (
-                db.execute(select(Order).where(Order.listing_id == order.listing_id))
-                .scalars()
-                .first()
-            )
-            if existing_order:
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"Order for listing (id: {order.listing_id}) already exists",
-                )
+            # existing_order = (
+            #     db.execute(select(Order).where(Order.listing_id == order.listing_id))
+            #     .scalars()
+            #     .first()
+            # )
+            # if existing_order:
+            #     raise HTTPException(
+            #         status_code=400,
+            #         detail=f"Order for listing (id: {order.listing_id}) already exists",
+            #     )
             # print("Listing --> ", listing)
             # print("Listing Price --> ", listing.price)
 
             new_order = Order(
+                price=listing.price,
+                quality=listing.quality,
+                description=listing.description,
                 seller_id=listing.seller_id,
                 buyer_id=order.buyer_id,
-                listing_id=order.listing_id,
+                release_id=order.release_id,
             )
             # print(new_order)
 
             db.add(new_order)
             orders.append(new_order)
-
-            listing.active = False
-            listing.status = "sold"
 
             item = (
                 db.execute(select(Item).where(Item.id == listing.item_id))
@@ -126,6 +126,7 @@ def checkout(
                 raise HTTPException(
                     status_code=404, detail=f"Item (id: {listing.item_id}) not found"
                 )
+            db.delete(listing)
             item.owner_id = user_id
             print("Item w/ new ID (should read 1) --> ", item.owner_id)
 

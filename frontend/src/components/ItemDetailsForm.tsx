@@ -16,8 +16,8 @@ const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
 	return (
 		<div className="flex mt-8 border bg-wax-gray bg-opacity-15 border-wax-silver">
 			<div className="flex flex-col p-4">
-				<div className="p-10 text-center border w-96 border-wax-black aspect-video">
-					Image Upload tbd...
+				<div className="flex p-4 min-w-[300px] items-center  bg-wax-gray bg-opacity-15">
+					<img src={item?.album.art || '/tile-background.png'} />
 				</div>
 			</div>
 			<div className="flex w-full">
@@ -59,7 +59,7 @@ const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
 							</button>
 						)}
 					</div>
-					<div className="flex flex-col items-center justify-between w-1/2">
+					<div className="flex flex-col items-center  w-1/2">
 						<div className="font-semibold">Track List</div>
 						<div className="pt-1 text-sm text-left">
 							{item &&
@@ -68,13 +68,6 @@ const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
 										{index + 1}: {track}
 									</div>
 								))}
-						</div>
-
-						<div
-							// onClick={getTracks}
-							className="w-3/5 mt-4 text-center rounded-md cursor-pointer ring-2 ring-wax-silver text-wax-gray bg-wax-cream hover:ring-4"
-						>
-							Update Track Data
 						</div>
 					</div>
 					<ListingModal

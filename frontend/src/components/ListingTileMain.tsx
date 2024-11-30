@@ -51,6 +51,7 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 					id: listing.id,
 					seller_id: listing.seller.id,
 					price: listing.price,
+					release_id: listing.release.id,
 					release: listing.release.variant || '',
 					album: listing.album.title,
 					artist: listing.artist.name,

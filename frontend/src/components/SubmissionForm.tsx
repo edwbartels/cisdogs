@@ -101,11 +101,10 @@ const SubmissionForm = () => {
 				throw new Error("Couldn't find track list")
 			}
 			const data = await res.json()
-			console.log(data)
 			if (data) {
 				const artistAdded = await addArtist(releaseForm.artist)
 				if (artistAdded) {
-					setSelectedArtist(Object.values(artistAdded)[0].id)
+					getArtists()
 					const albumAdded = await addAlbum({
 						artist_id: Object.values(artistAdded)[0].id,
 						title: releaseForm.album,
@@ -113,6 +112,7 @@ const SubmissionForm = () => {
 						art: data.art,
 					})
 					if (albumAdded) {
+						setSelectedArtist(Object.values(artistAdded)[0].id)
 						setSelectedAlbum(Object.values(albumAdded)[0].id)
 						setReleaseForm((prev) => ({
 							...prev,
@@ -120,6 +120,7 @@ const SubmissionForm = () => {
 							art: data.art,
 						}))
 					}
+					setSelectedArtist(Object.values(artistAdded)[0].id)
 				}
 			}
 		} catch (e) {

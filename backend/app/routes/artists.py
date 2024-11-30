@@ -60,7 +60,7 @@ def get_artist_by_id(artist_id: int, db: Session = Depends(get_db)):
 
 @router.post("/", response_model=dict[int, ArtistRead])
 def create_artist(artist: ArtistBase, db: Session = Depends(get_db)):
-    existing_artist = (
+    existing_artist: Artist | None = (
         db.query(Artist)
         .filter(func.lower(Artist.name) == func.lower(artist.name))
         .first()

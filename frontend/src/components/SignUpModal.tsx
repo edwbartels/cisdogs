@@ -63,7 +63,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 			}
 			const { access_token, user } = await res.json()
 			useAuthStore.getState().login(user, access_token)
-			onClose()
+			handleClose()
 		} catch (e) {
 			setErrors({ ...errors, fetch: 'Invalid credentials' })
 			console.error(e)
@@ -140,7 +140,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 						onChange={handleFormChange('email')}
 						defaultValue={signupForm.email}
 						placeholder="Email"
-						className={`block w-full p-2 mb-2 border rounded text-wax-black text-wax-black ${
+						className={`block w-full p-2 mb-2 border rounded text-wax-black ${
 							errors.email ? 'border-wax-red' : ''
 						}`}
 						required
@@ -155,7 +155,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 						onChange={handleFormChange('password')}
 						defaultValue={signupForm.password}
 						placeholder="Password"
-						className={`block w-full p-2 mb-2 border rounded text-wax-blacktext-wax-black ${
+						className={`block w-full p-2 mb-2 border rounded text-wax-black ${
 							errors.password ? 'border-wax-red' : ''
 						}`}
 					/>

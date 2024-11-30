@@ -87,7 +87,7 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 
 			const { access_token, token_type, ...remaining } = await res.json()
 			useAuthStore.getState().login(remaining, access_token)
-			onClose()
+			handleClose()
 		} catch (e) {
 			setErrors({ ...errors, fetch: 'Invalid credentials' })
 			console.log(e)

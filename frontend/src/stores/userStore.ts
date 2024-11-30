@@ -60,6 +60,7 @@ const useUserStore = create(
 						throw new Error('Failed to get user collection')
 					}
 					const data = await res.json()
+					console.log('collection res', data)
 					set({ collection: new Set(data) })
 					console.log('Current Collection:', new Set(data))
 				} catch (e) {

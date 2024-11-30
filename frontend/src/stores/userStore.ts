@@ -107,7 +107,7 @@ const useUserStore = create(
 					}
 					const data = await res.json()
 					console.log('watchlist res', data)
-					set({ watchlist: new Set(data) })
+					data && set({ watchlist: new Set(data) })
 					console.log('Current Watchlist:', new Set(data))
 				} catch (e) {
 					console.error(e)
@@ -127,7 +127,7 @@ const useUserStore = create(
 					}
 					const data = await res.json()
 					console.log(data)
-					set({ watchlist: new Set(data) })
+					data && set({ watchlist: new Set(data) })
 					// console.log(new Set(data))
 				} catch (e) {
 					console.error(e)

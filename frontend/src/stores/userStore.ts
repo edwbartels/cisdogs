@@ -80,7 +80,7 @@ const useUserStore = create(
 						throw new Error('Failed to add to collection')
 					}
 					const data = await res.json()
-					console.log(data)
+					console.log('collection res', data)
 					set((state) => {
 						const updatedSet = new Set(state.collection)
 						console.log(data.release_id)
@@ -101,6 +101,7 @@ const useUserStore = create(
 						throw new Error('Failed to get user watchlist')
 					}
 					const data = await res.json()
+					console.log('watchlist res', data)
 					set({ watchlist: new Set(data) })
 					console.log('Current Watchlist:', new Set(data))
 				} catch (e) {

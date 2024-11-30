@@ -15,7 +15,7 @@ COPY backend/ .
 
 RUN alembic downgrade base
 RUN alembic upgrade head
-RUN python -m app.scripts.seed_db
+RUN python -m backend.app.scripts.seed_db
 
 EXPOSE 8000
 

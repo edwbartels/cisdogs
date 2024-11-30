@@ -1,6 +1,7 @@
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from starlette.responses import FileResponse
 from app.routes import (
     albums,
     artists,
@@ -18,6 +19,12 @@ from app.routes import (
 # Initialize app
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+
+@app.get("/")
+async def read_root():
+    return FileResponse("app/static/index.html")
+
 
 app.add_middleware(
     CORSMiddleware,

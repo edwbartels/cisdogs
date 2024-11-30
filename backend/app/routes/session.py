@@ -10,6 +10,9 @@ from app.models.watchlist import Watchlist
 from app.schemas.order import OrderRead, OrderCreate
 from app.schemas.req import WatchReq
 from app.lib.jwt import get_user_id, HTTPException
+import logging
+
+logger = logging.getLogger("main")
 
 router = APIRouter(tags=["session"])
 
@@ -31,6 +34,7 @@ def get_user_collection(
     collection: List[Row[Tuple[int]]] = (
         db.query(Item.release_id).filter(Item.owner_id == user_id).all()
     )
+    logger.info("Collection: post-query ---> ", collection)
     print("Collection: post-query --->", collection)
 
     if user_id:

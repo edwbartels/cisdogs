@@ -16,6 +16,14 @@ from app.routes import (
     watchlist,
 )
 import os
+import logging
+
+logging.basicConfig(
+    level=logging.DEBUG, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger: logging.Logger = logging.getLogger("main")
+
+logger.info("Starting application...")
 
 # Initialize app
 app = FastAPI()
@@ -30,10 +38,10 @@ async def read_root():
 @app.get("/{full_path:path}")
 async def serve_frontend(full_path: str):
     # Serve index.html only for non-API routes
-    if full_path.startswith("api/"):
-        return {
-            "detail": "Not Found"
-        }  # Optional: FastAPI will handle 404s automatically if omitted
+    # if full_path.startswith("api/"):
+    #     return {
+    #         "detail": "Not Found"
+    #     }  # Optional: FastAPI will handle 404s automatically if omitted
     static_file = f"app/static/{full_path}"
     if os.path.exists(static_file):
         return FileResponse(static_file)
@@ -68,3 +76,5 @@ api_router.include_router(reviews.router)
 api_router.include_router(watchlist.router)
 
 app.include_router(api_router)
+
+logger.info("Application is ready and routes are configured.")

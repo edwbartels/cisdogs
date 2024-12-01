@@ -4,7 +4,7 @@ from app.database import Base
 
 
 class Item(Base):
-    __tablename__ = "items"
+    __tablename__: str = "items"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     owner_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), index=True)

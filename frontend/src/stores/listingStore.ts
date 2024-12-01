@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
+import { Pagination } from '../utils/types'
 
 export type Listing = {
 	id: number
@@ -36,8 +37,9 @@ export type Listing = {
 interface ListingStore {
 	focus: Listing | null
 	listings: {
-		[key: number]: Listing
+		[key: string]: Listing
 	}
+	pagination: Pagination
 	getFocus: (id: number) => Promise<void>
 	updateListings: () => Promise<void>
 	getByListings: (parent: string, id: number) => void
@@ -48,6 +50,7 @@ const useListingStore = create(
 		(set) => ({
 			focus: null,
 			listings: {},
+			pagination: null,
 			getFocus: async (id) => {
 				try {
 					const url = `/api/listings/${id}`
@@ -68,8 +71,10 @@ const useListingStore = create(
 					if (!res.ok) {
 						throw new Error('Fetch all listings failed')
 					}
-					const allListings = await res.json()
-					set({ listings: allListings })
+					const data = await res.json()
+					const { entries, ...remaining } = data
+					set({ listings: entries })
+					set({ pagination: remaining })
 				} catch (e) {
 					console.error(e)
 				}

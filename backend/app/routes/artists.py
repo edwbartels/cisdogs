@@ -3,20 +3,37 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy import func
 from sqlalchemy.orm import Session, selectinload, joinedload
 from sqlalchemy.future import select
+from sqlalchemy.orm.query import Query
 from app.database import get_db
 from app.models import Artist, Item, Album, Release, Listing
 from app.schemas.artist import ArtistRead, ArtistBase
 from app.schemas.res import ArtistFull
+from app.lib.sort_filter import (
+    PaginationParams,
+    paginate,
+    PaginationResult,
+    create_pagination_params,
+)
 
 router = APIRouter(prefix="/artists", tags=["artists"])
 
 
-@router.get("/", response_model=dict[int, ArtistRead])
-def get_all_artists(db: Session = Depends(get_db)):
-    artists = db.query(Artist)
+@router.get("/", response_model=PaginationResult[ArtistRead])
+def get_all_artists(
+    pagination: PaginationParams = Depends(
+        create_pagination_params(
+            default_limit=50, default_sort="name", default_order="asc"
+        )
+    ),
+    db: Session = Depends(get_db),
+) -> PaginationResult[ArtistRead]:
+    query: Query[Artist] = db.query(Artist)
+    artists: PaginationResult = paginate(
+        query, pagination.page, pagination.limit, pagination.sort, pagination.order
+    )
     if not artists:
         raise HTTPException(status_code=404, detail="No artists found")
-    return {artist.id: artist for artist in artists}
+    return artists
 
 
 @router.get("/{artist_id}", response_model=ArtistFull)

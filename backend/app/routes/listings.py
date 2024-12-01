@@ -1,13 +1,22 @@
 from typing import List
+import json
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy import update, and_
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.future import select
+from sqlalchemy.orm.query import Query
 from app.database import get_db
 from app.models import Listing, Item, Release, Album, User
 from app.schemas.listing import ListingRead, ListingCreate, ListingDetail
 from app.schemas.res import ListingFull
 from app.lib.jwt import get_current_user, get_user_id
+from app.lib.sort_filter import (
+    PaginationParams,
+    paginate,
+    PaginationResult,
+    create_pagination_params,
+)
 
 router = APIRouter(prefix="/listings", tags=["listings"])
 
@@ -22,25 +31,33 @@ def get_all_listings(db: Session = Depends(get_db)) -> dict[int, ListingDetail]:
     return {listing.id: listing for listing in listings}
 
 
-@router.get("/full", response_model=dict[int, ListingFull])
-def get_all_listings_full(db: Session = Depends(get_db)) -> dict[int, ListingFull]:
-    listings: List[Listing] = (
+@router.get("/full", response_model=PaginationResult[ListingFull])
+def get_all_listings_full(
+    pagination: PaginationParams = Depends(
+        create_pagination_params(
+            default_limit=20, default_sort="listings.created", default_order="desc"
+        )
+    ),
+    db: Session = Depends(get_db),
+) -> PaginationResult[ListingFull]:
+    query: Query[Listing] = (
         db.query(Listing)
         .filter(Listing.active)
-        .options(
-            joinedload(Listing.item)
-            .joinedload(Item.release)
-            .joinedload(Release.album)
-            .joinedload(Album.artist)
-        )
-        .all()
+        .join(Listing.item)
+        .join(Item.release)
+        .join(Release.album)
+        .join(Album.artist)
     )
-    for listing in listings:
-        listing.release = listing.item.release
-        listing.album = listing.item.release.album
-        listing.artist = listing.item.release.album.artist
 
-    return {listing.id: listing for listing in listings}
+    listings: PaginationResult = paginate(
+        query,
+        pagination.page,
+        pagination.limit,
+        pagination.sort,
+        pagination.order,
+    )
+
+    return listings
 
 
 @router.get("/{listing_id}", response_model=ListingFull)
@@ -49,9 +66,6 @@ def get_listing_by_id(listing_id: int, db: Session = Depends(get_db)) -> Listing
     if not listing:
         raise HTTPException(status_code=404, detail="Listing not found")
 
-    listing.release = listing.item.release
-    listing.album = listing.item.release.album
-    listing.artist = listing.item.release.album.artist
     return listing
 
 

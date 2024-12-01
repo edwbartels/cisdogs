@@ -160,7 +160,7 @@ albums = [
             11: "On a Plain",
             12: "Something in the Way",
         },
-        art="https://lastfm.freetls.fastly.net//i//u//300x300//49cc807f69d59746b6b04be3434e6637.png",
+        art=None,
     ),
     Album(
         title="The Joshua Tree",

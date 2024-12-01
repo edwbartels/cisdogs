@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import fetchWithAuth from '../utils/fetch'
+import { Pagination } from '../utils/types'
 
 export type Artist = {
 	id: number
@@ -48,6 +49,7 @@ interface ArtistStore {
 	artists: {
 		[key: number]: Artist
 	}
+	pagination: Pagination
 	addArtist: (
 		name: string
 	) => Promise<{ [key: number]: { id: number; name: string } }>
@@ -60,6 +62,7 @@ const useArtistStore = create(
 		(set) => ({
 			focus: null,
 			artists: {},
+			pagination: null,
 			getFocus: async (id) => {
 				try {
 					const url = `/api/artists/${id}`
@@ -82,7 +85,9 @@ const useArtistStore = create(
 						throw new Error('Failed to get all artists')
 					}
 					const data = await res.json()
-					set({ artists: data })
+					const { entries, ...remaining } = data
+					set({ artists: entries })
+					set({ pagination: remaining })
 					return data
 				} catch (e) {
 					console.error(e)

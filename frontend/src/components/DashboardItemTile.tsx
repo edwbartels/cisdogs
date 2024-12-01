@@ -154,7 +154,7 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 					style={{
 						backgroundImage: item.album.art
 							? `url(${item.album.art})`
-							: `url(/tile-background.png')`,
+							: `url('/tile-background.png')`,
 						backgroundSize: 'contain',
 						backgroundPosition: 'center',
 					}}

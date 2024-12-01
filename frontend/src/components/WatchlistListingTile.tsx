@@ -105,7 +105,7 @@ const WatchlistListingTile: React.FC<WatchlistListingTileProps> = ({
 					style={{
 						backgroundImage: listing.album.art
 							? `url(${listing.album.art})`
-							: `url(/tile-background.png')`,
+							: `url('/tile-background.png')`,
 						backgroundSize: 'contain',
 						backgroundPosition: 'center',
 					}}

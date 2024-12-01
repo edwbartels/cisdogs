@@ -109,7 +109,7 @@ const ReleaseTile: React.FC<ReleaseTileProps> = ({ releaseId }) => {
 					style={{
 						backgroundImage: release.album.art
 							? `url(${release.album.art})`
-							: `url(/tile-background.png')`,
+							: "url('/tile-background.png')",
 						backgroundSize: 'contain',
 						backgroundPosition: 'center',
 					}}

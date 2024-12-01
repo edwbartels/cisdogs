@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import and_, func
 from sqlalchemy.orm import Session, selectinload, joinedload, aliased
+from sqlalchemy.orm.query import Query
 from sqlalchemy.future import select
 from app.database import get_db
 from app.models import Release, Artist, Album, User, Item, Listing
@@ -10,26 +11,65 @@ from app.schemas.release import ReleaseRead, ReleaseCreateFull, ReleaseDetails
 from app.schemas.listing import ListingWithSeller
 from app.schemas.res import ReleaseFull
 from app.lib.jwt import get_current_user
+from app.lib.sort_filter import (
+    PaginationParams,
+    paginate,
+    PaginationResult,
+    create_pagination_params,
+)
+from functools import lru_cache
 
 router = APIRouter(prefix="/releases", tags=["releases"])
 
 # * GET Routes
 
 
-@router.get("/", response_model=dict[int, ReleaseDetails])
-def get_all_releases(db: Session = Depends(get_db)):
-    stmt = select(Release).options(
-        joinedload(Release.album).joinedload(Album.artist),
+# * Cache Function
+@lru_cache(maxsize=128)
+def get_cached_releases(pagination: PaginationParams, db_session: Session):
+    query: Query[Release] = (
+        db_session.query(Release)
+        .join(Release.items)
+        .join(Item.listing)
+        .join(Release.album)
+        .join(Album.artist)
     )
-    releases = db.execute(stmt).scalars().unique().all()
-    print(jsonable_encoder(releases[0]))
+
+    releases: PaginationResult = paginate(
+        query, pagination.page, pagination.limit, pagination.sort, pagination.order
+    )
+
+    return releases
+
+
+@router.post("/clear_cache", status_code=204)
+def clear_listings_cache():
+    get_cached_releases.cache_clear()
+    return {"detail": "Listings cache cleared"}
+
+
+@router.get("/", response_model=PaginationResult[ReleaseDetails])
+def get_all_releases(
+    pagination: PaginationParams = Depends(
+        create_pagination_params(
+            default_limit=20,
+            default_sort=[
+                "releases.created",
+                "artists.name",
+                "albums.title",
+                "releases.media_type",
+                "releases.variant",
+            ],
+            default_order=["desc", "asc", "asc", "asc", "asc"],
+        )
+    ),
+    db: Session = Depends(get_db),
+) -> PaginationResult[ReleaseDetails]:
+    releases: PaginationResult[ReleaseDetails] = get_cached_releases(pagination, db)
     if not releases:
         raise HTTPException(status_code=404, detail="No releases found")
 
-    for release in releases:
-        release.artist = release.album.artist
-
-    return {release.id: release for release in releases}
+    return releases
 
 
 @router.get("/{release_id}", response_model=ReleaseFull)

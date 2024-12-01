@@ -1,3 +1,4 @@
+from multiprocessing import Value
 from fastapi import Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -13,13 +14,16 @@ class PaginationParams:
         self,
         page: int = Query(1, ge=1),
         limit: int = Query(20, ge=1, le=100),
-        sort: str | None = Query(None),
-        order: str = Query("desc", regex="^(asc|desc)$"),
+        sort: list[str] = Query([]),
+        order: list[str] = Query([]),
     ):
         self.page: int = page
         self.limit: int = limit
-        self.sort: str | None = sort
-        self.order: str = order
+        self.sort: list[str] = sort
+        self.order: list[str] = order
+
+        if len(self.sort) != len(self.order):
+            raise ValueError("Sort and order lists must have the same length")
 
 
 class PaginationResult(BaseModel, Generic[T]):
@@ -35,18 +39,23 @@ def paginate(
     query,
     page: int = 1,
     limit: int = 30,
-    sort: str | None = None,
-    order: str = "desc",
+    sort: list[str] | None = None,
+    order: list[str] | None = None,
 ) -> PaginationResult:
     page = max(page, 1)
     limit = max(limit, 1)
 
-    if sort:
-        query = query.order_by(asc(text(sort)) if order == "asc" else desc(text(sort)))
+    if sort and order:
+        if len(sort) != len(order):
+            raise ValueError("Sort and order lists must have the same length")
+        for field, dir in zip(sort, order):
+            query = query.order_by(
+                asc(text(field)) if dir == "asc" else desc(text(field))
+            )
 
     total_entries: int = query.count()
     offset: int = (page - 1) * limit
-    entries: Any = query.offset(offset).limit(limit).all()
+    entries: Any = query.offset(offset).limit(limit).distinct().all()
 
     total_pages: int = (total_entries + limit - 1) // limit
     has_more: bool = page < total_pages
@@ -63,15 +72,15 @@ def paginate(
 def create_pagination_params(
     default_page: int = 1,
     default_limit: int = 20,
-    default_sort: str | None = None,
-    default_order: str = "asc",
+    default_sort: list[str] | None = None,
+    default_order: list[str] | None = None,
     max_limit: int = 100,
 ) -> Callable:
     def pagination_dependency(
         page: int = Query(default_page, ge=1),
         limit: int = Query(default_limit, ge=1, le=max_limit),
-        sort: str = Query(default_sort),
-        order: str = Query(default_order, regex="^(asc|desc)$"),
+        sort: list[str] = Query(default_sort),
+        order: list[str] = Query(default_order),
     ) -> PaginationParams:
         return PaginationParams(page=page, limit=limit, sort=sort, order=order)
 

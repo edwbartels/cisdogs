@@ -183,9 +183,9 @@ const useUserStore = create(
 			updateListingIds: () => {
 				const userId = useAuthStore.getState().user?.id
 				const listings = useListingStore.getState().listings
-				if (userId) {
+				if (userId && listings) {
 					const ownedListings = Object.values(listings)
-						.filter((listing) => listing.seller.id === userId)
+						.filter((listing) => listing.seller?.id === userId)
 						.map((item) => item.id)
 					set({ listingIds: ownedListings })
 				}

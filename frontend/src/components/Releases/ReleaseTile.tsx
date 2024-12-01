@@ -73,7 +73,7 @@ const ReleaseTile: React.FC<ReleaseTileProps> = ({ releaseId }) => {
 				<div className="tile-title-bar">
 					<div className="space-x-1">
 						<EyeIcon id={release.id} />
-						{!collection.has(release.id) && (
+						{!collection.has(Number(release.id)) && (
 							<FontAwesomeIcon
 								icon={faPlus}
 								size="xl"

@@ -27,7 +27,7 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 
 	const [activeDropdown, setActiveDropdown] = useState<DropdownOptions>(null)
 	const addOptions = []
-	if (!cart[listing.id]) addOptions.push({ label: 'To Cart', value: 'cart' })
+	if (!cart[listing?.id]) addOptions.push({ label: 'To Cart', value: 'cart' })
 	// const addOptions = [{ label: 'To Cart', value: 'cart' }]
 	if (isLoggedIn && !collection?.has(listing?.release?.id))
 		addOptions.push({ label: 'To Collection', value: 'collection' })
@@ -163,7 +163,7 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 				</div>
 				<div className="tile-footer-2">
 					<div
-						className="cursor-pointer self-center hover:text-wax-cream"
+						className="cursor-pointer  hover:text-wax-cream"
 						onClick={() => navigate(`/artist/${listing.artist.id}`)}
 					>
 						{listing.artist.name}

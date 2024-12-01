@@ -1,5 +1,8 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
+import { Pagination } from '../utils/types'
+import Releases from '../components/Releases/Releases'
+import fetchWithAuth from '../utils/fetch'
 
 export type Release = {
 	id: number
@@ -43,16 +46,30 @@ interface ReleaseStore {
 	releases: {
 		[key: number]: Release
 	}
+	pagination: Pagination
+	clearState: () => void
 	getFocus: (id: number) => Promise<void>
-	getReleases: () => void
+	getReleases: () => Promise<void>
 	getByReleases: (parent: string, id: number) => void
 }
 
 const useReleaseStore = create(
 	devtools<ReleaseStore>(
-		(set) => ({
+		(set, get) => ({
 			focus: null,
 			releases: {},
+			pagination: null,
+			clearState: async () => {
+				const url = '/api/releases/clear_cache'
+				const res = await fetchWithAuth(url, {
+					method: 'POST',
+					credentials: 'include',
+				})
+				if (!res.ok) {
+					throw new Error('Failed to clear releases cache')
+				}
+				set({ focus: null, releases: {}, pagination: null })
+			},
 			getFocus: async (id) => {
 				try {
 					const url = `/api/releases/${id}`
@@ -68,14 +85,26 @@ const useReleaseStore = create(
 				}
 			},
 			getReleases: async () => {
+				const { pagination, releases } = get()
+				const page = pagination?.current_page ?? 0
 				try {
-					const url = '/api/releases/'
+					const url = `/api/releases/?page=${page + 1}`
 					const res = await fetch(url)
 					if (!res.ok) {
 						throw new Error(`Failed to get all releases`)
 					}
 					const data = await res.json()
-					set({ releases: data })
+					const { entries, sorted_ids, ...remaining } = data
+					set({ releases: { ...releases, ...entries } })
+					set({
+						pagination: {
+							...remaining,
+							sorted_ids: [
+								...(pagination?.sorted_ids || []),
+								...sorted_ids.map((id: string) => id),
+							],
+						},
+					})
 				} catch (e) {
 					console.error(e)
 				}

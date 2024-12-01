@@ -32,6 +32,7 @@ coverage/
 *.db
 # Ignore Seed files
 # seeders/
+album-from-json.py
 # Ignore editor-specific files
 .vscode/
 .idea/

@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { Pagination } from '../utils/types'
+import fetchWithAuth from '../utils/fetch'
 
 export type Listing = {
 	id: number
@@ -40,6 +41,7 @@ interface ListingStore {
 		[key: string]: Listing
 	}
 	pagination: Pagination
+	clearState: () => void
 	getFocus: (id: number) => Promise<void>
 	updateListings: () => Promise<void>
 	getByListings: (parent: string, id: number) => void
@@ -47,10 +49,21 @@ interface ListingStore {
 
 const useListingStore = create(
 	devtools<ListingStore>(
-		(set) => ({
+		(set, get) => ({
 			focus: null,
 			listings: {},
 			pagination: null,
+			clearState: async () => {
+				const url = '/api/listings/clear_cache'
+				const res = await fetchWithAuth(url, {
+					method: 'POST',
+					credentials: 'include',
+				})
+				if (!res.ok) {
+					throw new Error('Failed to clear listings cache')
+				}
+				set({ focus: null, listings: {}, pagination: null })
+			},
 			getFocus: async (id) => {
 				try {
 					const url = `/api/listings/${id}`
@@ -65,16 +78,29 @@ const useListingStore = create(
 				}
 			},
 			updateListings: async () => {
+				const { pagination, listings } = get()
+				const page = pagination?.current_page ?? 0
 				try {
-					const url = '/api/listings/full'
+					const url = `/api/listings/full?page=${page + 1}`
 					const res = await fetch(url)
 					if (!res.ok) {
 						throw new Error('Fetch all listings failed')
 					}
 					const data = await res.json()
-					const { entries, ...remaining } = data
-					set({ listings: entries })
-					set({ pagination: remaining })
+					const { entries, sorted_ids, ...remaining } = data
+					// set(state=>({listings:...state.listings,entries}))
+					set({ listings: { ...listings, ...entries } })
+					set({
+						pagination: {
+							...remaining,
+							sorted_ids: [
+								...(pagination?.sorted_ids || []),
+								...sorted_ids.map((id: string) => id),
+							],
+						},
+					})
+					console.log(listings)
+					console.log(pagination?.sorted_ids)
 				} catch (e) {
 					console.error(e)
 				}

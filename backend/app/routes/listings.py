@@ -2,7 +2,7 @@ from typing import List
 import json
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import update, and_
+from sqlalchemy import update, and_, func
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.future import select
 from sqlalchemy.orm.query import Query
@@ -17,8 +17,40 @@ from app.lib.sort_filter import (
     PaginationResult,
     create_pagination_params,
 )
+from functools import lru_cache
+
 
 router = APIRouter(prefix="/listings", tags=["listings"])
+
+
+# * Cache Function
+@lru_cache(maxsize=128)
+def get_cached_listings(pagination: PaginationParams, db_session: Session):
+    query: Query[Listing] = (
+        db_session.query(Listing)
+        .filter(Listing.active)
+        .join(Listing.item)
+        .join(Item.release)
+        .join(Release.album)
+        .join(Album.artist)
+    )
+
+    listings: PaginationResult = paginate(
+        query,
+        pagination.page,
+        pagination.limit,
+        pagination.sort,
+        pagination.order,
+    )
+
+    return listings
+
+
+@router.post("/clear_cache", status_code=204)
+def clear_listings_cache():
+    get_cached_listings.cache_clear()
+    return {"detail": "Listings cache cleared"}
+
 
 # * GET Routes
 
@@ -35,27 +67,21 @@ def get_all_listings(db: Session = Depends(get_db)) -> dict[int, ListingDetail]:
 def get_all_listings_full(
     pagination: PaginationParams = Depends(
         create_pagination_params(
-            default_limit=20, default_sort="listings.created", default_order="desc"
+            default_limit=20,
+            default_sort=[
+                "listings.created",
+                "artists.name",
+                "albums.title",
+                "releases.media_type",
+                "releases.variant",
+                "listings.price",
+            ],
+            default_order=["desc", "asc", "asc", "asc", "asc", "asc"],
         )
     ),
     db: Session = Depends(get_db),
 ) -> PaginationResult[ListingFull]:
-    query: Query[Listing] = (
-        db.query(Listing)
-        .filter(Listing.active)
-        .join(Listing.item)
-        .join(Item.release)
-        .join(Release.album)
-        .join(Album.artist)
-    )
-
-    listings: PaginationResult = paginate(
-        query,
-        pagination.page,
-        pagination.limit,
-        pagination.sort,
-        pagination.order,
-    )
+    listings: PaginationResult[ListingFull] = get_cached_listings(pagination, db)
 
     return listings
 
@@ -180,6 +206,8 @@ def create_listing(
     db.add(new_listing)
     db.commit()
     db.refresh(new_listing)
+
+    get_cached_listings.cache_clear()
 
     return new_listing
 

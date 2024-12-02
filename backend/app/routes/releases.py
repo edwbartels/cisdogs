@@ -21,8 +21,6 @@ from functools import lru_cache
 
 router = APIRouter(prefix="/releases", tags=["releases"])
 
-# * GET Routes
-
 
 # * Cache Function
 @lru_cache(maxsize=128)
@@ -46,6 +44,9 @@ def get_cached_releases(pagination: PaginationParams, db_session: Session):
 def clear_listings_cache():
     get_cached_releases.cache_clear()
     return {"detail": "Listings cache cleared"}
+
+
+# * GET Routes
 
 
 @router.get("/", response_model=PaginationResult[ReleaseDetails])

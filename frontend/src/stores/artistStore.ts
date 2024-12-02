@@ -50,19 +50,31 @@ interface ArtistStore {
 		[key: number]: Artist
 	}
 	pagination: Pagination
+	clearState: () => void
 	addArtist: (
 		name: string
 	) => Promise<{ [key: number]: { id: number; name: string } }>
 	getFocus: (id: number) => Promise<void>
-	getArtists: () => void
+	getArtists: () => Promise<void>
 }
 
 const useArtistStore = create(
 	devtools<ArtistStore>(
-		(set) => ({
+		(set, get) => ({
 			focus: null,
 			artists: {},
 			pagination: null,
+			clearState: async () => {
+				const url = '/api/artists/clear_cache'
+				const res = await fetchWithAuth(url, {
+					method: 'POST',
+					credentials: 'include',
+				})
+				if (!res.ok) {
+					throw new Error('Failed to clear artists cache')
+				}
+				set({ focus: null, artists: {}, pagination: null })
+			},
 			getFocus: async (id) => {
 				try {
 					const url = `/api/artists/${id}`
@@ -78,16 +90,26 @@ const useArtistStore = create(
 				}
 			},
 			getArtists: async () => {
+				const { pagination, artists } = get()
+				const page = pagination?.current_page ?? 0
 				try {
-					const url = '/api/artists/'
+					const url = `/api/artists/?page=${page + 1}`
 					const res = await fetch(url)
 					if (!res.ok) {
 						throw new Error('Failed to get all artists')
 					}
 					const data = await res.json()
-					const { entries, ...remaining } = data
-					set({ artists: entries })
-					set({ pagination: remaining })
+					const { entries, sorted_ids, ...remaining } = data
+					set({ artists: { ...artists, ...entries } })
+					set({
+						pagination: {
+							...remaining,
+							sorted_ids: [
+								...(pagination?.sorted_ids || []),
+								...sorted_ids.map((id: string) => id),
+							],
+						},
+					})
 					return data
 				} catch (e) {
 					console.error(e)

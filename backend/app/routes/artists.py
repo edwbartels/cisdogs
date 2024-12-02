@@ -14,25 +14,45 @@ from app.lib.sort_filter import (
     PaginationResult,
     create_pagination_params,
 )
+from functools import lru_cache
 
 router = APIRouter(prefix="/artists", tags=["artists"])
+
+
+# * Cache Function
+@lru_cache(maxsize=128)
+def get_cached_artists(pagination: PaginationParams, db_session: Session):
+    query: Query[Artist] = db_session.query(Artist)
+
+    artists: PaginationResult = paginate(
+        query, pagination.page, pagination.limit, pagination.sort, pagination.order
+    )
+
+    return artists
+
+
+@router.post("/clear_cache", status_code=204)
+def clear_listings_cache():
+    get_cached_artists.cache_clear()
+    return {"detail": "Listings cache cleared"}
+
+
+# * GET Routes
 
 
 @router.get("/", response_model=PaginationResult[ArtistRead])
 def get_all_artists(
     pagination: PaginationParams = Depends(
         create_pagination_params(
-            default_limit=50, default_sort="name", default_order="asc"
+            default_limit=25, default_sort=["name"], default_order=["asc"]
         )
     ),
     db: Session = Depends(get_db),
 ) -> PaginationResult[ArtistRead]:
-    query: Query[Artist] = db.query(Artist)
-    artists: PaginationResult = paginate(
-        query, pagination.page, pagination.limit, pagination.sort, pagination.order
-    )
+    artists: PaginationResult = get_cached_artists(pagination, db)
     if not artists:
         raise HTTPException(status_code=404, detail="No artists found")
+
     return artists
 
 

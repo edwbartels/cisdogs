@@ -1,22 +1,40 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import { useInView } from 'react-intersection-observer'
 import AlbumTile from './AlbumTile'
 import useAlbumStore from '../../stores/albumStore'
 
 const Albums: React.FC = () => {
-	// const userId = useAuthStore((state) => state.user?.id)
-	const { albums, getAlbums } = useAlbumStore((state) => state)
-
+	const { ref, inView } = useInView({ threshold: 1.0 })
+	const debounceFetch = useRef(false)
+	const { albums, getAlbums, clearState } = useAlbumStore((state) => state)
+	const hasMore = useAlbumStore((state) => state.pagination?.has_more)
+	const sortedIds = useAlbumStore((state) => state.pagination?.sorted_ids)
 	useEffect(() => {
 		getAlbums()
+		return () => {
+			clearState()
+			window.scrollTo({ top: 0 })
+		}
 	}, [getAlbums])
+
+	useEffect(() => {
+		if (inView && hasMore && !debounceFetch.current) {
+			debounceFetch.current = true
+			getAlbums().finally(() => (debounceFetch.current = false))
+		}
+	}, [inView, hasMore])
 	return (
 		<div className="flex flex-col self-center">
 			<div className="pb-8 text-center text-9xl">Albums</div>
 			<div className="flex flex-wrap justify-start gap-4 p-4">
-				{Object.keys(albums).map((id) => (
-					<AlbumTile key={id} albumId={Number(id)} />
-				))}
+				{sortedIds &&
+					sortedIds.map((id) => <AlbumTile key={id} albumId={id} />)}
 			</div>
+			{hasMore && (
+				<div ref={ref} className="loader">
+					Loading...
+				</div>
+			)}
 		</div>
 	)
 }

@@ -1,14 +1,29 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import { useInView } from 'react-intersection-observer'
+
 import useArtistStore from '../../stores/artistStore'
 import ArtistTile from './ArtistTile'
 
 const Artists: React.FC = () => {
-	const { artists, getArtists } = useArtistStore((state) => state)
+	const { ref, inView } = useInView({ threshold: 1.0 })
+	const debounceFetch = useRef(false)
+	const { artists, getArtists, clearState } = useArtistStore((state) => state)
+	const hasMore = useArtistStore((state) => state.pagination?.has_more)
 	const sortedIds = useArtistStore((state) => state.pagination?.sorted_ids)
 
 	useEffect(() => {
 		getArtists()
+		return () => {
+			clearState()
+			window.scrollTo({ top: 0 })
+		}
 	}, [getArtists])
+	useEffect(() => {
+		if (inView && hasMore && !debounceFetch.current) {
+			debounceFetch.current = true
+			getArtists().finally(() => (debounceFetch.current = false))
+		}
+	}, [inView, hasMore])
 	return (
 		<div className="flex flex-col self-center">
 			<div className="pb-8 text-center text-9xl">Artists</div>
@@ -16,6 +31,11 @@ const Artists: React.FC = () => {
 				{sortedIds &&
 					sortedIds.map((id) => <ArtistTile key={id} artistId={id} />)}
 			</div>
+			{hasMore && (
+				<div ref={ref} className="loader">
+					Loading...
+				</div>
+			)}
 		</div>
 	)
 }

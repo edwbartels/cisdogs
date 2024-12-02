@@ -99,7 +99,7 @@ const AlbumTile: React.FC<AlbumTileProps> = ({ albumId }) => {
 				<div className="tile-footer-1">
 					{/* <div className="cursor-pointer">{`$${listing.price}`}</div> */}
 					<div
-						className="cursor-pointer self-center truncate hover:text-wax-cream"
+						className="cursor-pointer self-center w-full truncate hover:text-wax-cream"
 						onClick={() => navigate(`/album/${album.id}`)}
 					>
 						{album?.title}

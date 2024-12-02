@@ -19,14 +19,6 @@ const Dashboard = () => {
 	useEffect(() => {
 		!isLoggedIn && navigate('/')
 	}, [isLoggedIn])
-	// const updateDashboard = useUserStore((state) => state.updateDashboard)
-	// const updateItems = useItemStore((state) => state.updateItems)
-	// const updateUserItems = useUserStore((state) => state.updateItemIds)
-	// const userId = useAuthStore((state) => state.user?.id)
-
-	// useEffect(() => {
-	// 	updateDashboard()
-	// }, [updateDashboard])
 
 	return (
 		<div className="w-full dashboard-container">
@@ -86,9 +78,5 @@ const Dashboard = () => {
 		</div>
 	)
 }
-
-// const ItemsTab: React.FC = () => <div>Your Items</div>
-// const ListingsTab = () => <div>Your Listings</div>
-// const OrdersTab = () => <div>Your Orders</div>
 
 export default Dashboard

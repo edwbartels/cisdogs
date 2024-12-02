@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import RedirectResponse
+from sqlalchemy import ColumnExpressionArgument
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.orm.query import Query
 from app.database import get_db
@@ -20,7 +21,7 @@ router = APIRouter(prefix="/items", tags=["items"])
 
 # * Cache Function
 @lru_cache(maxsize=128)
-def get_cached_items(pagination: PaginationParams, db_session: Session):
+def get_cached_items(filters:list[ColumnExpressionArgument] | None, pagination: PaginationParams, db_session: Session):
     query: Query[Item] = (
         db_session.query(Item)
         # .join(Item.listing)
@@ -28,6 +29,9 @@ def get_cached_items(pagination: PaginationParams, db_session: Session):
         .join(Release.album)
         .join(Album.artist)
     )
+    if filters:
+        for filter in filters:
+            query = query.filter(filter)
 
     items: PaginationResult = paginate(
         query,
@@ -44,6 +48,9 @@ def get_cached_items(pagination: PaginationParams, db_session: Session):
 def clear_items_cache():
     get_cached_items.cache_clear()
     return {"detail": "Items cache cleared"}
+
+
+# * GET Routes
 
 
 @router.get("/", response_model=dict[int, ItemDetail])
@@ -86,11 +93,21 @@ def get_item_by_id(item_id: int, db: Session = Depends(get_db)):
     item.artist = item.release.album.artist
     return item
 
-
-# @router.get("/dashboard", response_model=ItemDetail)
-# def get_user_items(db:Session=Depends(get_db), current_user: User = Depends(get_current_user)):
-#     if not current_user:
-#         return RedirectResponse(url='/')
+@router.get('/user', response_model=PaginationResult[ItemFull])
+def get_user_items(pagination: PaginationParams = Depends(
+        create_pagination_params(
+            default_limit=50,
+            default_sort=[
+                "items.created",
+                "artists.name",
+                "albums.title",
+                "releases.media_type",
+                "releases.variant",
+            ],
+            default_order=["desc", "asc", "asc", "asc", "asc"],
+        )
+    ), user_id:int = Depends(get_user_id), db:Session=Depends(get_db)) -> PaginationResult[ItemFull]:
+    
 
 
 @router.post("/", response_model=ItemNew)

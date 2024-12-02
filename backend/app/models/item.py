@@ -1,9 +1,11 @@
 from sqlalchemy import Integer, ForeignKey
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.database import Base
+from app.models.mixins import TimestampMixin
 
 
-class Item(Base):
+class Item(Base, TimestampMixin):
     __tablename__: str = "items"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -21,3 +23,11 @@ class Item(Base):
         if self.listing:
             return True
         return False
+
+    @hybrid_property
+    def album(self):
+        return self.release.album
+
+    @hybrid_property
+    def artist(self):
+        return self.release.album.artist

@@ -13,7 +13,7 @@ class PaginationParams:
     def __init__(
         self,
         page: int = Query(1, ge=1),
-        limit: int = Query(20, ge=1, le=100),
+        limit: int = Query(50, ge=1, le=100),
         sort: list[str] = Query([]),
         order: list[str] = Query([]),
     ):
@@ -54,6 +54,7 @@ def paginate(
             )
 
     total_entries: int = query.count()
+    print(total_entries)
     offset: int = (page - 1) * limit
     entries: Any = query.offset(offset).limit(limit).distinct().all()
 

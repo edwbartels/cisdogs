@@ -1,8 +1,8 @@
-"""Dev Schema
+"""add timestampsMixin to items
 
-Revision ID: 34cfdd8d1a98
+Revision ID: 1537b624643d
 Revises: 
-Create Date: 2024-11-30 20:29:09.579373
+Create Date: 2024-12-01 22:52:28.562652
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '34cfdd8d1a98'
+revision: str = '1537b624643d'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -26,6 +26,7 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_artists_id'), 'artists', ['id'], unique=False)
+    op.create_index(op.f('ix_artists_name'), 'artists', ['name'], unique=False)
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=30), nullable=False),
@@ -47,6 +48,7 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['artist_id'], ['artists.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_index(op.f('ix_albums_title'), 'albums', ['title'], unique=False)
     op.create_table('releases',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('album_id', sa.Integer(), nullable=False),
@@ -57,10 +59,13 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['album_id'], ['albums.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_index(op.f('ix_releases_media_type'), 'releases', ['media_type'], unique=False)
     op.create_table('items',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('owner_id', sa.Integer(), nullable=False),
     sa.Column('release_id', sa.Integer(), nullable=False),
+    sa.Column('created', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.Column('updated', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ),
     sa.ForeignKeyConstraint(['release_id'], ['releases.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -141,12 +146,15 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_items_release_id'), table_name='items')
     op.drop_index(op.f('ix_items_owner_id'), table_name='items')
     op.drop_table('items')
+    op.drop_index(op.f('ix_releases_media_type'), table_name='releases')
     op.drop_table('releases')
+    op.drop_index(op.f('ix_albums_title'), table_name='albums')
     op.drop_table('albums')
     op.drop_index(op.f('ix_users_username'), table_name='users')
     op.drop_index(op.f('ix_users_id'), table_name='users')
     op.drop_index(op.f('ix_users_email'), table_name='users')
     op.drop_table('users')
+    op.drop_index(op.f('ix_artists_name'), table_name='artists')
     op.drop_index(op.f('ix_artists_id'), table_name='artists')
     op.drop_table('artists')
     # ### end Alembic commands ###

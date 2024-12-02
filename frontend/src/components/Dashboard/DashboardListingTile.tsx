@@ -7,6 +7,7 @@ import { Listing } from '../../stores/listingStore'
 import DropdownMenu from '../Util/DropdownMenu'
 import EyeIcon from '../Icons/EyeIcon'
 import { capitalizeFirst } from '../../utils/capitalize'
+import useDashboardStore from '../../stores/dashboardStore'
 
 interface DashboardListingTitleProps {
 	listingId: number
@@ -16,8 +17,8 @@ type DropdownOptions = 'remove' | 'extra' | null
 const DashboardListingTile: React.FC<DashboardListingTitleProps> = ({
 	listingId,
 }) => {
-	const listing: Listing = useUserStore(
-		(state) => state.listingDetails[listingId]
+	const listing: Listing = useDashboardStore(
+		(state) => state.listings.listings[listingId]
 	)
 	const removeListing = useUserStore((state) => state.removeListing)
 	const navigate = useNavigate()

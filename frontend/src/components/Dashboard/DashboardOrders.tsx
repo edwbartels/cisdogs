@@ -1,12 +1,24 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { useInView } from 'react-intersection-observer'
 import { useNavigate } from 'react-router-dom'
 import useUserStore from '../../stores/userStore'
+import useDashboardStore from '../../stores/dashboardStore'
 import { Order } from '../../stores/orderStore'
 import { capitalizeFirst } from '../../utils/capitalize'
 
 const DashboardOrders = () => {
 	const navigate = useNavigate()
-	const { orders, getOrders } = useUserStore((state) => state)
+	const { ref, inView } = useInView({ threshold: 1.0 })
+	const debounceFetch = useRef(false)
+	const { orders, getOrders, clearStateAll } = useDashboardStore(
+		(state) => state.orders.all
+	)
+	const hasMore = useDashboardStore(
+		(state) => state.orders.all.pagination?.has_more
+	)
+	const sortedIds = useDashboardStore(
+		(state) => state.orders.all.pagination?.sorted_ids
+	)
 	const { sales, purchases } = useUserStore((state) => state.orders)
 	const [activeTab, setActiveTab] = useState<'all' | 'sales' | 'purchases'>(
 		'all'
@@ -14,7 +26,18 @@ const DashboardOrders = () => {
 
 	useEffect(() => {
 		getOrders()
-	}, [])
+		return () => {
+			clearStateAll()
+			window.scrollTo({ top: 0 })
+		}
+	}, [getOrders])
+	useEffect(() => {
+		if (inView && hasMore && !debounceFetch.current) {
+			debounceFetch.current = true
+			getOrders().finally(() => (debounceFetch.current = false))
+		}
+	}, [inView, hasMore, getOrders])
+
 	const tableData = (ordersData: { [key: number]: Order } | null) => {
 		if (!ordersData) return []
 		return Object.values(ordersData).map((order) => ({
@@ -24,11 +47,11 @@ const DashboardOrders = () => {
 	}
 	const tableSales = tableData(sales)
 	const tablePurchases = tableData(purchases)
-	const tableAll = [...tableSales, ...tablePurchases]
+	const tableAll = sortedIds
 
 	const visibleData =
 		activeTab === 'all'
-			? tableAll
+			? sortedIds?.map((id) => orders[id])
 			: activeTab === 'sales'
 			? tableSales
 			: tablePurchases
@@ -69,43 +92,42 @@ const DashboardOrders = () => {
 					</tr>
 				</thead>
 				<tbody className="border-separate">
-					{visibleData.map((record, index) => (
-						<tr key={record.id}>
-							<td className="pl-2">
-								{new Date(record.created).toLocaleDateString()}
-							</td>
-							<td
-								className="pl-2 cursor-pointer hover:bg-wax-blue hover:bg-opacity-15"
-								onClick={() => navigate(`/release/${record.release.id}`)}
-							>
-								{capitalizeFirst(record.release.variant)}
-							</td>
+					{visibleData &&
+						visibleData.map((record, index) => (
+							<tr key={record.id}>
+								<td className="pl-2">
+									{new Date(record.created).toLocaleDateString()}
+								</td>
+								<td
+									className="pl-2 cursor-pointer hover:bg-wax-blue hover:bg-opacity-15"
+									onClick={() => navigate(`/release/${record.release.id}`)}
+								>
+									{capitalizeFirst(record.release.variant)}
+								</td>
 
-							<td
-								className="pl-2 cursor-pointer hover:bg-wax-blue hover:bg-opacity-15"
-								onClick={() => navigate(`/album/${record.album.id}`)}
-							>
-								{capitalizeFirst(record.album.title)}
-							</td>
-							<td
-								className="pl-2 cursor-pointer hover:bg-wax-blue hover:bg-opacity-15"
-								onClick={() => navigate(`/artist/${record.artist.id}`)}
-							>
-								{capitalizeFirst(record.artist.name)}
-							</td>
-							<td className="pl-2">{record.quality.toUpperCase()}</td>
-							<td className="pl-2">{record.price}</td>
-							<td className="pl-2">
-								{activeTab === 'all'
-									? index < tableSales.length
-										? 'Sale'
-										: ' Purchase'
-									: activeTab === 'sales'
-									? `${record.buyer.username}`
-									: `${record.seller.username}`}
-							</td>
-						</tr>
-					))}
+								<td
+									className="pl-2 cursor-pointer hover:bg-wax-blue hover:bg-opacity-15"
+									onClick={() => navigate(`/album/${record.album.id}`)}
+								>
+									{capitalizeFirst(record.album.title)}
+								</td>
+								<td
+									className="pl-2 cursor-pointer hover:bg-wax-blue hover:bg-opacity-15"
+									onClick={() => navigate(`/artist/${record.artist.id}`)}
+								>
+									{capitalizeFirst(record.artist.name)}
+								</td>
+								<td className="pl-2">{record.quality.toUpperCase()}</td>
+								<td className="pl-2">{record.price}</td>
+								<td className="pl-2">
+									{activeTab === 'all'
+										? `${capitalizeFirst(record.type)}`
+										: activeTab === 'sales'
+										? `${record.buyer.username}`
+										: `${record.seller.username}`}
+								</td>
+							</tr>
+						))}
 				</tbody>
 			</table>
 		</div>

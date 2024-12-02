@@ -7,6 +7,7 @@ import { Item } from '../../stores/itemStore'
 import DropdownMenu from '../Util/DropdownMenu'
 import EyeIcon from '../Icons/EyeIcon'
 import { capitalizeFirst } from '../../utils/capitalize'
+import useDashboardStore from '../../stores/dashboardStore'
 
 interface DashboardItemTitleProps {
 	itemId: number
@@ -15,7 +16,7 @@ interface DashboardItemTitleProps {
 type DropdownOptions = 'remove' | 'extra' | null
 
 const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
-	const item: Item = useUserStore((state) => state.itemDetails[itemId])
+	const item: Item = useDashboardStore((state) => state.items.items[itemId])
 	const removeItem = useUserStore((state) => state.removeItem)
 	const navigate = useNavigate()
 

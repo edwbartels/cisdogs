@@ -7,6 +7,7 @@ export type Order = {
 	quality: string
 	description: string
 	created: string
+	type: 'sale' | 'purchase' | null
 	seller: {
 		id: number
 		username: string

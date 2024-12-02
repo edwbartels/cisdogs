@@ -21,7 +21,11 @@ router = APIRouter(prefix="/items", tags=["items"])
 
 # * Cache Function
 @lru_cache(maxsize=128)
-def get_cached_items(filters:list[ColumnExpressionArgument] | None, pagination: PaginationParams, db_session: Session):
+def get_cached_items(
+    pagination: PaginationParams,
+    db_session: Session,
+    filters: tuple[ColumnExpressionArgument, ...] = (),
+):
     query: Query[Item] = (
         db_session.query(Item)
         # .join(Item.listing)
@@ -83,20 +87,11 @@ def get_all_items_full(
     return items
 
 
-@router.get("/{item_id}", response_model=ItemFull)
-def get_item_by_id(item_id: int, db: Session = Depends(get_db)):
-    item = db.query(Item).filter(Item.id == item_id).first()
-    if not item:
-        raise HTTPException(status_code=404, detail="Item not found")
-
-    item.album = item.release.album
-    item.artist = item.release.album.artist
-    return item
-
-@router.get('/user', response_model=PaginationResult[ItemFull])
-def get_user_items(pagination: PaginationParams = Depends(
+@router.get("/user", response_model=PaginationResult[ItemFull])
+def get_user_items(
+    pagination: PaginationParams = Depends(
         create_pagination_params(
-            default_limit=50,
+            default_limit=10,
             default_sort=[
                 "items.created",
                 "artists.name",
@@ -106,8 +101,25 @@ def get_user_items(pagination: PaginationParams = Depends(
             ],
             default_order=["desc", "asc", "asc", "asc", "asc"],
         )
-    ), user_id:int = Depends(get_user_id), db:Session=Depends(get_db)) -> PaginationResult[ItemFull]:
-    
+    ),
+    user_id=Depends(get_user_id),
+    db: Session = Depends(get_db),
+) -> PaginationResult[ItemFull]:
+    filters: tuple[ColumnExpressionArgument] = (Item.owner_id == user_id,)
+    items: PaginationResult[ItemFull] = get_cached_items(pagination, db, filters)
+
+    return items
+
+
+@router.get("/{item_id}", response_model=ItemFull)
+def get_item_by_id(item_id: int, db: Session = Depends(get_db)):
+    item = db.query(Item).filter(Item.id == item_id).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    item.album = item.release.album
+    item.artist = item.release.album.artist
+    return item
 
 
 @router.post("/", response_model=ItemNew)

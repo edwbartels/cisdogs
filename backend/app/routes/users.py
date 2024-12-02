@@ -46,31 +46,31 @@ def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
     return user
 
 
-@router.get(
-    "/dashboard",
-    response_model=UserDashboardResponse,
-)
-def get_dashboard_info(
-    db: Session = Depends(get_db), current_user: User = Depends(get_current_user)
-):
-    print("Hey sup")
-    if not current_user:
-        RedirectResponse(url="/")
-        raise HTTPException(
-            status_code=401, detail="Not authenticated (not active user)"
-        )
-    items = db.query(Item).filter(Item.owner_id == current_user.id).all()
-    listings = db.query(Listing).filter(Listing.seller_id == current_user.id).all()
+# @router.get(
+#     "/dashboard",
+#     response_model=UserDashboardResponse,
+# )
+# def get_dashboard_info(
+#     db: Session = Depends(get_db), current_user: User = Depends(get_current_user)
+# ):
+#     print("Hey sup")
+#     if not current_user:
+#         RedirectResponse(url="/")
+#         raise HTTPException(
+#             status_code=401, detail="Not authenticated (not active user)"
+#         )
+#     items = db.query(Item).filter(Item.owner_id == current_user.id).all()
+#     listings = db.query(Listing).filter(Listing.seller_id == current_user.id).all()
 
-    item_dict: dict[int, ItemDetail] = {item.id: item for item in items}
-    listing_dict: dict[int, ListingDetail] = {
-        listing.id: listing for listing in listings
-    }
+#     item_dict: dict[int, ItemDetail] = {item.id: item for item in items}
+#     listing_dict: dict[int, ListingDetail] = {
+#         listing.id: listing for listing in listings
+#     }
 
-    return {
-        "items": item_dict,
-        "listings": listing_dict,
-    }
+#     return {
+#         "items": item_dict,
+#         "listings": listing_dict,
+#     }
 
 
 @router.get("/items", response_model=dict[int, ItemFull])

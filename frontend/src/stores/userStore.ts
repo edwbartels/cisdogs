@@ -5,6 +5,7 @@ import useItemStore, { Item } from './itemStore'
 import useListingStore, { Listing } from './listingStore'
 import { Order } from './orderStore'
 import fetchWithAuth from '../utils/fetch'
+import { Pagination } from '../utils/types'
 interface UserStore {
 	collection: Set<number>
 	watchlist: Set<number>
@@ -24,6 +25,7 @@ interface UserStore {
 	listingDetails: {
 		[key: number]: Listing
 	}
+	pagination: Pagination
 	getCollection: () => void
 	addToCollection: (item: { release_id: number; owner_id: number }) => void
 	getWatchlist: () => void
@@ -34,7 +36,7 @@ interface UserStore {
 	updateItemIds: () => void
 	updateListingIds: () => void
 	updateDashboard: () => void
-	updateDashboardItems: () => void
+	updateDashboardItems: () => Promise<void>
 	updateDashboardListings: () => void
 	removeItem: (id: number) => void
 	removeListing: (id: number) => void
@@ -44,11 +46,12 @@ interface UserStore {
 
 const useUserStore = create(
 	devtools<UserStore>(
-		(set) => ({
+		(set, get) => ({
 			itemIds: [],
 			listingIds: [],
 			collection: new Set(),
 			watchlist: new Set(),
+			pagination: null,
 			orders: { sales: null, purchases: null },
 			getCollection: async () => {
 				try {
@@ -205,14 +208,28 @@ const useUserStore = create(
 				}
 			},
 			updateDashboardItems: async () => {
+				const { pagination, itemDetails } = get()
+				const page = pagination?.current_page ?? 0
 				try {
-					const url = '/api/users/items'
-					const res = await fetchWithAuth(url)
+					const url = `/api/items/user?page=${page + 1}`
+					const res = await fetchWithAuth(url, {
+						credentials: 'include',
+					})
 					if (!res.ok) {
 						throw new Error("Fetch user's items failed")
 					}
 					const data = await res.json()
-					set({ itemDetails: data })
+					const { entries, sorted_ids, ...remaining } = data
+					set({ itemDetails: { ...itemDetails, ...entries } })
+					set({
+						pagination: {
+							...remaining,
+							sorted_ids: [
+								...(pagination?.sorted_ids || []),
+								...sorted_ids.map((id: string) => id),
+							],
+						},
+					})
 				} catch (e) {
 					console.error(e)
 				}

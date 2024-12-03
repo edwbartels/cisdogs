@@ -20,10 +20,12 @@ const DashboardListingTile: React.FC<DashboardListingTitleProps> = ({
 	const listing: Listing = useDashboardStore(
 		(state) => state.listings.listings[listingId]
 	)
-	const removeListing = useUserStore((state) => state.removeListing)
+	const deleteListing = useDashboardStore(
+		(state) => state.listings.deleteListing
+	)
 	const navigate = useNavigate()
 	const [activeDropdown, setActiveDropdown] = useState<DropdownOptions>(null)
-	const menuOptions = [{ label: 'Remove', value: 'remove' }]
+	const menuOptions = [{ label: 'Cancel Listing', value: 'remove' }]
 	const extraOptions = [
 		{ label: 'Listing', value: 'listing' },
 		{ label: 'Item', value: 'item' },
@@ -35,7 +37,7 @@ const DashboardListingTile: React.FC<DashboardListingTitleProps> = ({
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
 			case 'remove':
-				removeListing(listingId)
+				deleteListing(listingId)
 				break
 			case 'listing':
 				navigate(`/listing/${listing.id}`)
@@ -81,6 +83,7 @@ const DashboardListingTile: React.FC<DashboardListingTitleProps> = ({
 	}, [handleClickOutside])
 
 	if (!listing) {
+		console.log(listingId)
 		return <div>Listing not found</div>
 	}
 	return (

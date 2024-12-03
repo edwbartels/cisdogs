@@ -17,7 +17,7 @@ type DropdownOptions = 'remove' | 'extra' | null
 
 const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 	const item: Item = useDashboardStore((state) => state.items.items[itemId])
-	const removeItem = useUserStore((state) => state.removeItem)
+	const deleteItem = useDashboardStore((state) => state.items.deleteItem)
 	const navigate = useNavigate()
 
 	const [activeDropdown, setActiveDropdown] = useState<{
@@ -25,7 +25,7 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 		type: DropdownOptions
 	} | null>(null)
 
-	const menuOptions = [{ label: 'Remove', value: 'remove' }]
+	const menuOptions = [{ label: 'Remove from collection', value: 'remove' }]
 	const extraOptions = [
 		{ label: 'Item', value: 'item' },
 		{ label: 'Release', value: 'release' },
@@ -38,7 +38,7 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
 			case 'remove':
-				removeItem(itemId)
+				deleteItem(itemId)
 				break
 			case 'listing':
 				navigate(`/listing/${item.listing?.id}`)
@@ -151,7 +151,7 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 					</div>
 				</div>
 				<div
-					className="tile-art-container"
+					className="tile-art-container relative group"
 					style={{
 						backgroundImage: item.album.art
 							? `url(${item.album.art})`
@@ -161,6 +161,12 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 					}}
 					onClick={() => navigate(`/item/${item.id}`)}
 				>
+					{item.listing && (
+						<div
+							className="absolute z-10 
+								invisible group-hover:visible bg-wax-gray text-wax-cream text-sm rounded py-1 px-2 absolute bottom-full left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+						>{`$${item.listing.price}`}</div>
+					)}
 					<div className="tile-art-title-bar">{item.album.title}</div>
 					<div></div>
 				</div>
@@ -180,9 +186,11 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 							{item.release.media_type == 'vinyl' &&
 								` | ${capitalizeFirst(item.release.variant)}`}
 						</div>
-						{/* {item.listing && <div className="cursor-pointer hover:text-wax-cream">
-							{`${item.listing.price}`}}
-						</div> */}
+						{item.listing && (
+							<div className="cursor-pointer hover:text-wax-cream">
+								{`${item.listing.price}`}
+							</div>
+						)}
 					</div>
 				</div>
 			</div>

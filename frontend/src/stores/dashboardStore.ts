@@ -14,14 +14,16 @@ interface DashboardStore {
 		pagination: Pagination
 		clearState: () => void
 		getItems: () => Promise<void>
+		deleteItem: (id: number) => Promise<void>
 	}
 	listings: {
 		listings: {
 			[key: number]: Listing
 		}
 		pagination: Pagination
-		clearState: () => void
+		clearState: () => Promise<void>
 		getListings: () => Promise<void>
+		deleteListing: (id: number) => Promise<void>
 	}
 	orders: {
 		all: {
@@ -99,6 +101,22 @@ const useDashboardStore = create(
 						console.error(e)
 					}
 				},
+				deleteItem: async (id: number) => {
+					try {
+						const url = `/api/items/${id}`
+						const res = await fetchWithAuth(url, {
+							method: 'DELETE',
+							credentials: 'include',
+						})
+						if (!res.ok) {
+							throw new Error('Failed to delete item')
+						}
+						await get().items.clearState()
+						await get().items.getItems()
+					} catch (e) {
+						console.error(e)
+					}
+				},
 			},
 			listings: {
 				listings: {},
@@ -146,6 +164,22 @@ const useDashboardStore = create(
 								},
 							},
 						}))
+					} catch (e) {
+						console.error(e)
+					}
+				},
+				deleteListing: async (id: number) => {
+					try {
+						const url = `/api/listings/${id}`
+						const res = await fetchWithAuth(url, {
+							method: 'DELETE',
+							credentials: 'include',
+						})
+						if (!res.ok) {
+							throw new Error('Failed to cancel listing')
+						}
+						await get().listings.clearState()
+						await get().listings.getListings()
 					} catch (e) {
 						console.error(e)
 					}

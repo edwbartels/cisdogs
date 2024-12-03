@@ -23,7 +23,7 @@ const Dashboard = () => {
 	return (
 		<div className="w-full dashboard-container">
 			<div className="pb-8 text-center text-9xl ">User Details</div>
-			<div className="flex justify-between border-b border-wax-silver">
+			<div className="flex justify-between border-b border-wax-silver min-w-72">
 				<div className="flex justify-between w-full text-xl tabs">
 					<div>
 						<button

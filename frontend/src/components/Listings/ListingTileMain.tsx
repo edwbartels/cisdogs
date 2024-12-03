@@ -178,10 +178,10 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 								` | ${capitalizeFirst(listing.release.variant)}`}
 						</div>
 						<div
-							className="cursor-pointer hover:text-wax-cream"
+							className="cursor-pointer hover:text-wax-cream ml-1"
 							onClick={() => navigate(`/listing/${listing.id}`)}
 						>
-							${listing.price}
+							${listing.price.toFixed(2)}
 						</div>
 					</div>
 				</div>

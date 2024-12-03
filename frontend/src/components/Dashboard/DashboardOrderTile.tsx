@@ -172,7 +172,9 @@ const DashboardOrderTile: React.FC<DashboardOrderTitleProps> = ({
 				<div className="flex items-end justify-between w-full h-6 px-2 font-semibold bg-wax-gray text-wax-amber">
 					<div className="cursor-pointer">{order.artist.name}</div>
 					{order.listing && (
-						<div className="cursor-pointer">$ {order.listing.price}</div>
+						<div className="cursor-pointer">
+							$ {order.listing.price.toFixed(2)}
+						</div>
 					)}
 				</div>
 			</div>

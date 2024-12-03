@@ -293,7 +293,9 @@ const ListingModal: React.FC<ListingModalProps> = ({
 						<input
 							type="number"
 							onChange={handleFormChange('price')}
-							defaultValue={listingDetails.price}
+							// defaultValue={listingDetails.price}
+							value={listingDetails.price}
+							// placeholder=
 							className="block w-full  pl-6 p-1 border rounded text-wax-black"
 							min="0.01"
 							step="0.01"

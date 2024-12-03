@@ -165,7 +165,7 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 						<div
 							className="absolute z-10 
 								invisible group-hover:visible bg-wax-gray text-wax-cream text-sm rounded py-1 px-2 absolute bottom-full left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-						>{`$${item.listing.price}`}</div>
+						>{`$${item.listing.price.toFixed(2)}`}</div>
 					)}
 					<div className="tile-art-title-bar">{item.album.title}</div>
 					<div></div>
@@ -188,7 +188,7 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 						</div>
 						{item.listing && (
 							<div className="cursor-pointer hover:text-wax-cream">
-								{`${item.listing.price}`}
+								{`${item.listing.price.toFixed(2)}`}
 							</div>
 						)}
 					</div>

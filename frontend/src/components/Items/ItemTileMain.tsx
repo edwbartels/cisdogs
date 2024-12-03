@@ -12,7 +12,7 @@ import { capitalizeFirst } from '../../utils/capitalize'
 interface ItemTileMainProps {
 	itemId: number
 }
-type DropdownOptions = 'remove' | 'extra' | null
+type DropdownOptions = 'add' | 'extra' | null
 
 const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 	const userId = useAuthStore((state) => state.user?.id)
@@ -21,6 +21,7 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 	const navigate = useNavigate()
 
 	const [activeDropdown, setActiveDropdown] = useState<DropdownOptions>(null)
+	const menuOptions = [{ label: 'Add to Collection', value: 'add' }]
 	const extraOptions = [
 		{ label: 'Item', value: 'item' },
 		{ label: 'Release', value: 'release' },
@@ -32,6 +33,13 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
+			case 'add':
+				userId &&
+					addToCollection({
+						release_id: item.release.id,
+						owner_id: userId,
+					})
+				break
 			case 'listing':
 				navigate(`/listing/${item.listing?.id}`)
 				break
@@ -58,10 +66,10 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 			}
 			const targetElement = event.target as Element
 
-			const clickedRemove = targetElement.closest('.remove-dropdown')
+			const clickedAdd = targetElement.closest('.add-dropdown')
 			const clickedExtra = targetElement.closest('.extra-dropdown')
 
-			if (!clickedRemove && activeDropdown === 'remove') setActiveDropdown(null)
+			if (!clickedAdd && activeDropdown === 'add') setActiveDropdown(null)
 			if (!clickedExtra && activeDropdown === 'extra') setActiveDropdown(null)
 		},
 		[activeDropdown]
@@ -77,23 +85,29 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 		return <div>Item not found</div>
 	}
 	return (
-		<div className="tile-container ring-wax-gray">
+		<div
+			className={`tile-container ${
+				item.listing ? 'ring-green-700' : 'ring-wax-gray'
+			} `}
+		>
 			<div className="tile-title-bar">
-				<div className="space-x-1">
+				<div className="relative flex space-x-1">
 					<EyeIcon id={item.release.id} />
 					{!collection.has(item.release.id) && (
-						<FontAwesomeIcon
-							icon={faPlus}
-							size="xl"
-							className="cursor-pointer hover:text-wax-cream"
-							onClick={() =>
-								userId &&
-								addToCollection({
-									release_id: item.release.id,
-									owner_id: userId,
-								})
-							}
-						/>
+						<div className="flex flex-col add-dropdown">
+							<FontAwesomeIcon
+								icon={faPlus}
+								size="xl"
+								className="cursor-pointer hover:text-wax-cream"
+								onClick={() => userId && setActiveDropdown('add')}
+							/>
+							<DropdownMenu
+								className="absolute left-0 w-24 font-bold text-center border border-4 rounded-lg shadow-lg cursor-pointer bg-wax-cream bottom-full border-wax-red hover:bg-wax-red hover:text-wax-cream hover:border-wax-gray"
+								options={menuOptions}
+								isOpen={activeDropdown === 'add'}
+								onSelect={handleOptionSelect}
+							/>
+						</div>
 					)}
 				</div>
 				<div className="relative flex flex-col extra-dropdown">
@@ -113,7 +127,7 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 				</div>
 			</div>
 			<div
-				className="tile-art-container"
+				className="tile-art-container relative group"
 				style={{
 					backgroundImage: item.album.art
 						? `url(${item.album.art})`
@@ -123,6 +137,13 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 				}}
 				onClick={() => navigate(`/release/${item.release.id}`)}
 			>
+				{item.listing && (
+					<div
+						className="absolute z-10 
+								invisible group-hover:visible
+								bg-wax-gray text-wax-cream text-sm rounded py-1 px-2 absolute bottom-full left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+					>{`$${item.listing.price.toFixed(2)}`}</div>
+				)}
 				<div className="tile-art-title-bar">{item.album.title}</div>
 				<div></div>
 			</div>

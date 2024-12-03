@@ -134,7 +134,7 @@ const WatchlistListingTile: React.FC<WatchlistListingTileProps> = ({
 							className="cursor-pointer hover:text-wax-cream"
 							onClick={() => navigate(`/listing/${listing.id}`)}
 						>
-							${listing.price}
+							${listing.price.toFixed(2)}
 						</div>
 					</div>
 				</div>

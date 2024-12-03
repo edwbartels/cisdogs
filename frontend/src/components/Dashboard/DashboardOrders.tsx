@@ -120,7 +120,7 @@ const DashboardOrders = () => {
 									{capitalizeFirst(record.artist.name)}
 								</td>
 								<td className="pl-2">{record.quality.toUpperCase()}</td>
-								<td className="pl-2">{record.price}</td>
+								<td className="pl-2">{record.price.toFixed(2)}</td>
 								<td className="pl-2">
 									{activeTab === 'all'
 										? `${capitalizeFirst(record.type)}`

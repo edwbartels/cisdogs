@@ -129,13 +129,13 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 								{isEditing ? (
 									<input
 										type="number"
-										defaultValue={listing.price}
+										defaultValue={listing.price.toFixed(2)}
 										onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
 											setTempValuePrice(Number(e.target.value))
 										}
 									/>
 								) : (
-									<div className="pl-2">{listing.price}</div>
+									<div className="pl-2">{`$${listing.price.toFixed(2)}`}</div>
 								)}
 							</div>
 							<div className="flex flex-col">

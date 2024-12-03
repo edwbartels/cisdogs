@@ -6,7 +6,7 @@ export const initializeSubscriptions = () => {
 	const unsubscribeAuth = useAuthStore.subscribe(
 		(state) => state.isLoggedIn,
 		(isLoggedIn) => {
-			console.log('Auth state changed. Is logged in:', isLoggedIn)
+			// console.log('Auth state changed. Is logged in:', isLoggedIn)
 			if (isLoggedIn) {
 				useUserStore.getState().getCollection()
 				useUserStore.getState().getWatchlist()

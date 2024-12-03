@@ -78,7 +78,7 @@ const useAuthStore = create(
 								}
 							}
 						)
-						console.log(reqCart)
+						// console.log(reqCart)
 						try {
 							const url = '/api/checkout'
 							const res = await fetchWithAuth(url, {
@@ -87,8 +87,8 @@ const useAuthStore = create(
 								credentials: 'include',
 							})
 							if (!res.ok) {
-								const error = await res.text()
-								console.log(error)
+								// const error = await res.text()
+								// console.log(error)
 								throw new Error('Failed to checkout items')
 							}
 							alert('Checkout successful!')

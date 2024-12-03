@@ -14,8 +14,8 @@ const QuickCreate: React.FC = () => {
 		const url = '/api/users/items/unlisted'
 		const res = await fetchWithAuth(url)
 		if (!res.ok) {
-			const error = await res.text()
-			console.log(error)
+			// const error = await res.text()
+			// console.log(error)
 			throw new Error('Failed to retrieve data for listing modal')
 		}
 		const data = await res.json()

@@ -46,8 +46,8 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 				credentials: 'include',
 			})
 			if (!res.ok) {
-				const error = await res.text()
-				console.log(error)
+				// const error = await res.text()
+				// console.log(error)
 				throw new Error('Failed to update listing')
 			}
 			const newListing = await res.json()

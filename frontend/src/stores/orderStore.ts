@@ -67,7 +67,7 @@ const useOrderStore = create(
 						throw new Error(`Failed to fetch order (id: ${id})`)
 					}
 					const order = await res.json()
-					console.log(order)
+					// console.log(order)
 					set({ focus: order })
 				} catch (e) {
 					console.error(e)

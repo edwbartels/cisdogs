@@ -90,7 +90,7 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 			handleClose()
 		} catch (e) {
 			setErrors({ ...errors, fetch: 'Invalid credentials' })
-			console.log(e)
+			// console.log(e)
 		}
 	}
 

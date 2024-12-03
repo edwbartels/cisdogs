@@ -61,7 +61,7 @@ const useReleaseStore = create(
 						throw new Error(`Failed to fetch release (id: ${id})`)
 					}
 					const release = await res.json()
-					console.log(release)
+					// console.log(release)
 					set({ focus: release })
 				} catch (e) {
 					console.error(e)

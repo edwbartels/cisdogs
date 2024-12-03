@@ -101,12 +101,6 @@ const SubmissionForm = () => {
 				throw new Error("Couldn't find track list")
 			}
 			const data = await res.json()
-			console.log(data)
-			if (data == null) {
-				alert(
-					"Couldn't find release info, please check the artist and album fields and try again."
-				)
-			}
 			if (data) {
 				const artistAdded = await addArtist(releaseForm.artist)
 				if (artistAdded) {
@@ -158,8 +152,8 @@ const SubmissionForm = () => {
 					credentials: 'include',
 				})
 				if (!res.ok) {
-					const error = await res.text()
-					console.log(error)
+					// const error = await res.text()
+					// console.log(error)
 					throw new Error('Failed to create release')
 				}
 				const data = await res.json()

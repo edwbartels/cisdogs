@@ -57,14 +57,14 @@ const useUserStore = create(
 						credentials: 'include',
 					})
 					if (!res.ok) {
-						const error = await res.text()
-						console.log(error)
+						// const error = await res.text()
+						// console.log(error)
 						throw new Error('Failed to get user collection')
 					}
 					const data = await res.json()
-					console.log('collection res', data)
+					// console.log('collection res', data)
 					set({ collection: new Set(data) })
-					console.log('Current Collection:', new Set(data))
+					// console.log('Current Collection:', new Set(data))
 				} catch (e) {
 					console.error(e)
 				}
@@ -78,15 +78,15 @@ const useUserStore = create(
 						credentials: 'include',
 					})
 					if (!res.ok) {
-						const error = await res.text()
-						console.log(error)
+						// const error = await res.text()
+						// console.log(error)
 						throw new Error('Failed to add to collection')
 					}
 					const data = await res.json()
-					console.log('collection res', data)
+					// console.log('collection res', data)
 					set((state) => {
 						const updatedSet = new Set(state.collection)
-						console.log(data.release_id)
+						// console.log(data.release_id)
 						!updatedSet.has(data.release_id) && updatedSet.add(data?.release_id)
 						return { collection: updatedSet }
 					})
@@ -101,14 +101,14 @@ const useUserStore = create(
 						credentials: 'include',
 					})
 					if (!res.ok) {
-						const error = await res.text()
-						console.log(error)
+						// const error = await res.text()
+						// console.log(error)
 						throw new Error('Failed to get user watchlist')
 					}
 					const data = await res.json()
-					console.log('watchlist res', data)
+					// console.log('watchlist res', data)
 					data && set({ watchlist: new Set(data) })
-					console.log('Current Watchlist:', new Set(data))
+					// console.log('Current Watchlist:', new Set(data))
 				} catch (e) {
 					console.error(e)
 				}
@@ -121,12 +121,12 @@ const useUserStore = create(
 						body: JSON.stringify({ user_id: user_id, release_id: release_id }),
 					})
 					if (!res.ok) {
-						const error = await res.text()
-						console.log(error)
+						// const error = await res.text()
+						// console.log(error)
 						throw new Error('Failed to add to watchlist')
 					}
 					const data = await res.json()
-					console.log(data)
+					// console.log(data)
 					data && set({ watchlist: new Set(data) })
 					// console.log(new Set(data))
 				} catch (e) {
@@ -141,13 +141,13 @@ const useUserStore = create(
 						body: JSON.stringify({ user_id: user_id, release_id: release_id }),
 					})
 					if (!res.ok) {
-						const error = await res.text()
-						console.log(error)
+						// const error = await res.text()
+						// console.log(error)
 						throw new Error('Failed to remove from watchlist')
 					}
 					const data = await res.json()
 					set({ watchlist: new Set(data) })
-					console.log(new Set(data))
+					// console.log(new Set(data))
 				} catch (e) {
 					console.error(e)
 				}
@@ -157,13 +157,13 @@ const useUserStore = create(
 					const url = '/api/users/orders'
 					const res = await fetchWithAuth(url)
 					if (!res.ok) {
-						const error = await res.text()
-						console.log(error)
+						// const error = await res.text()
+						// console.log(error)
 						throw new Error('Failed to get orders')
 					}
 					const data = await res.json()
 					set({ orders: data })
-					console.log(data)
+					// console.log(data)
 				} catch (e) {
 					console.error(e)
 				}

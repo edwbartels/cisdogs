@@ -80,7 +80,7 @@ const useAlbumStore = create(
 						throw new Error(`Failed to fetch release(id: ${id})`)
 					}
 					const album = await res.json()
-					console.log(album)
+					// console.log(album)
 					set({ focus: album })
 				} catch (e) {
 					console.error(e)

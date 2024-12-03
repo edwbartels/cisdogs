@@ -98,6 +98,9 @@ const SubmissionForm = () => {
 		try {
 			const res = await fetch(url)
 			if (!res.ok) {
+				alert(
+					"Couldn't find release info, check to make sure your input data is correct."
+				)
 				throw new Error("Couldn't find track list")
 			}
 			const data = await res.json()
@@ -302,7 +305,7 @@ const SubmissionForm = () => {
 						) : (
 							<>
 								<div className="mt-2 font-semibold text-center">
-									Get Track List?
+									Get Track List
 								</div>
 								<div className="text-sm italic text-center">
 									Make sure the artist and album fields are spelled correctly

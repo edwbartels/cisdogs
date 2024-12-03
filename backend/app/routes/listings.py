@@ -67,7 +67,7 @@ def get_all_listings(db: Session = Depends(get_db)) -> dict[int, ListingDetail]:
 def get_all_listings_full(
     pagination: PaginationParams = Depends(
         create_pagination_params(
-            default_limit=20,
+            default_limit=50,
             default_sort=[
                 "listings.created",
                 "artists.name",
@@ -136,7 +136,6 @@ def get_listings_by_album(album_id: int, db: Session = Depends(get_db)):
         .filter(Listing.item, Item.release, Release.album_id == album_id)
         .all()
     )
-    print(listings)
     if not listings:
         raise HTTPException(status_code=404, detail="No listings found.")
 
@@ -162,7 +161,6 @@ def get_listings_by_release(release_id: int, db: Session = Depends(get_db)):
         .filter(Listing.item, Item.release_id == release_id)
         .all()
     )
-    print("im in baby")
     if not listings:
         raise HTTPException(status_code=404, detail="No listings found.")
 
@@ -183,7 +181,6 @@ def create_listing(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    print(listing)
     item = db.query(Item).filter(Item.id == listing.item_id).first()
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")

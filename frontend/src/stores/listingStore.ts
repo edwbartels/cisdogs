@@ -99,8 +99,6 @@ const useListingStore = create(
 							],
 						},
 					})
-					console.log(listings)
-					console.log(pagination?.sorted_ids)
 				} catch (e) {
 					console.error(e)
 				}

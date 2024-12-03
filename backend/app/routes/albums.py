@@ -44,7 +44,7 @@ def clear_listings_cache():
 def get_all_albums(
     pagination: PaginationParams = Depends(
         create_pagination_params(
-            default_limit=25,
+            default_limit=50,
             default_sort=["artists.name", "albums.title"],
             default_order=["asc", "asc"],
         )

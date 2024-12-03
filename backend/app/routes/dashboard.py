@@ -93,7 +93,6 @@ def get_cached_orders(
         .join(Order.release)
         .join(Release.album)
         .join(Album.artist)
-        # .options(joinedload(Order.buyer).joinedload(Order.seller))
     )
     if filters:
         for filter in filters:
@@ -106,8 +105,60 @@ def get_cached_orders(
         pagination.sort,
         pagination.order,
     )
-    # for order in orders.entries.values():
-    #     order.type = order.get_type(user_id)
+
+    return orders
+
+
+@lru_cache(maxsize=128)
+def get_cached_sales(
+    pagination: PaginationParams,
+    db_session: Session,
+    filters: tuple[ColumnExpressionArgument, ...] = (),
+):
+    query: Query[Order] = (
+        db_session.query(Order)
+        .join(Order.release)
+        .join(Release.album)
+        .join(Album.artist)
+    )
+    if filters:
+        for filter in filters:
+            query = query.filter(filter)
+
+    orders: PaginationResult = paginate(
+        query,
+        pagination.page,
+        pagination.limit,
+        pagination.sort,
+        pagination.order,
+    )
+
+    return orders
+
+
+@lru_cache(maxsize=128)
+def get_cached_purchases(
+    pagination: PaginationParams,
+    db_session: Session,
+    filters: tuple[ColumnExpressionArgument, ...] = (),
+):
+    query: Query[Order] = (
+        db_session.query(Order)
+        .join(Order.release)
+        .join(Release.album)
+        .join(Album.artist)
+    )
+    if filters:
+        for filter in filters:
+            query = query.filter(filter)
+
+    orders: PaginationResult = paginate(
+        query,
+        pagination.page,
+        pagination.limit,
+        pagination.sort,
+        pagination.order,
+    )
 
     return orders
 
@@ -120,14 +171,26 @@ def clear_items_cache():
 
 @router.post("/clear_cache/listings", status_code=204)
 def clear_listings_cache():
-    get_cached_items.cache_clear()
-    return {"detail": "Items cache cleared"}
+    get_cached_listings.cache_clear()
+    return {"detail": "Listings cache cleared"}
 
 
 @router.post("/clear_cache/orders", status_code=204)
 def clear_orders_cache():
-    get_cached_items.cache_clear()
-    return {"detail": "Items cache cleared"}
+    get_cached_orders.cache_clear()
+    return {"detail": "Orders cache cleared"}
+
+
+@router.post("/clear_cache/sales", status_code=204)
+def clear_sales_cache():
+    get_cached_sales.cache_clear()
+    return {"detail": "Sales cache cleared"}
+
+
+@router.post("/clear_cache/purchases", status_code=204)
+def clear_purchases_cache():
+    get_cached_purchases.cache_clear()
+    return {"detail": "Purchases cache cleared"}
 
 
 # * GET * #
@@ -202,6 +265,46 @@ def get_all_dashboard_orders(
         (or_(Order.seller_id == user_id, Order.buyer_id == user_id)),
     )
     orders: PaginationResult[OrderFull] = get_cached_orders(pagination, db, filters)
+    for order in orders.entries.values():
+        order.type = order.get_type(user_id)
+
+    return orders
+
+
+@router.get("/sales", response_model=PaginationResult[OrderFull])
+def get_dashboard_sales(
+    pagination: PaginationParams = Depends(
+        create_pagination_params(
+            default_limit=50,
+            default_sort=["orders.created", "orders.price"],
+            default_order=["desc", "asc"],
+        )
+    ),
+    user_id=Depends(get_user_id),
+    db: Session = Depends(get_db),
+) -> PaginationResult[OrderFull]:
+    filters: tuple[ColumnExpressionArgument] = (Order.seller_id == user_id,)
+    orders: PaginationResult[OrderFull] = get_cached_sales(pagination, db, filters)
+    for order in orders.entries.values():
+        order.type = order.get_type(user_id)
+
+    return orders
+
+
+@router.get("/purchases", response_model=PaginationResult[OrderFull])
+def get_dashboard_purchases(
+    pagination: PaginationParams = Depends(
+        create_pagination_params(
+            default_limit=50,
+            default_sort=["orders.created", "orders.price"],
+            default_order=["desc", "asc"],
+        )
+    ),
+    user_id=Depends(get_user_id),
+    db: Session = Depends(get_db),
+) -> PaginationResult[OrderFull]:
+    filters: tuple[ColumnExpressionArgument] = (Order.buyer_id == user_id,)
+    orders: PaginationResult[OrderFull] = get_cached_purchases(pagination, db, filters)
     for order in orders.entries.values():
         order.type = order.get_type(user_id)
 

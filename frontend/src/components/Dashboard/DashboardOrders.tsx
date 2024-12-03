@@ -8,53 +8,55 @@ import { capitalizeFirst } from '../../utils/capitalize'
 
 const DashboardOrders = () => {
 	const navigate = useNavigate()
-	const { ref, inView } = useInView({ threshold: 1.0 })
-	const debounceFetch = useRef(false)
 	const { orders, getOrders, clearStateAll } = useDashboardStore(
 		(state) => state.orders.all
 	)
-	const hasMore = useDashboardStore(
+	const { sales, getSales, clearStateSales } = useDashboardStore(
+		(state) => state.orders.sales
+	)
+	const { purchases, getPurchases, clearStatePurchases } = useDashboardStore(
+		(state) => state.orders.purchases
+	)
+	const hasMoreAll = useDashboardStore(
 		(state) => state.orders.all.pagination?.has_more
 	)
-	const sortedIds = useDashboardStore(
+	const hasMoreSales = useDashboardStore(
+		(state) => state.orders.sales.pagination?.has_more
+	)
+	const hasMorePurchases = useDashboardStore(
+		(state) => state.orders.purchases.pagination?.has_more
+	)
+	const sortedIdsAll = useDashboardStore(
 		(state) => state.orders.all.pagination?.sorted_ids
 	)
-	const { sales, purchases } = useUserStore((state) => state.orders)
+	const sortedIdsSales = useDashboardStore(
+		(state) => state.orders.sales.pagination?.sorted_ids
+	)
+	const sortedIdsPurchases = useDashboardStore(
+		(state) => state.orders.purchases.pagination?.sorted_ids
+	)
 	const [activeTab, setActiveTab] = useState<'all' | 'sales' | 'purchases'>(
 		'all'
 	)
 
 	useEffect(() => {
 		getOrders()
+		getSales()
+		getPurchases()
 		return () => {
 			clearStateAll()
+			clearStateSales()
+			clearStatePurchases()
 			window.scrollTo({ top: 0 })
 		}
-	}, [getOrders])
-	useEffect(() => {
-		if (inView && hasMore && !debounceFetch.current) {
-			debounceFetch.current = true
-			getOrders().finally(() => (debounceFetch.current = false))
-		}
-	}, [inView, hasMore, getOrders])
-
-	const tableData = (ordersData: { [key: number]: Order } | null) => {
-		if (!ordersData) return []
-		return Object.values(ordersData).map((order) => ({
-			...order,
-			type: 'sales' in orders ? 'sale' : 'purchases',
-		}))
-	}
-	const tableSales = tableData(sales)
-	const tablePurchases = tableData(purchases)
-	const tableAll = sortedIds
+	}, [getOrders, getSales, getPurchases])
 
 	const visibleData =
 		activeTab === 'all'
-			? sortedIds?.map((id) => orders[id])
+			? sortedIdsAll?.map((id) => orders[id])
 			: activeTab === 'sales'
-			? tableSales
-			: tablePurchases
+			? sortedIdsSales?.map((id) => orders[id])
+			: sortedIdsPurchases?.map((id) => orders[id])
 
 	return (
 		<div className="flex flex-col self-center m-4 w-[90%]">

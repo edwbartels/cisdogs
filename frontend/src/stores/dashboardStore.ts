@@ -166,8 +166,11 @@ const useDashboardStore = create(
 						set((state) => ({
 							orders: {
 								...state.orders,
-								orders: {},
-								pagination: null,
+								all: {
+									...state.orders.all,
+									orders: {},
+									pagination: null,
+								},
 							},
 						}))
 					},
@@ -209,14 +212,120 @@ const useDashboardStore = create(
 				sales: {
 					sales: {},
 					pagination: null,
-					clearStateSales: () => {},
-					getSales: () => {},
+					clearStateSales: async () => {
+						const url = '/api/dashboard/clear_cache/sales'
+						const res = await fetchWithAuth(url, {
+							method: 'POST',
+						})
+						if (!res.ok) {
+							throw new Error('Failed to clear dashboard sales cache')
+						}
+						set((state) => ({
+							orders: {
+								...state.orders,
+								sales: {
+									...state.orders.sales,
+									sales: {},
+									pagination: null,
+								},
+							},
+						}))
+					},
+					getSales: async () => {
+						const { pagination, sales } = get().orders.sales
+						const page = pagination?.current_page ?? 0
+						try {
+							const url = `/api/dashboard/sales?page=${page + 1}`
+							const res = await fetchWithAuth(url, {
+								credentials: 'include',
+							})
+							if (!res.ok) {
+								throw new Error('Fetch dashboard sales failed')
+							}
+							const data = await res.json()
+							const { entries, sorted_ids, ...remaining } = data
+							set((state) => ({
+								orders: {
+									...state.orders,
+									sales: {
+										...state.orders.sales,
+										sales: {
+											...sales,
+											...entries,
+										},
+										pagination: {
+											...remaining,
+											sorted_ids: [
+												...(pagination?.sorted_ids || []),
+												...sorted_ids.map((id: string) => id),
+											],
+										},
+									},
+								},
+							}))
+						} catch (e) {
+							console.error(e)
+						}
+					},
 				},
 				purchases: {
 					purchases: {},
 					pagination: null,
-					clearStatePurchases: () => {},
-					getPurchases: () => {},
+					clearStatePurchases: async () => {
+						const url = '/api/dashboard/clear_cache/purchases'
+						const res = await fetchWithAuth(url, {
+							method: 'POST',
+						})
+						if (!res.ok) {
+							throw new Error('Failed to clear dashboard purchases cache')
+						}
+						set((state) => ({
+							orders: {
+								...state.orders,
+								purchases: {
+									...state.orders.purchases,
+									purchases: {},
+									pagination: null,
+								},
+							},
+						}))
+					},
+					getPurchases: async () => {
+						const { pagination, purchases } = get().orders.purchases
+						const page = pagination?.current_page ?? 0
+						try {
+							const url = `/api/dashboard/purchases?page=${page + 1}`
+							const res = await fetchWithAuth(url, {
+								credentials: 'include',
+							})
+							if (!res.ok) {
+								throw new Error('Fetch dashboard purchases failed')
+							}
+							const data = await res.json()
+							const { entries, sorted_ids, ...remaining } = data
+							set((state) => ({
+								orders: {
+									...state.orders,
+									purchases: {
+										...state.orders.purchases,
+										purchases: {
+											...purchases,
+											...entries,
+										},
+										pagination: {
+											...remaining,
+											sorted_ids: [
+												...(pagination?.sorted_ids || []),
+												...sorted_ids.map((id: string) => id),
+											],
+										},
+									},
+								},
+							}))
+						} catch (e) {
+							console.error(e)
+						}
+					},
 				},
 			},
 

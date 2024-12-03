@@ -53,7 +53,7 @@ def clear_listings_cache():
 def get_all_releases(
     pagination: PaginationParams = Depends(
         create_pagination_params(
-            default_limit=20,
+            default_limit=50,
             default_sort=[
                 "releases.created",
                 "artists.name",

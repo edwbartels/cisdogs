@@ -44,7 +44,7 @@ def clear_listings_cache():
 def get_all_artists(
     pagination: PaginationParams = Depends(
         create_pagination_params(
-            default_limit=25, default_sort=["name"], default_order=["asc"]
+            default_limit=50, default_sort=["name"], default_order=["asc"]
         )
     ),
     db: Session = Depends(get_db),

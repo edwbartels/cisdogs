@@ -151,8 +151,7 @@ async def get_track_list(artist: str, album: str):
     )
     if res.status_code == 200:
         details = res.json()
-        if not details:
-            raise HTTPException(status_code=404, detail="Couldn't find release info.")
+
         track_data = {
             track["@attr"]["rank"]: track["name"]
             for track in details["album"]["tracks"]["track"]
@@ -166,5 +165,6 @@ async def get_track_list(artist: str, album: str):
         art = get_art()
 
         extras = {"track_data": track_data, "art": art}
-
+        if not extras:
+            raise HTTPException(status_code=404, detail="Couldn't find release info.")
         return extras

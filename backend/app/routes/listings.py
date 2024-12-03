@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.future import select
 from sqlalchemy.orm.query import Query
 from app.database import get_db
-from app.models import Listing, Item, Release, Album, User
+from app.models import Listing, Item, Release, Album, User, Artist
 from app.schemas.listing import ListingRead, ListingCreate, ListingDetail
 from app.schemas.res import ListingFull
 from app.lib.jwt import get_current_user, get_user_id
@@ -33,6 +33,7 @@ def get_cached_listings(pagination: PaginationParams, db_session: Session):
         .join(Item.release)
         .join(Release.album)
         .join(Album.artist)
+        .join(Artist)
     )
 
     listings: PaginationResult = paginate(

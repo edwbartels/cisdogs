@@ -101,6 +101,12 @@ const SubmissionForm = () => {
 				throw new Error("Couldn't find track list")
 			}
 			const data = await res.json()
+			console.log(data)
+			if (data == null) {
+				alert(
+					"Couldn't find release info, please check the artist and album fields and try again."
+				)
+			}
 			if (data) {
 				const artistAdded = await addArtist(releaseForm.artist)
 				if (artistAdded) {

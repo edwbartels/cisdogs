@@ -98,9 +98,6 @@ const SubmissionForm = () => {
 		try {
 			const res = await fetch(url)
 			if (!res.ok) {
-				alert(
-					"Couldn't find release info, check to make sure your input data is correct."
-				)
 				throw new Error("Couldn't find track list")
 			}
 			const data = await res.json()
@@ -128,6 +125,9 @@ const SubmissionForm = () => {
 			}
 		} catch (e) {
 			console.error(e)
+			alert(
+				"Couldn't find release info, check to make sure your input data is correct."
+			)
 		}
 	}
 

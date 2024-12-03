@@ -7,6 +7,7 @@ import { Listing } from '../../stores/listingStore'
 import DropdownMenu from '../Util/DropdownMenu'
 import EyeIcon from '../Icons/EyeIcon'
 import { capitalizeFirst } from '../../utils/capitalize'
+import useAuthStore from '../../stores/authStore'
 
 interface WatchlistListingTileProps {
 	listingId: number
@@ -19,6 +20,7 @@ const WatchlistListingTile: React.FC<WatchlistListingTileProps> = ({
 	const listing: Listing = useWatchlistStore(
 		(state) => state.listingDetails[listingId]
 	)
+	const isOwner = listing.seller.id === useAuthStore((state) => state.user?.id)
 	const navigate = useNavigate()
 	const [activeDropdown, setActiveDropdown] = useState<DropdownOptions>(null)
 	const extraOptions = [
@@ -79,7 +81,11 @@ const WatchlistListingTile: React.FC<WatchlistListingTileProps> = ({
 	}
 	return (
 		<>
-			<div className="tile-container ring-wax-gray">
+			<div
+				className={`tile-container ${
+					isOwner ? 'ring-green-700' : 'ring-wax-gray'
+				}`}
+			>
 				<div className="tile-title-bar">
 					<div className="relative flex space-x-1">
 						<EyeIcon id={listing.release.id} />

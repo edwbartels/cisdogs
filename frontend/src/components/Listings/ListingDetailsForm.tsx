@@ -111,7 +111,7 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 								</div>
 							</div>
 						</div>
-						{!isEditing && (
+						{isOwner && !isEditing && (
 							<button
 								className="w-32 mt-4 bg-wax-red rounded-md ring-2 ring-wax-cream text-wax-cream hover:ring-wax-gray"
 								onClick={() => {

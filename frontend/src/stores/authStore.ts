@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist, devtools, subscribeWithSelector } from 'zustand/middleware'
+import { useNavigate } from 'react-router-dom'
 import useUserStore from './userStore'
 import useItemStore from './itemStore'
 import useListingStore from './listingStore'
@@ -95,7 +96,6 @@ const useAuthStore = create(
 
 							updateItems()
 							updateListings()
-							getOrders()
 							getCollection()
 							set({ cart: {} })
 						} catch (e) {

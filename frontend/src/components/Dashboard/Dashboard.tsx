@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 // import ItemTileMain from './ItemTileMain'
 // import useItemStore from '../stores/itemStore'
 // import useUserStore from '../stores/userStore'
@@ -9,12 +9,20 @@ import DashboardListings from './DashboardListings'
 import DashboardOrders from './DashboardOrders'
 import useAuthStore from '../../stores/authStore'
 
-const Dashboard = () => {
+interface DashboardProps {
+	defaultTab?: 'items' | 'listings' | 'orders'
+}
+const Dashboard: React.FC<DashboardProps> = () => {
 	const navigate = useNavigate()
+	const location = useLocation()
 	const isLoggedIn = useAuthStore((state) => state.isLoggedIn)
-	const [activeTab, setActiveTab] = useState('items')
+	const defaultTab = location.state?.defaultTab as
+		| 'items'
+		| 'listings'
+		| 'orders'
+	const [activeTab, setActiveTab] = useState(defaultTab || 'items')
 	const handleTabClick = (tab: string) => {
-		setActiveTab(tab)
+		setActiveTab(tab as 'items' | 'listings' | 'orders')
 	}
 	useEffect(() => {
 		!isLoggedIn && navigate('/')

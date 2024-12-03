@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShoppingCart, faMinus } from '@fortawesome/free-solid-svg-icons'
 import useAuthStore from '../../stores/authStore'
@@ -25,6 +26,12 @@ const CartDropdown: React.FC<CartDropdownProps> = ({
 	onCheckout,
 }) => {
 	const { removeFromCart } = useAuthStore((state) => state)
+	const navigate = useNavigate()
+	const goToDashboardWithTab = (
+		defaultTab: 'items' | 'listings' | 'orders'
+	) => {
+		navigate('/dashboard', { state: { defaultTab } })
+	}
 
 	const [isOpen, setIsOpen] = useState(false)
 	const handleClickOutside = React.useCallback(
@@ -55,6 +62,7 @@ const CartDropdown: React.FC<CartDropdownProps> = ({
 	}
 	const handleCheckout = async () => {
 		await onCheckout()
+		goToDashboardWithTab('orders')
 		setIsOpen(false)
 	}
 

@@ -114,11 +114,6 @@ def get_listings_by_artist(
     if not listings:
         raise HTTPException(status_code=404, detail="No listings found.")
 
-    for listing in listings:
-        listing.release = listing.item.release
-        listing.album = listing.item.release.album
-        listing.artist = listing.item.release.album.artist
-
     return {listing.id: listing for listing in listings}
 
 
@@ -139,11 +134,6 @@ def get_listings_by_album(album_id: int, db: Session = Depends(get_db)):
     if not listings:
         raise HTTPException(status_code=404, detail="No listings found.")
 
-    for listing in listings:
-        listing.release = listing.item.release
-        listing.album = listing.item.release.album
-        listing.artist = listing.item.release.album.artist
-
     return {listing.id: listing for listing in listings}
 
 
@@ -163,11 +153,6 @@ def get_listings_by_release(release_id: int, db: Session = Depends(get_db)):
     )
     if not listings:
         raise HTTPException(status_code=404, detail="No listings found.")
-
-    for listing in listings:
-        listing.release = listing.item.release
-        listing.album = listing.item.release.album
-        listing.artist = listing.item.release.album.artist
 
     return {listing.id: listing for listing in listings}
 

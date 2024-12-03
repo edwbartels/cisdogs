@@ -83,7 +83,6 @@ const useArtistStore = create(
 						throw new Error(`Failed to fetch artist (id: ${id})`)
 					}
 					const artist = await res.json()
-					console.log(artist)
 					set({ focus: artist })
 				} catch (e) {
 					console.error(e)

@@ -115,8 +115,6 @@ def get_releases_by_album(album_id: int, db: Session = Depends(get_db)):
 
     if not releases:
         raise HTTPException(status_code=404, detail="No Releases found")
-    for release in releases:
-        release.artist = release.album.artist
 
     return {release.id: release for release in releases}
 
@@ -131,9 +129,6 @@ def get_releases_by_artist(artist_id: int, db: Session = Depends(get_db)):
 
     if not releases:
         raise HTTPException(status_code=404, detail="No Releases found")
-
-    for release in releases:
-        release.artist = release.album.artist
 
     return {release.id: release for release in releases}
 

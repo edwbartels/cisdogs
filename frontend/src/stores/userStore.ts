@@ -35,9 +35,6 @@ interface UserStore {
 	getOrders: () => void
 	updateItemIds: () => void
 	updateListingIds: () => void
-	updateDashboard: () => void
-	updateDashboardItems: () => Promise<void>
-	updateDashboardListings: () => void
 	removeItem: (id: number) => void
 	removeListing: (id: number) => void
 	// getUserItems: () => void
@@ -193,60 +190,7 @@ const useUserStore = create(
 					set({ listingIds: ownedListings })
 				}
 			},
-			updateDashboard: async () => {
-				try {
-					const url = '/api/users/dashboard'
-					const res = await fetchWithAuth(url)
-					if (!res.ok) {
-						throw new Error('Fetch users dashboard data failed')
-					}
-					const data = await res.json()
-					set({ itemDetails: data.items })
-					set({ listingDetails: data.listings })
-				} catch (e) {
-					console.error(e)
-				}
-			},
-			updateDashboardItems: async () => {
-				const { pagination, itemDetails } = get()
-				const page = pagination?.current_page ?? 0
-				try {
-					const url = `/api/items/user?page=${page + 1}`
-					const res = await fetchWithAuth(url, {
-						credentials: 'include',
-					})
-					if (!res.ok) {
-						throw new Error("Fetch user's items failed")
-					}
-					const data = await res.json()
-					const { entries, sorted_ids, ...remaining } = data
-					set({ itemDetails: { ...itemDetails, ...entries } })
-					set({
-						pagination: {
-							...remaining,
-							sorted_ids: [
-								...(pagination?.sorted_ids || []),
-								...sorted_ids.map((id: string) => id),
-							],
-						},
-					})
-				} catch (e) {
-					console.error(e)
-				}
-			},
-			updateDashboardListings: async () => {
-				try {
-					const url = '/api/users/listings'
-					const res = await fetchWithAuth(url)
-					if (!res.ok) {
-						throw new Error("Fetch user's listings failed")
-					}
-					const data = await res.json()
-					set({ listingDetails: data })
-				} catch (e) {
-					console.error(e)
-				}
-			},
+
 			removeItem: async (id: number) => {
 				try {
 					const url = `/api/items/${id}`

@@ -87,38 +87,12 @@ def get_all_items_full(
     return items
 
 
-@router.get("/user", response_model=PaginationResult[ItemFull])
-def get_user_items(
-    pagination: PaginationParams = Depends(
-        create_pagination_params(
-            default_limit=10,
-            default_sort=[
-                "items.created",
-                "artists.name",
-                "albums.title",
-                "releases.media_type",
-                "releases.variant",
-            ],
-            default_order=["desc", "asc", "asc", "asc", "asc"],
-        )
-    ),
-    user_id=Depends(get_user_id),
-    db: Session = Depends(get_db),
-) -> PaginationResult[ItemFull]:
-    filters: tuple[ColumnExpressionArgument] = (Item.owner_id == user_id,)
-    items: PaginationResult[ItemFull] = get_cached_items(pagination, db, filters)
-
-    return items
-
-
 @router.get("/{item_id}", response_model=ItemFull)
 def get_item_by_id(item_id: int, db: Session = Depends(get_db)):
-    item = db.query(Item).filter(Item.id == item_id).first()
+    item: Item | None = db.query(Item).filter(Item.id == item_id).first()
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
 
-    item.album = item.release.album
-    item.artist = item.release.album.artist
     return item
 
 

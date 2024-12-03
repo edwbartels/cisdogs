@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import { persist, devtools, subscribeWithSelector } from 'zustand/middleware'
-import { useNavigate } from 'react-router-dom'
 import useUserStore from './userStore'
 import useItemStore from './itemStore'
 import useListingStore from './listingStore'
@@ -45,7 +44,7 @@ export interface AuthStore {
 
 const { updateItems } = useItemStore.getState()
 const { updateListings } = useListingStore.getState()
-const { getOrders, getCollection } = useUserStore.getState()
+const { getCollection } = useUserStore.getState()
 
 const useAuthStore = create(
 	devtools(

@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Listing } from '../../stores/listingStore'
 import useAuthStore from '../../stores/authStore'
-import ListingModal from './ListingModal'
 import fetchWithAuth from '../../utils/fetch'
 import { capitalizeFirst } from '../../utils/capitalize'
 import DeleteModal from './DeleteModal'
@@ -15,7 +14,7 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 	const navigate = useNavigate()
 	const isOwner = listing.seller.id === useAuthStore((state) => state.user?.id)
 	const { cart, addToCart, removeFromCart } = useAuthStore((state) => state)
-	const [activeModal, setActiveModal] = useState<'listing' | null>(null)
+	// const [activeModal, setActiveModal] = useState<'listing' | null>(null)
 	const [activeDelete, setActiveDelete] = useState<boolean>(false)
 	const [isEditing, setIsEditing] = useState<boolean>(false)
 	const [editDetails, setEditDetails] = useState({

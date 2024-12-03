@@ -7,7 +7,7 @@ import ArtistTile from './ArtistTile'
 const Artists: React.FC = () => {
 	const { ref, inView } = useInView({ threshold: 1.0 })
 	const debounceFetch = useRef(false)
-	const { artists, getArtists, clearState } = useArtistStore((state) => state)
+	const { getArtists, clearState } = useArtistStore((state) => state)
 	const hasMore = useArtistStore((state) => state.pagination?.has_more)
 	const sortedIds = useArtistStore((state) => state.pagination?.sorted_ids)
 

@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { Pagination } from '../utils/types'
-import Releases from '../components/Releases/Releases'
 import fetchWithAuth from '../utils/fetch'
 
 export type Release = {

@@ -1,9 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
-import { useInView } from 'react-intersection-observer'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import useUserStore from '../../stores/userStore'
 import useDashboardStore from '../../stores/dashboardStore'
-import { Order } from '../../stores/orderStore'
 import { capitalizeFirst } from '../../utils/capitalize'
 
 const DashboardOrders = () => {
@@ -11,21 +8,21 @@ const DashboardOrders = () => {
 	const { orders, getOrders, clearStateAll } = useDashboardStore(
 		(state) => state.orders.all
 	)
-	const { sales, getSales, clearStateSales } = useDashboardStore(
+	const { getSales, clearStateSales } = useDashboardStore(
 		(state) => state.orders.sales
 	)
-	const { purchases, getPurchases, clearStatePurchases } = useDashboardStore(
+	const { getPurchases, clearStatePurchases } = useDashboardStore(
 		(state) => state.orders.purchases
 	)
-	const hasMoreAll = useDashboardStore(
-		(state) => state.orders.all.pagination?.has_more
-	)
-	const hasMoreSales = useDashboardStore(
-		(state) => state.orders.sales.pagination?.has_more
-	)
-	const hasMorePurchases = useDashboardStore(
-		(state) => state.orders.purchases.pagination?.has_more
-	)
+	// const hasMoreAll = useDashboardStore(
+	// 	(state) => state.orders.all.pagination?.has_more
+	// )
+	// const hasMoreSales = useDashboardStore(
+	// 	(state) => state.orders.sales.pagination?.has_more
+	// )
+	// const hasMorePurchases = useDashboardStore(
+	// 	(state) => state.orders.purchases.pagination?.has_more
+	// )
 	const sortedIdsAll = useDashboardStore(
 		(state) => state.orders.all.pagination?.sorted_ids
 	)
@@ -95,7 +92,7 @@ const DashboardOrders = () => {
 				</thead>
 				<tbody className="border-separate">
 					{visibleData &&
-						visibleData.map((record, index) => (
+						visibleData.map((record) => (
 							<tr key={record.id}>
 								<td className="pl-2">
 									{new Date(record.created).toLocaleDateString()}

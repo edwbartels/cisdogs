@@ -6,9 +6,7 @@ import useReleaseStore from '../../stores/releaseStore'
 const Releases: React.FC = () => {
 	const { ref, inView } = useInView({ threshold: 1.0 })
 	const debounceFetch = useRef(false)
-	const { releases, getReleases, clearState } = useReleaseStore(
-		(state) => state
-	)
+	const { getReleases, clearState } = useReleaseStore((state) => state)
 	const hasMore = useReleaseStore((state) => state.pagination?.has_more)
 	const sortedIds = useReleaseStore((state) => state.pagination?.sorted_ids)
 	useEffect(() => {

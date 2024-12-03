@@ -1,13 +1,12 @@
 import { useEffect, useRef } from 'react'
 import { useInView } from 'react-intersection-observer'
-import useUserStore from '../../stores/userStore'
 import DashboardListingTile from './DashboardListingTile'
 import useDashboardStore from '../../stores/dashboardStore'
 
 const DashboardListings = () => {
 	const { ref, inView } = useInView({ threshold: 1.0 })
 	const debounceFetch = useRef(false)
-	const { listings, getListings, clearState } = useDashboardStore(
+	const { getListings, clearState } = useDashboardStore(
 		(state) => state.listings
 	)
 	const hasMore = useDashboardStore(

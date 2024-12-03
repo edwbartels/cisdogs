@@ -43,7 +43,7 @@ interface UserStore {
 
 const useUserStore = create(
 	devtools<UserStore>(
-		(set, get) => ({
+		(set) => ({
 			itemIds: [],
 			listingIds: [],
 			collection: new Set(),

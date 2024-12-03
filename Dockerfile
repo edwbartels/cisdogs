@@ -14,4 +14,6 @@ COPY backend/ .
 
 EXPOSE 8000
 
-CMD alembic downgrade base && alembic upgrade head && python -m scripts.seed_db && uvicorn app.main:app --host 0.0.0.0 --port 8000
+CMD uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+# alembic downgrade base && alembic upgrade head && python -m scripts.seed_db && 

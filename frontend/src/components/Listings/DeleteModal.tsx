@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom'
-import fetchWithAuth from '../../utils/fetch'
 import useUserStore from '../../stores/userStore'
 
 interface DeleteModalProps {

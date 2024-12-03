@@ -6,7 +6,7 @@ import useAlbumStore from '../../stores/albumStore'
 const Albums: React.FC = () => {
 	const { ref, inView } = useInView({ threshold: 1.0 })
 	const debounceFetch = useRef(false)
-	const { albums, getAlbums, clearState } = useAlbumStore((state) => state)
+	const { getAlbums, clearState } = useAlbumStore((state) => state)
 	const hasMore = useAlbumStore((state) => state.pagination?.has_more)
 	const sortedIds = useAlbumStore((state) => state.pagination?.sorted_ids)
 	useEffect(() => {

@@ -1,6 +1,6 @@
 from sqlalchemy import Integer, String, Float, ForeignKey, Boolean
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy.orm import relationship, Mapped, mapped_column, validates
 from app.database import Base
 from app.models.mixins import TimestampMixin
 
@@ -30,3 +30,9 @@ class Listing(Base, TimestampMixin):
     @hybrid_property
     def artist(self):
         return self.item.release.album.artist
+
+    @validates("price")
+    def validate_price(self, key, price):
+        if price <= 0:
+            raise ValueError(f"{key.title()} must be a positive number")
+        return price

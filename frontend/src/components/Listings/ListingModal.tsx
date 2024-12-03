@@ -41,6 +41,13 @@ const ListingModal: React.FC<ListingModalProps> = ({
 	onClose,
 	data,
 }) => {
+	const [errors, setErrors] = useState({
+		item_id: '',
+		seller_id: '',
+		price: '',
+		quality: '',
+		description: '',
+	})
 	const userId = useAuthStore((state) => state.user?.id)
 	const item = useItemStore((state) => state.focus) || null
 	// if
@@ -135,6 +142,19 @@ const ListingModal: React.FC<ListingModalProps> = ({
 				HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
 			>
 		) => {
+			if (listingDetailsField === 'price') {
+				if (parseFloat(e.target.value) <= 0) {
+					setErrors({
+						...errors,
+						price: 'Price must be a positive number',
+					})
+				} else {
+					setErrors({
+						...errors,
+						price: '',
+					})
+				}
+			}
 			setListingDetails({
 				...listingDetails,
 				[listingDetailsField]: e.target.value,
@@ -142,25 +162,27 @@ const ListingModal: React.FC<ListingModalProps> = ({
 		}
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
-		item && setListingDetails({ ...listingDetails, item_id: item.id })
-		userId && setListingDetails({ ...listingDetails, seller_id: userId })
-		try {
-			const url = '/api/listings/'
-			const res = await fetchWithAuth(url, {
-				method: 'POST',
-				body: JSON.stringify(listingDetails),
-				credentials: 'include',
-			})
-			if (!res.ok) {
-				const error = await res.text()
-				console.log(error)
-				throw new Error('Failed to create listing')
+		if (errors.price === '') {
+			item && setListingDetails({ ...listingDetails, item_id: item.id })
+			userId && setListingDetails({ ...listingDetails, seller_id: userId })
+			try {
+				const url = '/api/listings/'
+				const res = await fetchWithAuth(url, {
+					method: 'POST',
+					body: JSON.stringify(listingDetails),
+					credentials: 'include',
+				})
+				if (!res.ok) {
+					const error = await res.text()
+					console.log(error)
+					throw new Error('Failed to create listing')
+				}
+				clearInfo()
+				onClose()
+				window.location.reload()
+			} catch (e) {
+				console.error(e)
 			}
-			clearInfo()
-			onClose()
-			window.location.reload()
-		} catch (e) {
-			console.error(e)
 		}
 	}
 	if (!isOpen) return null
@@ -273,8 +295,15 @@ const ListingModal: React.FC<ListingModalProps> = ({
 							onChange={handleFormChange('price')}
 							defaultValue={listingDetails.price}
 							className="block w-full  pl-6 p-1 border rounded text-wax-black"
+							min="0.01"
+							step="0.01"
 						/>
 					</div>
+					{errors.price && (
+						<div className="text-wax-red text-sm">
+							Price must be a postive number
+						</div>
+					)}
 					<button
 						type="submit"
 						className="w-4/5 self-center py-2 mt-2 bg-green-700 border-4 rounded border-wax-silver text-wax-cream hover:border-green-700"

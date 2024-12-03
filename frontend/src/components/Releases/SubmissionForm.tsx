@@ -97,10 +97,13 @@ const SubmissionForm = () => {
 		const url = `/api/track_data/${artistParam}/${albumParam}`
 		try {
 			const res = await fetch(url)
+			console.log(res)
 			if (!res.ok) {
+				console.log('hello')
 				throw new Error("Couldn't find track list")
 			}
 			const data = await res.json()
+			console.log('data ', data)
 			if (data) {
 				const artistAdded = await addArtist(releaseForm.artist)
 				if (artistAdded) {
@@ -122,6 +125,10 @@ const SubmissionForm = () => {
 					}
 					setSelectedArtist(Object.values(artistAdded)[0].id)
 				}
+			} else {
+				alert(
+					"Couldn't find release info, please check the artist and album fields and try again."
+				)
 			}
 		} catch (e) {
 			console.error(e)

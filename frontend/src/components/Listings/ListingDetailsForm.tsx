@@ -5,6 +5,7 @@ import useAuthStore from '../../stores/authStore'
 import ListingModal from './ListingModal'
 import fetchWithAuth from '../../utils/fetch'
 import { capitalizeFirst } from '../../utils/capitalize'
+import DeleteModal from './DeleteModal'
 
 interface ListingDetailsFormProps {
 	listing: Listing
@@ -15,6 +16,7 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 	const isOwner = listing.seller.id === useAuthStore((state) => state.user?.id)
 	const { cart, addToCart, removeFromCart } = useAuthStore((state) => state)
 	const [activeModal, setActiveModal] = useState<'listing' | null>(null)
+	const [activeDelete, setActiveDelete] = useState<boolean>(false)
 	const [isEditing, setIsEditing] = useState<boolean>(false)
 	const [editDetails, setEditDetails] = useState({
 		price: listing.price,
@@ -72,10 +74,10 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 				</div>
 			</div>
 			<div className="flex w-full justify-evenly">
-				<div className="flex w-full p-4 bg-wax-gray bg-opacity-30">
-					<div className="flex flex-col justify-between w-1/2">
+				<div className="flex w-full p-4 bg-wax-gray bg-opacity-30 justify-between">
+					<div className="flex flex-col justify-between w-1/2 px-2">
 						<div>
-							<div className="flex flex-col w-4/5 ">
+							<div className="flex flex-col  ">
 								<div className="ml-2 font-semibold">Artist</div>
 								<div
 									className="pl-2 max-w-fit cursor-pointer hover:underline"
@@ -84,7 +86,7 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 									{capitalizeFirst(listing.artist.name)}
 								</div>
 							</div>
-							<div className="flex flex-col w-4/5 ">
+							<div className="flex flex-col ">
 								<div className="mt-1 ml-2 font-semibold">Album</div>
 								<div
 									className="pl-2 max-w-fit cursor-pointer hover:underline"
@@ -109,8 +111,18 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 								</div>
 							</div>
 						</div>
+						{!isEditing && (
+							<button
+								className="w-32 mt-4 bg-wax-red rounded-md ring-2 ring-wax-cream text-wax-cream hover:ring-wax-gray"
+								onClick={() => {
+									setActiveDelete(true)
+								}}
+							>
+								Cancel Listing
+							</button>
+						)}
 					</div>
-					<div className="px-4 flex flex-col justify-between">
+					<div className="px-4 flex flex-col justify-between w-full items-center">
 						<div className="flex flex-col ">
 							<div className="flex flex-col ">
 								<div className="ml-2 font-semibold">Price</div>
@@ -183,7 +195,7 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 									</>
 								) : (
 									<button
-										className="w-24 mt-4 ml-8 bg-green-700 rounded-md ring-2 ring-wax-cream text-wax-cream hover:ring-wax-gray"
+										className="w-32 mt-4 bg-green-700 rounded-md ring-2 ring-wax-cream text-wax-cream hover:ring-wax-gray"
 										onClick={() => {
 											setIsEditing(true)
 										}}
@@ -228,7 +240,7 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 							)}
 						</div>
 					</div>
-					<div className="flex flex-col items-center  w-1/2">
+					<div className="flex flex-col items-center px-2 w-full">
 						<div className="font-semibold">Track List</div>
 						<div className="pt-1 text-sm text-left">
 							{Object.values(listing.album.track_data).map((track, index) => (
@@ -238,13 +250,18 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 							))}
 						</div>
 					</div>
-					<ListingModal
-						isOpen={activeModal === 'listing'}
-						onClose={() => setActiveModal(null)}
-						data={null}
-					/>
 				</div>
 			</div>
+			{/* <ListingModal
+				isOpen={activeModal === 'listing'}
+				onClose={() => setActiveModal(null)}
+				data={null}
+			/> */}
+			<DeleteModal
+				id={Number(listing.id)}
+				isOpen={activeDelete}
+				onClose={() => setActiveDelete(false)}
+			/>
 		</div>
 	)
 }

@@ -69,12 +69,12 @@ def get_all_listings_full(
         create_pagination_params(
             default_limit=50,
             default_sort=[
-                "wax_exchange.listings.created",
-                "wax_exchange.artists.name",
-                "wax_exchange.albums.title",
-                "wax_exchange.releases.media_type",
-                "wax_exchange.releases.variant",
-                "wax_exchange.listings.price",
+                "listings.created",
+                "artists.name",
+                "albums.title",
+                "releases.media_type",
+                "releases.variant",
+                "listings.price",
             ],
             default_order=["desc", "asc", "asc", "asc", "asc", "asc"],
         )

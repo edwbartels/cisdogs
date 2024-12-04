@@ -163,10 +163,10 @@ const ListingModal: React.FC<ListingModalProps> = ({
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		const requiredFields = []
-		console.log(listingDetails)
-		console.log(selectedArtist)
-		console.log(selectedAlbum)
-		console.log(selectedRelease)
+		// console.log(listingDetails)
+		// console.log(selectedArtist)
+		// console.log(selectedAlbum)
+		// console.log(selectedRelease)
 		if (!selectedArtist) requiredFields.push('Artist')
 		if (!selectedAlbum) requiredFields.push('Album')
 		if (!selectedRelease) requiredFields.push('Release')

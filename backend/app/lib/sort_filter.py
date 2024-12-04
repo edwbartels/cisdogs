@@ -56,7 +56,7 @@ def paginate(
     total_entries: int = query.count()
     print(total_entries)
     offset: int = (page - 1) * limit
-    entries: Any = query.offset(offset).limit(limit).distinct.all()
+    entries: Any = query.offset(offset).limit(limit).all()
 
     total_pages: int = (total_entries + limit - 1) // limit
     has_more: bool = page < total_pages

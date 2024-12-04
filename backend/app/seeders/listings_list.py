@@ -10,7 +10,7 @@ statuses: list[Literal["available", "closed"]] = ["available", "closed"]
 descriptions = ["Nice!", "Terrible!", None]
 
 
-def seed_listings(db: Session, num_listings: int = 150):
+def seed_listings(db: Session, num_listings: int = 250):
     items = db.query(Item).all()
 
     if not items:

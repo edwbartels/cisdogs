@@ -3,20 +3,57 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy import func
 from sqlalchemy.orm import Session, selectinload, joinedload
 from sqlalchemy.future import select
+from sqlalchemy.orm.query import Query
 from app.database import get_db
 from app.models import Artist, Item, Album, Release, Listing
 from app.schemas.artist import ArtistRead, ArtistBase
 from app.schemas.res import ArtistFull
+from app.lib.sort_filter import (
+    PaginationParams,
+    paginate,
+    PaginationResult,
+    create_pagination_params,
+)
+from functools import lru_cache
 
 router = APIRouter(prefix="/artists", tags=["artists"])
 
 
-@router.get("/", response_model=dict[int, ArtistRead])
-def get_all_artists(db: Session = Depends(get_db)):
-    artists = db.query(Artist)
+# * Cache Function
+@lru_cache(maxsize=128)
+def get_cached_artists(pagination: PaginationParams, db_session: Session):
+    query: Query[Artist] = db_session.query(Artist)
+
+    artists: PaginationResult = paginate(
+        query, pagination.page, pagination.limit, pagination.sort, pagination.order
+    )
+
+    return artists
+
+
+@router.post("/clear_cache", status_code=204)
+def clear_listings_cache():
+    get_cached_artists.cache_clear()
+    return {"detail": "Listings cache cleared"}
+
+
+# * GET Routes
+
+
+@router.get("/", response_model=PaginationResult[ArtistRead])
+def get_all_artists(
+    pagination: PaginationParams = Depends(
+        create_pagination_params(
+            default_limit=50, default_sort=["name"], default_order=["asc"]
+        )
+    ),
+    db: Session = Depends(get_db),
+) -> PaginationResult[ArtistRead]:
+    artists: PaginationResult = get_cached_artists(pagination, db)
     if not artists:
         raise HTTPException(status_code=404, detail="No artists found")
-    return {artist.id: artist for artist in artists}
+
+    return artists
 
 
 @router.get("/{artist_id}", response_model=ArtistFull)

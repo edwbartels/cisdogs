@@ -5,6 +5,7 @@ import useItemStore, { Item } from './itemStore'
 import useListingStore, { Listing } from './listingStore'
 import { Order } from './orderStore'
 import fetchWithAuth from '../utils/fetch'
+import { Pagination } from '../utils/types'
 interface UserStore {
 	collection: Set<number>
 	watchlist: Set<number>
@@ -24,6 +25,7 @@ interface UserStore {
 	listingDetails: {
 		[key: number]: Listing
 	}
+	pagination: Pagination
 	getCollection: () => void
 	addToCollection: (item: { release_id: number; owner_id: number }) => void
 	getWatchlist: () => void
@@ -33,9 +35,6 @@ interface UserStore {
 	getOrders: () => void
 	updateItemIds: () => void
 	updateListingIds: () => void
-	updateDashboard: () => void
-	updateDashboardItems: () => void
-	updateDashboardListings: () => void
 	removeItem: (id: number) => void
 	removeListing: (id: number) => void
 	// getUserItems: () => void
@@ -49,6 +48,7 @@ const useUserStore = create(
 			listingIds: [],
 			collection: new Set(),
 			watchlist: new Set(),
+			pagination: null,
 			orders: { sales: null, purchases: null },
 			getCollection: async () => {
 				try {
@@ -183,53 +183,14 @@ const useUserStore = create(
 			updateListingIds: () => {
 				const userId = useAuthStore.getState().user?.id
 				const listings = useListingStore.getState().listings
-				if (userId) {
+				if (userId && listings) {
 					const ownedListings = Object.values(listings)
-						.filter((listing) => listing.seller.id === userId)
+						.filter((listing) => listing.seller?.id === userId)
 						.map((item) => item.id)
 					set({ listingIds: ownedListings })
 				}
 			},
-			updateDashboard: async () => {
-				try {
-					const url = '/api/users/dashboard'
-					const res = await fetchWithAuth(url)
-					if (!res.ok) {
-						throw new Error('Fetch users dashboard data failed')
-					}
-					const data = await res.json()
-					set({ itemDetails: data.items })
-					set({ listingDetails: data.listings })
-				} catch (e) {
-					console.error(e)
-				}
-			},
-			updateDashboardItems: async () => {
-				try {
-					const url = '/api/users/items'
-					const res = await fetchWithAuth(url)
-					if (!res.ok) {
-						throw new Error("Fetch user's items failed")
-					}
-					const data = await res.json()
-					set({ itemDetails: data })
-				} catch (e) {
-					console.error(e)
-				}
-			},
-			updateDashboardListings: async () => {
-				try {
-					const url = '/api/users/listings'
-					const res = await fetchWithAuth(url)
-					if (!res.ok) {
-						throw new Error("Fetch user's listings failed")
-					}
-					const data = await res.json()
-					set({ listingDetails: data })
-				} catch (e) {
-					console.error(e)
-				}
-			},
+
 			removeItem: async (id: number) => {
 				try {
 					const url = `/api/items/${id}`

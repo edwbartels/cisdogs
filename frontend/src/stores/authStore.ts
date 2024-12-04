@@ -44,7 +44,7 @@ export interface AuthStore {
 
 const { updateItems } = useItemStore.getState()
 const { updateListings } = useListingStore.getState()
-const { getOrders, getCollection } = useUserStore.getState()
+const { getCollection } = useUserStore.getState()
 
 const useAuthStore = create(
 	devtools(
@@ -95,7 +95,6 @@ const useAuthStore = create(
 
 							updateItems()
 							updateListings()
-							getOrders()
 							getCollection()
 							set({ cart: {} })
 						} catch (e) {

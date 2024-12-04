@@ -31,10 +31,16 @@ class Order(Base, TimestampMixin):
     # # def item(self):
     # #     return self.listing.item
 
-    # @hybrid_property
-    # def album(self):
-    #     return self.release.album
+    @hybrid_property
+    def album(self):
+        return self.release.album
 
-    # @hybrid_property
-    # def artist(self):
-    #     return self.release.album.artist
+    @hybrid_property
+    def artist(self):
+        return self.release.album.artist
+
+    def get_type(self, user_id: int) -> str | None:
+        if user_id == self.buyer_id:
+            return "purchase"
+        elif user_id == self.seller_id:
+            return "sale"

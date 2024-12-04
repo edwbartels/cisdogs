@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import fetchWithAuth from '../utils/fetch'
+import { Pagination } from '../utils/types'
 
 export type Album = {
 	id: number
@@ -47,8 +48,10 @@ interface AlbumStore {
 	albums: {
 		[key: number]: Album
 	}
+	pagination: Pagination
 	getFocus: (id: number) => Promise<void>
-	getAlbums: () => void
+	clearState: () => void
+	getAlbums: () => Promise<void>
 	getByAlbums: (parent: string, id: number) => void
 	clearAlbums: () => void
 	addAlbum: (album: {
@@ -69,9 +72,21 @@ interface AlbumStore {
 
 const useAlbumStore = create(
 	devtools<AlbumStore>(
-		(set) => ({
+		(set, get) => ({
 			focus: null,
 			albums: {},
+			pagination: null,
+			clearState: async () => {
+				const url = '/api/albums/clear_cache'
+				const res = await fetchWithAuth(url, {
+					method: 'POST',
+					credentials: 'include',
+				})
+				if (!res.ok) {
+					throw new Error('Failed to clear albums cache')
+				}
+				set({ focus: null, albums: {}, pagination: null })
+			},
 			getFocus: async (id) => {
 				try {
 					const url = `/api/albums/${id}`
@@ -87,14 +102,26 @@ const useAlbumStore = create(
 				}
 			},
 			getAlbums: async () => {
+				const { pagination, albums } = get()
+				const page = pagination?.current_page ?? 0
 				try {
-					const url = '/api/albums/'
+					const url = `/api/albums/?page=${page + 1}`
 					const res = await fetch(url)
 					if (!res.ok) {
 						throw new Error('Failed to get all albums')
 					}
 					const data = await res.json()
-					set({ albums: data })
+					const { entries, sorted_ids, ...remaining } = data
+					set({ albums: { ...albums, ...entries } })
+					set({
+						pagination: {
+							...remaining,
+							sorted_ids: [
+								...(pagination?.sorted_ids || []),
+								...sorted_ids.map((id: string) => id),
+							],
+						},
+					})
 				} catch (e) {
 					console.error(e)
 				}

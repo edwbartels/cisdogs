@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Optional
 from datetime import datetime
 
 if TYPE_CHECKING:
-    from app.schemas.user import UserRead
+    from app.schemas.user import UserReadBrief
     from app.schemas.release import ReleaseRead
 
 
@@ -33,7 +33,7 @@ class OrderRead(OrderBase):
 
 class OrderDetails(OrderBase):
     id: int
-    seller: "UserRead"
-    buyer: "UserRead"
+    seller: "UserReadBrief"
+    buyer: "UserReadBrief"
     release: "ReleaseRead"
     model_config = {"from_attributes": True}

@@ -6,6 +6,7 @@ from app.routes import (
     albums,
     artists,
     auth,
+    dashboard,
     items,
     listings,
     releases,
@@ -16,14 +17,14 @@ from app.routes import (
     watchlist,
 )
 import os
-import logging
+# import logging
 
-logging.basicConfig(
-    level=logging.DEBUG, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-logger: logging.Logger = logging.getLogger("main")
+# logging.basicConfig(
+#     level=logging.DEBUG, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+# )
+# logger: logging.Logger = logging.getLogger("main")
 
-logger.info("Starting application...")
+# logger.info("Starting application...")
 
 # Initialize app
 app = FastAPI()
@@ -54,6 +55,7 @@ api_router.include_router(releases.router)
 api_router.include_router(items.router)
 api_router.include_router(listings.router)
 api_router.include_router(orders.router)
+api_router.include_router(dashboard.router)
 api_router.include_router(reviews.router)
 api_router.include_router(watchlist.router)
 
@@ -78,4 +80,4 @@ async def serve_frontend(full_path: str):
     return FileResponse("app/static/index.html")
 
 
-logger.info("Application is ready and routes are configured.")
+# logger.info("Application is ready and routes are configured.")

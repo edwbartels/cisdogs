@@ -2,30 +2,42 @@ import { useEffect } from 'react'
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom'
 import useAuthStore from './stores/authStore'
 import './App.css'
-import NavBar from './components/NavBar'
-import Browse from './components/Browse'
-import Sidebar from './components/Sidebar'
-import ListingsMain from './components/ListingsMain'
-import Dashboard from './components/Dashboard'
-import Submissions from './components/Submissions'
-import ItemDetails from './components/ItemDetails'
-import ListingDetails from './components/ListingDetails'
-import ReleaseDetails from './components/ReleaseDetails'
-import AlbumDetails from './components/AlbumDetails'
-import ArtistDetails from './components/ArtistDetails'
-import Watchlist from './components/Watchlist'
+import NavBar from './components/Nav/NavBar'
+import Browse from './components/Items/Browse'
+import Sidebar from './components/Nav/Sidebar'
+import ListingsMain from './components/Listings/ListingsMain'
+import Dashboard from './components/Dashboard/Dashboard'
+import Submissions from './components/Releases/Submissions'
+import ItemDetails from './components/Items/ItemDetails'
+import ListingDetails from './components/Listings/ListingDetails'
+import ReleaseDetails from './components/Releases/ReleaseDetails'
+import AlbumDetails from './components/Albums/AlbumDetails'
+import ArtistDetails from './components/Artists/ArtistDetails'
+import Watchlist from './components/Watchlist/Watchlist'
 import { initializeSubscriptions } from './stores/subscriptions'
-import Releases from './components/Releases'
-import Albums from './components/Albums'
-import Artists from './components/Artists'
+import Releases from './components/Releases/Releases'
+import Albums from './components/Albums/Albums'
+import Artists from './components/Artists/Artists'
 
 const Layout = () => {
 	return (
 		<div className="flex flex-col min-h-screen font-sans bg-wax-cream text-wax-black">
-			<NavBar />
-			<div className="flex flex-grow min-h-screen">
-				<Sidebar />
-				<div className="items-center justify-center w-full px-8 py-4 bg-wax-cream">
+			<div className="fixed top-0 left-0 h-16 w-full items-center bg-wax-black text-wax-silver flex  px-4 z-50">
+				<NavBar />
+			</div>
+
+			<div className="flex h-full pt-16">
+				<div className="fixed top-16 left-0 w-48 h-[calc(100vh-4rem)] bg-wax-silver shadow-md justify-between">
+					<Sidebar />
+					<div
+						className="fixed mb-2 bottom-0 cursor-pointer text-center w-48 font-semibold text-wax-gray hover:underline"
+						onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+					>
+						^ Back to Top ^
+					</div>
+				</div>
+
+				<div className="flex-1 ml-48 overflow-y-auto p-8">
 					<Outlet />
 				</div>
 			</div>

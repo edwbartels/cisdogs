@@ -3,14 +3,14 @@ from app.schemas.release import ReleaseCreate
 from app.models import Release
 from typing import Optional, Literal
 
-album_ids = range(1, 31)
+album_ids = range(1, 75)
 media_types: list[Literal["vinyl", "cassette", "cd"]] = ["vinyl", "cassette", "cd"]
 variants = ["standard", "limited edition", "deluxe", "first pressing"]
 
 existing_releases = set()
 releases: list[ReleaseCreate] = []
 
-while len(releases) < 100:
+while len(releases) < 200:
     album_id = random.choice(album_ids)
     media_type = random.choice(media_types)
     if media_type == "vinyl":

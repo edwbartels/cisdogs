@@ -1,5 +1,5 @@
 from pydantic import BaseModel, RootModel
-from typing import Optional
+from typing import Optional, Literal
 from app.schemas.item import ItemDetail, ItemRead
 from app.schemas.listing import ListingDetail, ListingRead, ListingWithSeller
 from app.schemas.user import UserReadBrief
@@ -69,6 +69,7 @@ class OrderFull(OrderBase):
     release: ReleaseRead
     album: AlbumRead
     artist: ArtistRead
+    type: Literal["sale", "purchase"] | None
     model_config = {"from_attributes": True}
 
 

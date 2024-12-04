@@ -3,25 +3,59 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy import func
 from sqlalchemy.orm import Session, selectinload, joinedload
 from sqlalchemy.future import select
+from sqlalchemy.orm.query import Query
 from app.database import get_db
 from app.models import Album, Artist, Release, Item
 from app.schemas.album import AlbumRead, AlbumCreate
 from app.schemas.res import AlbumFull, AlbumDetails
+from app.lib.sort_filter import (
+    PaginationParams,
+    paginate,
+    PaginationResult,
+    create_pagination_params,
+)
+from functools import lru_cache
 
 router = APIRouter(prefix="/albums", tags=["albums"])
+
+
+# * Cache Function
+@lru_cache(maxsize=128)
+def get_cached_albums(pagination: PaginationParams, db_session: Session):
+    query: Query[Album] = db_session.query(Album).join(Album.artist)
+
+    albums: PaginationResult = paginate(
+        query, pagination.page, pagination.limit, pagination.sort, pagination.order
+    )
+
+    return albums
+
+
+@router.post("/clear_cache", status_code=204)
+def clear_listings_cache():
+    get_cached_albums.cache_clear()
+    return {"detail": "Listings cache cleared"}
+
 
 # * GET Routes
 
 
-@router.get("/", response_model=dict[int, AlbumDetails])
-def get_all_albums(db: Session = Depends(get_db)):
-    albums = db.query(Album).options(
-        joinedload(Album.artist), joinedload(Album.releases)
-    )
+@router.get("/", response_model=PaginationResult[AlbumDetails])
+def get_all_albums(
+    pagination: PaginationParams = Depends(
+        create_pagination_params(
+            default_limit=50,
+            default_sort=["artists.name", "albums.title"],
+            default_order=["asc", "asc"],
+        )
+    ),
+    db: Session = Depends(get_db),
+) -> PaginationResult[AlbumDetails]:
+    albums: PaginationResult = get_cached_albums(pagination, db)
     if not albums:
         raise HTTPException(status_code=404, detail="No albums found")
 
-    return {album.id: album for album in albums}
+    return albums
 
 
 @router.get("/{album_id}", response_model=AlbumFull)

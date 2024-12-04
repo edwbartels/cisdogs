@@ -1,15 +1,56 @@
 from typing import List
+import json
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import update, and_
+from fastapi.encoders import jsonable_encoder
+from sqlalchemy import update, and_, func
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.future import select
+from sqlalchemy.orm.query import Query
 from app.database import get_db
-from app.models import Listing, Item, Release, Album, User
+from app.models import Listing, Item, Release, Album, User, Artist
 from app.schemas.listing import ListingRead, ListingCreate, ListingDetail
 from app.schemas.res import ListingFull
 from app.lib.jwt import get_current_user, get_user_id
+from app.lib.sort_filter import (
+    PaginationParams,
+    paginate,
+    PaginationResult,
+    create_pagination_params,
+)
+from functools import lru_cache
+
 
 router = APIRouter(prefix="/listings", tags=["listings"])
+
+
+# * Cache Function
+@lru_cache(maxsize=128)
+def get_cached_listings(pagination: PaginationParams, db_session: Session):
+    query: Query[Listing] = (
+        db_session.query(Listing)
+        .filter(Listing.active)
+        .join(Listing.item)
+        .join(Item.release)
+        .join(Release.album)
+        .join(Album.artist)
+    )
+
+    listings: PaginationResult = paginate(
+        query,
+        pagination.page,
+        pagination.limit,
+        pagination.sort,
+        pagination.order,
+    )
+
+    return listings
+
+
+@router.post("/clear_cache", status_code=204)
+def clear_listings_cache():
+    get_cached_listings.cache_clear()
+    return {"detail": "Listings cache cleared"}
+
 
 # * GET Routes
 
@@ -22,25 +63,27 @@ def get_all_listings(db: Session = Depends(get_db)) -> dict[int, ListingDetail]:
     return {listing.id: listing for listing in listings}
 
 
-@router.get("/full", response_model=dict[int, ListingFull])
-def get_all_listings_full(db: Session = Depends(get_db)) -> dict[int, ListingFull]:
-    listings: List[Listing] = (
-        db.query(Listing)
-        .filter(Listing.active)
-        .options(
-            joinedload(Listing.item)
-            .joinedload(Item.release)
-            .joinedload(Release.album)
-            .joinedload(Album.artist)
+@router.get("/full", response_model=PaginationResult[ListingFull])
+def get_all_listings_full(
+    pagination: PaginationParams = Depends(
+        create_pagination_params(
+            default_limit=50,
+            default_sort=[
+                "listings.created",
+                "artists.name",
+                "albums.title",
+                "releases.media_type",
+                "releases.variant",
+                "listings.price",
+            ],
+            default_order=["desc", "asc", "asc", "asc", "asc", "asc"],
         )
-        .all()
-    )
-    for listing in listings:
-        listing.release = listing.item.release
-        listing.album = listing.item.release.album
-        listing.artist = listing.item.release.album.artist
+    ),
+    db: Session = Depends(get_db),
+) -> PaginationResult[ListingFull]:
+    listings: PaginationResult[ListingFull] = get_cached_listings(pagination, db)
 
-    return {listing.id: listing for listing in listings}
+    return listings
 
 
 @router.get("/{listing_id}", response_model=ListingFull)
@@ -49,9 +92,6 @@ def get_listing_by_id(listing_id: int, db: Session = Depends(get_db)) -> Listing
     if not listing:
         raise HTTPException(status_code=404, detail="Listing not found")
 
-    listing.release = listing.item.release
-    listing.album = listing.item.release.album
-    listing.artist = listing.item.release.album.artist
     return listing
 
 
@@ -74,11 +114,6 @@ def get_listings_by_artist(
     if not listings:
         raise HTTPException(status_code=404, detail="No listings found.")
 
-    for listing in listings:
-        listing.release = listing.item.release
-        listing.album = listing.item.release.album
-        listing.artist = listing.item.release.album.artist
-
     return {listing.id: listing for listing in listings}
 
 
@@ -96,14 +131,8 @@ def get_listings_by_album(album_id: int, db: Session = Depends(get_db)):
         .filter(Listing.item, Item.release, Release.album_id == album_id)
         .all()
     )
-    print(listings)
     if not listings:
         raise HTTPException(status_code=404, detail="No listings found.")
-
-    for listing in listings:
-        listing.release = listing.item.release
-        listing.album = listing.item.release.album
-        listing.artist = listing.item.release.album.artist
 
     return {listing.id: listing for listing in listings}
 
@@ -122,14 +151,8 @@ def get_listings_by_release(release_id: int, db: Session = Depends(get_db)):
         .filter(Listing.item, Item.release_id == release_id)
         .all()
     )
-    print("im in baby")
     if not listings:
         raise HTTPException(status_code=404, detail="No listings found.")
-
-    for listing in listings:
-        listing.release = listing.item.release
-        listing.album = listing.item.release.album
-        listing.artist = listing.item.release.album.artist
 
     return {listing.id: listing for listing in listings}
 
@@ -143,7 +166,6 @@ def create_listing(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    print(listing)
     item = db.query(Item).filter(Item.id == listing.item_id).first()
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -166,6 +188,8 @@ def create_listing(
     db.add(new_listing)
     db.commit()
     db.refresh(new_listing)
+
+    get_cached_listings.cache_clear()
 
     return new_listing
 

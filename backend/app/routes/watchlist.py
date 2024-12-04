@@ -16,16 +16,16 @@ router = APIRouter(prefix="/watchlist", tags=["watchlist"])
 def get_all_releases(
     db: Session = Depends(get_db), user_id: int = Depends(get_user_id)
 ) -> dict[int, ReleaseDetails]:
-    stmt = (
-        select(Release)
-        .join(Watchlist, Watchlist.release_id == Release.id)
-        .where(Watchlist.user_id == user_id)
-        .options(joinedload(Release.album).joinedload(Album.artist))
+    # stmt = (
+    #     select(Release)
+    #     .join(Watchlist, Watchlist.release_id == Release.id)
+    #     .where(Watchlist.user_id == user_id)
+    #     .options(joinedload(Release.album).joinedload(Album.artist))
+    # )
+    # releases = db.execute(stmt).scalars().all()
+    releases = (
+        db.query(Release).join(Watchlist).filter(Watchlist.user_id == user_id).all()
     )
-    releases = db.execute(stmt).scalars().all()
-
-    for release in releases:
-        release.artist = release.album.artist
 
     return {release.id: release for release in releases}
 
@@ -34,26 +34,13 @@ def get_all_releases(
 def get_all_listings(
     db: Session = Depends(get_db), user_id: int = Depends(get_user_id)
 ) -> dict[int, ListingFull]:
-    stmt = (
-        select(Listing)
+    listings = (
+        db.query(Listing)
         .join(Item, Listing.item_id == Item.id)
         .join(Release, Item.release_id == Release.id)
         .join(Watchlist, Watchlist.release_id == Release.id)
-        .where(Watchlist.user_id == user_id)
-        .options(
-            joinedload(Listing.item)
-            .joinedload(Item.release)
-            .joinedload(Release.album)
-            .joinedload(Album.artist),
-            joinedload(Listing.seller),
-        )
+        .filter(Watchlist.user_id == user_id)
+        .all()
     )
-
-    listings = db.execute(stmt).scalars().all()
-
-    for listing in listings:
-        listing.release = listing.item.release
-        listing.album = listing.item.release.album
-        listing.artist = listing.item.release.album.artist
 
     return {listing.id: listing for listing in listings}

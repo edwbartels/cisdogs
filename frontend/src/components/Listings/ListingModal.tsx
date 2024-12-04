@@ -162,6 +162,20 @@ const ListingModal: React.FC<ListingModalProps> = ({
 		}
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
+		const requiredFields = []
+		console.log(listingDetails)
+		console.log(selectedArtist)
+		console.log(selectedAlbum)
+		console.log(selectedRelease)
+		if (!selectedArtist) requiredFields.push('Artist')
+		if (!selectedAlbum) requiredFields.push('Album')
+		if (!selectedRelease) requiredFields.push('Release')
+		if (requiredFields.length > 0) {
+			alert(
+				`The following fields are required:\n` +
+					`${requiredFields.map((field) => ` - ${field}`).join('\n')}`
+			)
+		}
 		if (errors.price === '') {
 			item && setListingDetails({ ...listingDetails, item_id: item.id })
 			userId && setListingDetails({ ...listingDetails, seller_id: userId })
@@ -248,6 +262,7 @@ const ListingModal: React.FC<ListingModalProps> = ({
 								onChange={(e) => handleReleaseChange(Number(e.target.value))}
 								className="block w-full p-2 border rounded text-wax-black"
 								disabled={!selectedAlbum}
+								required
 							>
 								<option value="">Select Release</option>
 								{filteredReleases.map((release) => (

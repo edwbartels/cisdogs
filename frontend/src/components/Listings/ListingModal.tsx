@@ -175,6 +175,7 @@ const ListingModal: React.FC<ListingModalProps> = ({
 				`The following fields are required:\n` +
 					`${requiredFields.map((field) => ` - ${field}`).join('\n')}`
 			)
+			return
 		}
 		if (errors.price === '') {
 			item && setListingDetails({ ...listingDetails, item_id: item.id })

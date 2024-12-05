@@ -72,6 +72,10 @@ const App = () => {
 	const scheduleTokenRefresh = useAuthStore(
 		(state) => state.scheduleTokenRefresh
 	)
+	const isDarkMode = useAuthStore((state) => state.isDarkMode)
+	if (isDarkMode) {
+		document.getElementById('root')?.classList.toggle('dark', isDarkMode)
+	}
 	useEffect(() => {
 		const cleanup = initializeSubscriptions()
 		return () => {

@@ -172,11 +172,8 @@ const useAuthStore = create(
 					name: 'authStore',
 					onRehydrateStorage: () => () => {
 						const authState = useAuthStore.getState()
+						console.log('rehydrated and have the authstate')
 						const userStore = useUserStore.getState()
-						const isDarkMode = useAuthStore.getState()
-						if (isDarkMode) {
-							document.getElementById('root')?.classList.add('dark')
-						} else document.getElementById('root')?.classList.remove('dark')
 						if (authState.isLoggedIn) {
 							setTimeout(() => {
 								userStore.getCollection()
@@ -187,6 +184,11 @@ const useAuthStore = create(
 								useUserStore.setState({ collection: new Set() })
 								useUserStore.setState({ watchlist: new Set() })
 							}, 0)
+						}
+						if (authState.isDarkMode && document.getElementById('root')) {
+							document
+								.getElementById('root')
+								?.classList.toggle('dark', authState.isDarkMode)
 						}
 					},
 				}

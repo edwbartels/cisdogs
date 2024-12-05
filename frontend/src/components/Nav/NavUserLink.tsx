@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAuthStore from '../../stores/authStore'
 import useModalStore from '../../stores/modalStore'
+import { NavLink } from 'react-router-dom'
 
 interface NavUserLinkProps {
 	title: string
@@ -31,12 +32,15 @@ const NavUserLink: React.FC<NavUserLinkProps> = ({ title, to }) => {
 		}
 	}
 	return (
-		<>
-			<a href={to} onClick={handleClick} className="px-2  hover:text-wax-amber">
-				{title}
-			</a>
-			{/* <SignInModal isOpen={activeModal === 'login'} onClose={handleClose} /> */}
-		</>
+		<NavLink
+			to={to}
+			onClick={handleClick}
+			className={({ isActive }) =>
+				`px-2  hover:text-wax-amber ${isActive && 'text-wax-amber'}`
+			}
+		>
+			{title}
+		</NavLink>
 	)
 }
 

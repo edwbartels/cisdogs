@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useItemStore, { Item } from '../../stores/itemStore'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faEllipsis, faUser } from '@fortawesome/free-solid-svg-icons'
 import useUserStore from '../../stores/userStore'
 import useAuthStore from '../../stores/authStore'
 import DropdownMenu from '../Util/DropdownMenu'
@@ -12,7 +12,7 @@ import { capitalizeFirst } from '../../utils/capitalize'
 interface ItemTileMainProps {
 	itemId: number
 }
-type DropdownOptions = 'add' | 'extra' | null
+type DropdownOptions = 'add' | 'extra' | 'user' | null
 
 const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 	const userId = useAuthStore((state) => state.user?.id)
@@ -28,11 +28,16 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 		{ label: 'Album', value: 'album' },
 		{ label: 'Artist', value: 'artist' },
 	]
+	const userOptions = [{ label: 'Profile', value: 'profile' }]
+
 	if (item?.listing)
 		extraOptions.unshift({ label: 'Listing', value: 'listing' })
 
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
+			case 'profile':
+				navigate(`/profile/${item.owner.id}`)
+				break
 			case 'add':
 				userId &&
 					addToCollection({
@@ -68,9 +73,11 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 
 			const clickedAdd = targetElement.closest('.add-dropdown')
 			const clickedExtra = targetElement.closest('.extra-dropdown')
+			const clickedUser = targetElement.closest('.user-dropdown')
 
 			if (!clickedAdd && activeDropdown === 'add') setActiveDropdown(null)
 			if (!clickedExtra && activeDropdown === 'extra') setActiveDropdown(null)
+			if (!clickedUser && activeDropdown === 'user') setActiveDropdown(null)
 		},
 		[activeDropdown]
 	)
@@ -110,20 +117,37 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 						</div>
 					)}
 				</div>
-				<div className="relative flex flex-col extra-dropdown">
-					<FontAwesomeIcon
-						icon={faEllipsis}
-						size="xl"
-						className="cursor-pointer hover:text-wax-cream"
-						onClick={() => setActiveDropdown('extra')}
-					/>
-					<DropdownMenu
-						title="View Details"
-						options={extraOptions}
-						isOpen={activeDropdown == 'extra'}
-						onSelect={handleOptionSelect}
-						className="-right-2 bg-wax-cream"
-					/>
+				<div className="flex space-x-1">
+					<div className="relative flex flex-col user-dropdown self-center">
+						<FontAwesomeIcon
+							icon={faUser}
+							size="lg"
+							onClick={() => setActiveDropdown('user')}
+							className="cursor-pointer hover:text-wax-cream"
+						/>
+						<DropdownMenu
+							title={item.owner.username}
+							options={userOptions}
+							isOpen={activeDropdown == 'user'}
+							onSelect={handleOptionSelect}
+							className="bottom-full right-2 bg-wax-cream w-20 font-bold"
+						/>
+					</div>
+					<div className="relative flex flex-col extra-dropdown">
+						<FontAwesomeIcon
+							icon={faEllipsis}
+							size="xl"
+							className="cursor-pointer hover:text-wax-cream"
+							onClick={() => setActiveDropdown('extra')}
+						/>
+						<DropdownMenu
+							title="View Details"
+							options={extraOptions}
+							isOpen={activeDropdown == 'extra'}
+							onSelect={handleOptionSelect}
+							className="-right-2 bg-wax-cream"
+						/>
+					</div>
 				</div>
 			</div>
 			<div

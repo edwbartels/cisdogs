@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faEllipsis, faUser } from '@fortawesome/free-solid-svg-icons'
 import DropdownMenu from '../Util/DropdownMenu'
 import useListingStore, { Listing } from '../../stores/listingStore'
 import useUserStore from '../../stores/userStore'
@@ -13,7 +13,7 @@ interface ListingTileMainProps {
 	listingId: number
 }
 
-type DropdownOptions = 'remove' | 'extra' | 'add' | null
+type DropdownOptions = 'remove' | 'extra' | 'add' | 'user' | null
 
 const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 	const userId = useAuthStore((state) => state.user?.id)
@@ -39,9 +39,13 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 		{ label: 'Album', value: 'album' },
 		{ label: 'Artist', value: 'artist' },
 	]
+	const userOptions = [{ label: 'Profile', value: 'profile' }]
 
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
+			case 'profile':
+				navigate(`/profile/${listing.seller.id}`)
+				break
 			case 'collection':
 				userId &&
 					addToCollection({
@@ -90,10 +94,12 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 			const clickedRemove = targetElement.closest('.remove-dropdown')
 			const clickedExtra = targetElement.closest('.extra-dropdown')
 			const clickedAdd = targetElement.closest('.add-dropdown')
+			const clickedUser = targetElement.closest('.user-dropdown')
 
 			if (!clickedRemove && activeDropdown === 'remove') setActiveDropdown(null)
 			if (!clickedExtra && activeDropdown === 'extra') setActiveDropdown(null)
 			if (!clickedAdd && activeDropdown === 'add') setActiveDropdown(null)
+			if (!clickedUser && activeDropdown === 'user') setActiveDropdown(null)
 		},
 		[activeDropdown]
 	)
@@ -131,20 +137,37 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 							/>
 						</div>
 					</div>
-					<div className="relative flex flex-col extra-dropdown">
-						<FontAwesomeIcon
-							icon={faEllipsis}
-							size="xl"
-							onClick={() => setActiveDropdown('extra')}
-							className="cursor-pointer hover:text-wax-cream"
-						/>
-						<DropdownMenu
-							title="View Details"
-							options={extraOptions}
-							isOpen={activeDropdown == 'extra'}
-							onSelect={handleOptionSelect}
-							className="-right-2 bg-wax-cream"
-						/>
+					<div className="flex space-x-1">
+						<div className="relative flex flex-col user-dropdown self-center">
+							<FontAwesomeIcon
+								icon={faUser}
+								size="lg"
+								onClick={() => setActiveDropdown('user')}
+								className="cursor-pointer hover:text-wax-cream"
+							/>
+							<DropdownMenu
+								title={listing.seller.username}
+								options={userOptions}
+								isOpen={activeDropdown == 'user'}
+								onSelect={handleOptionSelect}
+								className="bottom-full right-2 bg-wax-cream w-20 font-bold"
+							/>
+						</div>
+						<div className="relative flex flex-col extra-dropdown">
+							<FontAwesomeIcon
+								icon={faEllipsis}
+								size="xl"
+								onClick={() => setActiveDropdown('extra')}
+								className="cursor-pointer hover:text-wax-cream"
+							/>
+							<DropdownMenu
+								title="View Details"
+								options={extraOptions}
+								isOpen={activeDropdown == 'extra'}
+								onSelect={handleOptionSelect}
+								className="-right-2 bg-wax-cream"
+							/>
+						</div>
 					</div>
 				</div>
 				<div

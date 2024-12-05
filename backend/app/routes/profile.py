@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import ColumnExpressionArgument, or_
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.query import Query
 from app.database import get_db
-from app.models import Item, Listing, Album, Release, Order
-from app.schemas.res import ItemFull, ListingFull, OrderFull
+from app.models import Item, Listing, Album, Release, Order, User
+from app.schemas.res import ItemFull, ListingFull, OrderFull, UserProfile
 from app.lib.jwt import get_user_id
 from app.lib.sort_filter import (
     PaginationParams,
@@ -300,3 +300,11 @@ def get_profile_purchases(
         order.type = order.get_type(user_id)
 
     return orders
+
+
+@router.get("/{user_id}", response_model=UserProfile)
+def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
+    user: User | None = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user

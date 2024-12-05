@@ -1,40 +1,47 @@
 import { useEffect, useRef } from 'react'
 import { useInView } from 'react-intersection-observer'
 import useUserStore from '../../stores/userStore'
-import DashboardItemTile from './DashboardItemTile'
-import useDashboardStore from '../../stores/dashboardStore'
+import ProfileListingTile from './ProfileListingTile'
+import useProfileStore from '../../stores/profileStore'
 
-const DashboardItems = () => {
+interface ProfileListingsProps {
+	userId: number
+}
+
+const ProfileListings: React.FC<ProfileListingsProps> = ({ userId }) => {
 	const { ref, inView } = useInView({ threshold: 1.0 })
 	const debounceFetch = useRef(false)
-	const { items, getItems, clearState } = useDashboardStore(
-		(state) => state.items
+	const { listings, getListings, clearState } = useProfileStore(
+		(state) => state.listings
 	)
-	const hasMore = useDashboardStore((state) => state.items.pagination?.has_more)
-	const sortedIds = useDashboardStore(
-		(state) => state.items.pagination?.sorted_ids
+	const hasMore = useProfileStore(
+		(state) => state.listings.pagination?.has_more
+	)
+	const sortedIds = useProfileStore(
+		(state) => state.listings.pagination?.sorted_ids
 	)
 
 	useEffect(() => {
-		getItems()
+		getListings(userId)
 		return () => {
 			clearState()
 			window.scrollTo({ top: 0 })
 		}
-	}, [getItems])
+	}, [getListings])
 
 	useEffect(() => {
 		if (inView && hasMore && !debounceFetch.current) {
 			debounceFetch.current = true
-			getItems().finally(() => (debounceFetch.current = false))
+			getListings(userId).finally(() => (debounceFetch.current = false))
 		}
-	}, [inView, hasMore, getItems])
+	}, [inView, hasMore, getListings])
+
 	return (
 		<div className="flex flex-col self-center">
 			<div className="flex flex-wrap justify-start gap-4 p-4">
 				{sortedIds &&
 					sortedIds.map((id) => (
-						<DashboardItemTile key={id} itemId={Number(id)} />
+						<ProfileListingTile key={id} listingId={Number(id)} />
 					))}
 			</div>
 			{hasMore && (
@@ -46,4 +53,4 @@ const DashboardItems = () => {
 	)
 }
 
-export default DashboardItems
+export default ProfileListings

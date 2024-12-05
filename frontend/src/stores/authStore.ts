@@ -34,6 +34,8 @@ export interface AuthStore {
 	accessToken: string | null
 	user: User | null
 	cart: { [key: number]: Item }
+	isDarkMode: boolean
+	toggleDarkMode: () => void
 	addToCart: (item: Item) => void
 	removeFromCart: (item: Item) => void
 	checkoutCart: () => void
@@ -56,6 +58,14 @@ const useAuthStore = create(
 					accessToken: null,
 					user: null,
 					cart: {},
+					isDarkMode: false,
+					toggleDarkMode: () => {
+						set((state) => {
+							const newMode = !state.isDarkMode
+							document.getElementById('root')?.classList.toggle('dark', newMode)
+							return { isDarkMode: newMode }
+						})
+					},
 					addToCart: (item) => {
 						set((state) => ({
 							cart: { ...state.cart, [item.id]: item },
@@ -163,6 +173,10 @@ const useAuthStore = create(
 					onRehydrateStorage: () => () => {
 						const authState = useAuthStore.getState()
 						const userStore = useUserStore.getState()
+						const isDarkMode = useAuthStore.getState()
+						if (isDarkMode) {
+							document.getElementById('root')?.classList.add('dark')
+						} else document.getElementById('root')?.classList.remove('dark')
 						if (authState.isLoggedIn) {
 							setTimeout(() => {
 								userStore.getCollection()

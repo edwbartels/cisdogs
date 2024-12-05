@@ -167,7 +167,7 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 					)}
 					<button
 						type="submit"
-						className="w-full py-2 border-4 rounded bg-wax-blue text-wax-cream border-wax-silver hover:border-wax-cream hover:ring-2 hover:ring-wax-blue dark:bg-waxDark-blue   dark:hover-ring-waxDark-blue"
+						className="w-full py-2 border-4 rounded bg-wax-blue text-wax-cream border-wax-silver hover:border-wax-cream hover:ring-2 hover:ring-wax-blue dark:bg-waxDark-blue   dark:hover:ring-waxDark-blue"
 					>
 						Sign In
 					</button>

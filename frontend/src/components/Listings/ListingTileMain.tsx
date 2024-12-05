@@ -94,17 +94,6 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 			if (!clickInside) {
 				setActiveDropdown(null)
 			}
-			// const targetElement = event.target as Element
-
-			// const clickedRemove = targetElement.closest('.remove-dropdown')
-			// const clickedExtra = targetElement.closest('.extra-dropdown')
-			// const clickedAdd = targetElement.closest('.add-dropdown')
-			// const clickedUser = targetElement.closest('.user-dropdown')
-
-			// if (!clickedRemove && activeDropdown === 'remove') setActiveDropdown(null)
-			// if (!clickedExtra && activeDropdown === 'extra') setActiveDropdown(null)
-			// if (!clickedAdd && activeDropdown === 'add') setActiveDropdown(null)
-			// if (!clickedUser && activeDropdown === 'user') setActiveDropdown(null)
 		},
 		[activeDropdown]
 	)

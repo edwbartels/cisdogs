@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEllipsis } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsis, faUser } from '@fortawesome/free-solid-svg-icons'
 import useWatchlistStore from '../../stores/watchlistStore'
 import { Listing } from '../../stores/listingStore'
 import DropdownMenu from '../Util/DropdownMenu'
@@ -12,7 +12,7 @@ import useAuthStore from '../../stores/authStore'
 interface WatchlistListingTileProps {
 	listingId: number
 }
-type DropdownOptions = 'remove' | 'extra' | null
+type DropdownOptions = 'remove' | 'extra' | 'user' | null
 
 const WatchlistListingTile: React.FC<WatchlistListingTileProps> = ({
 	listingId,
@@ -30,9 +30,13 @@ const WatchlistListingTile: React.FC<WatchlistListingTileProps> = ({
 		{ label: 'Album', value: 'album' },
 		{ label: 'Artist', value: 'artist' },
 	]
+	const userOptions = [{ label: 'Profile', value: 'profile' }]
 
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
+			case 'profile':
+				navigate(`/profile/${listing.seller.id}`)
+				break
 			case 'listing':
 				navigate(`/listing/${listing.id}`)
 				break
@@ -58,13 +62,10 @@ const WatchlistListingTile: React.FC<WatchlistListingTileProps> = ({
 			if (!(event.target instanceof Element)) {
 				return
 			}
-			const targetElement = event.target as Element
-
-			const clickedRemove = targetElement.closest('.remove-dropdown')
-			const clickedExtra = targetElement.closest('.extra-dropdown')
-
-			if (!clickedRemove && activeDropdown === 'remove') setActiveDropdown(null)
-			if (!clickedExtra && activeDropdown === 'extra') setActiveDropdown(null)
+			const clickInside = event.target.closest('.dropdown')
+			if (!clickInside) {
+				setActiveDropdown(null)
+			}
 		},
 		[activeDropdown]
 	)
@@ -83,27 +84,46 @@ const WatchlistListingTile: React.FC<WatchlistListingTileProps> = ({
 		<>
 			<div
 				className={`tile-container ${
-					isOwner ? 'ring-green-700' : 'ring-wax-gray'
+					isOwner
+						? 'ring-wax-green dark:ring-waxDark-green'
+						: 'ring-wax-gray dark:ring-waxDark-black'
 				}`}
 			>
 				<div className="tile-title-bar">
 					<div className="relative flex space-x-1">
 						<EyeIcon id={listing.release.id} />
 					</div>
-					<div className="relative flex flex-col extra-dropdown">
-						<FontAwesomeIcon
-							icon={faEllipsis}
-							size="xl"
-							className="cursor-pointer hover:text-wax-cream"
-							onClick={() => setActiveDropdown('extra')}
-						/>
-						<DropdownMenu
-							title="View Details"
-							options={extraOptions}
-							isOpen={activeDropdown == 'extra'}
-							onSelect={handleOptionSelect}
-							className="-right-2 bg-wax-cream"
-						/>
+					<div className="flex space-x-1">
+						<div className="relative flex flex-col user-dropdown self-center">
+							<FontAwesomeIcon
+								icon={faUser}
+								size="lg"
+								onClick={() => setActiveDropdown('user')}
+								className="cursor-pointer hover:text-wax-cream"
+							/>
+							<DropdownMenu
+								title={listing.seller.username}
+								options={userOptions}
+								isOpen={activeDropdown == 'user'}
+								onSelect={handleOptionSelect}
+								className="bottom-full right-2 bg-wax-cream w-20 font-bold"
+							/>
+						</div>
+						<div className="relative flex flex-col extra-dropdown">
+							<FontAwesomeIcon
+								icon={faEllipsis}
+								size="xl"
+								className="cursor-pointer hover:text-wax-cream"
+								onClick={() => setActiveDropdown('extra')}
+							/>
+							<DropdownMenu
+								title="View Details"
+								options={extraOptions}
+								isOpen={activeDropdown == 'extra'}
+								onSelect={handleOptionSelect}
+								className="-right-2 bg-wax-cream"
+							/>
+						</div>
 					</div>
 				</div>
 				<div

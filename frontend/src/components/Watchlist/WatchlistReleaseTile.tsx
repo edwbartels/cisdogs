@@ -80,7 +80,7 @@ const WatchlistReleaseTile: React.FC<WatchlistReleaseTileProps> = ({
 		return <div>Release not found</div>
 	}
 	return (
-		<div className="tile-container ring-wax-gray">
+		<div className="tile-container ring-wax-gray dark:ring-waxDark-black">
 			<div className="tile-title-bar">
 				<div className="relative flex space-x-1">
 					<EyeIcon id={release.id} />

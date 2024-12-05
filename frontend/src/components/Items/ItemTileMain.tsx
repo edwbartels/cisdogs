@@ -69,15 +69,10 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 			if (!(event.target instanceof Element)) {
 				return
 			}
-			const targetElement = event.target as Element
-
-			const clickedAdd = targetElement.closest('.add-dropdown')
-			const clickedExtra = targetElement.closest('.extra-dropdown')
-			const clickedUser = targetElement.closest('.user-dropdown')
-
-			if (!clickedAdd && activeDropdown === 'add') setActiveDropdown(null)
-			if (!clickedExtra && activeDropdown === 'extra') setActiveDropdown(null)
-			if (!clickedUser && activeDropdown === 'user') setActiveDropdown(null)
+			const clickInside = event.target.closest('.dropdown')
+			if (!clickInside) {
+				setActiveDropdown(null)
+			}
 		},
 		[activeDropdown]
 	)

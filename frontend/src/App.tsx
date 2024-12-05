@@ -23,7 +23,7 @@ import Profile from './components/Profile/Profile'
 const Layout = () => {
 	return (
 		<div className="flex flex-col min-h-screen font-sans bg-wax-cream text-wax-black dark:bg-waxDark-gray dark:text-wax-cream">
-			<div className="fixed top-0 left-0 h-16 w-full items-center bg-wax-black text-wax-silver flex  px-4 z-50">
+			<div className="fixed top-0 left-0 h-16 w-full items-center bg-wax-black text-wax-silver flex  px-1 z-50">
 				<NavBar />
 			</div>
 

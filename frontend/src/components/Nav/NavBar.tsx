@@ -23,7 +23,10 @@ const Navbar: React.FC = () => {
 							/>
 						)}
 					</NavLink>
-					<NavLink className="font-bold  hover:text-wax-amber" to="/">
+					<NavLink
+						className="font-bold  hover:text-wax-amber dark:hover:text-waxDark-amber"
+						to="/"
+					>
 						Wax Exchange
 					</NavLink>
 				</div>

@@ -27,7 +27,8 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 
 	const [activeDropdown, setActiveDropdown] = useState<DropdownOptions>(null)
 	const addOptions = []
-	if (!cart[listing?.id]) addOptions.push({ label: 'To Cart', value: 'cart' })
+	if (!cart[listing?.id] && listing.seller.id != userId)
+		addOptions.push({ label: 'To Cart', value: 'cart' })
 	// const addOptions = [{ label: 'To Cart', value: 'cart' }]
 	if (isLoggedIn && !collection?.has(listing?.release?.id))
 		addOptions.push({ label: 'To Collection', value: 'collection' })
@@ -89,17 +90,21 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 			if (!(event.target instanceof Element)) {
 				return
 			}
-			const targetElement = event.target as Element
+			const clickInside = event.target.closest('.dropdown')
+			if (!clickInside) {
+				setActiveDropdown(null)
+			}
+			// const targetElement = event.target as Element
 
-			const clickedRemove = targetElement.closest('.remove-dropdown')
-			const clickedExtra = targetElement.closest('.extra-dropdown')
-			const clickedAdd = targetElement.closest('.add-dropdown')
-			const clickedUser = targetElement.closest('.user-dropdown')
+			// const clickedRemove = targetElement.closest('.remove-dropdown')
+			// const clickedExtra = targetElement.closest('.extra-dropdown')
+			// const clickedAdd = targetElement.closest('.add-dropdown')
+			// const clickedUser = targetElement.closest('.user-dropdown')
 
-			if (!clickedRemove && activeDropdown === 'remove') setActiveDropdown(null)
-			if (!clickedExtra && activeDropdown === 'extra') setActiveDropdown(null)
-			if (!clickedAdd && activeDropdown === 'add') setActiveDropdown(null)
-			if (!clickedUser && activeDropdown === 'user') setActiveDropdown(null)
+			// if (!clickedRemove && activeDropdown === 'remove') setActiveDropdown(null)
+			// if (!clickedExtra && activeDropdown === 'extra') setActiveDropdown(null)
+			// if (!clickedAdd && activeDropdown === 'add') setActiveDropdown(null)
+			// if (!clickedUser && activeDropdown === 'user') setActiveDropdown(null)
 		},
 		[activeDropdown]
 	)
@@ -116,26 +121,30 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 		<>
 			<div
 				className={`tile-container ${
-					userListings.includes(listing.id) ? 'ring-green-700' : 'ring-wax-gray'
+					userListings.includes(listing.id)
+						? 'ring-wax-green dark:ring-waxDark-green'
+						: 'ring-wax-gray dark:ring-waxDark-black'
 				}`}
 			>
 				<div className="tile-title-bar">
 					<div className="space-x-1 flex">
 						<EyeIcon id={listing.release.id} />
-						<div className="relative flex flex-col add-dropdown">
-							<FontAwesomeIcon
-								icon={faPlus}
-								size="xl"
-								className="cursor-pointer hover:text-wax-cream"
-								onClick={() => setActiveDropdown('add')}
-							/>
-							<DropdownMenu
-								options={addOptions}
-								onSelect={handleOptionSelect}
-								isOpen={activeDropdown === 'add'}
-								className="bottom-full font-bold hover:ring-2"
-							/>
-						</div>
+						{addOptions.length > 0 && (
+							<div className="relative flex flex-col add-dropdown">
+								<FontAwesomeIcon
+									icon={faPlus}
+									size="xl"
+									className="cursor-pointer hover:text-wax-cream"
+									onClick={() => setActiveDropdown('add')}
+								/>
+								<DropdownMenu
+									options={addOptions}
+									onSelect={handleOptionSelect}
+									isOpen={activeDropdown === 'add'}
+									className="bottom-full font-bold hover:ring-2"
+								/>
+							</div>
+						)}
 					</div>
 					<div className="flex space-x-1">
 						<div className="relative flex flex-col user-dropdown self-center">

@@ -88,7 +88,7 @@ const DashboardListingTile: React.FC<DashboardListingTitleProps> = ({
 	}
 	return (
 		<>
-			<div className="tile-container ring-wax-gray">
+			<div className="tile-container ring-wax-gray dark:ring-waxDark-black">
 				{/* {`Release ID: ${listing.release.id}`} */}
 				<div className="tile-title-bar">
 					<div className="relative flex space-x-1">

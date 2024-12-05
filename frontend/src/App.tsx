@@ -22,16 +22,16 @@ import Profile from './components/Profile/Profile'
 
 const Layout = () => {
 	return (
-		<div className="flex flex-col min-h-screen font-sans bg-wax-cream text-wax-black">
+		<div className="flex flex-col min-h-screen font-sans bg-wax-cream text-wax-black dark:bg-waxDark-gray dark:text-wax-cream">
 			<div className="fixed top-0 left-0 h-16 w-full items-center bg-wax-black text-wax-silver flex  px-4 z-50">
 				<NavBar />
 			</div>
 
 			<div className="flex h-full pt-16">
-				<div className="fixed top-16 left-0 w-48 h-[calc(100vh-4rem)] bg-wax-silver shadow-md justify-between">
+				<div className="fixed top-16 left-0 w-48 h-[calc(100vh-4rem)] bg-wax-silver shadow-md justify-between dark:bg-waxDark-silver">
 					<Sidebar />
 					<div
-						className="fixed mb-2 bottom-0 cursor-pointer text-center w-48 font-semibold text-wax-gray hover:underline"
+						className="fixed mb-2 bottom-0 cursor-pointer text-center w-48 font-semibold text-wax-gray hover:underline dark:text-waxDark-cream"
 						onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
 					>
 						^ Back to Top ^

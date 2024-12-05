@@ -94,7 +94,9 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 	return (
 		<div
 			className={`tile-container ${
-				item.listing ? 'ring-green-700' : 'ring-wax-gray'
+				item.listing
+					? 'ring-wax-green dark:ring-waxDark-green'
+					: 'ring-wax-gray dark:ring-waxDark-black'
 			} `}
 		>
 			<div className="tile-title-bar">

@@ -3,6 +3,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.database import Base
 from app.models.mixins import TimestampMixin
+from typing import Literal
 
 
 class Release(Base, TimestampMixin):
@@ -10,7 +11,9 @@ class Release(Base, TimestampMixin):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     album_id: Mapped[int] = mapped_column(Integer, ForeignKey("albums.id"))
-    media_type: Mapped[str] = mapped_column(String(20), index=True)
+    media_type: Mapped[Literal["vinyl", "cd", "cassette"]] = mapped_column(
+        String(20), index=True
+    )
     variant: Mapped[str] = mapped_column(String(100), default="standard")
 
     album: Mapped["Album"] = relationship("Album", back_populates="releases")

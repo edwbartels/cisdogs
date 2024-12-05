@@ -53,7 +53,7 @@ const ArtistTile: React.FC<ArtistTileProps> = ({ artistId }) => {
 	}
 	return (
 		<>
-			<div className="tile-container ring-wax-gray">
+			<div className="tile-container ring-wax-gray dark:ring-waxDark-black">
 				<div className="tile-title-bar">
 					<div
 						className="font-bold text-lg truncate cursor-pointer hover:text-wax-cream"

@@ -69,7 +69,7 @@ const ReleaseTile: React.FC<ReleaseTileProps> = ({ releaseId }) => {
 	}
 	return (
 		<>
-			<div className="tile-container ring-wax-gray">
+			<div className="tile-container ring-wax-gray dark:ring-waxDark-black">
 				<div className="tile-title-bar">
 					<div className="space-x-1">
 						<EyeIcon id={release.id} />

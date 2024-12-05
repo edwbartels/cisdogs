@@ -123,7 +123,7 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 			onClick={onClose} // Close modal on background click
 		>
 			<div
-				className="flex flex-col items-center p-8 border-4 rounded shadow-lg bg-wax-silver border-wax-gray"
+				className="flex flex-col items-center p-8 border-4 rounded shadow-lg bg-wax-silver border-wax-gray dark:bg-waxDark-silver dark:border-waxDark-gray"
 				onClick={(e) => e.stopPropagation()} // Prevent closing when clicking modal content
 			>
 				<h2 className="mb-4 text-3xl font-bold border-b-2 text-wax-black border-wax-black">
@@ -167,7 +167,7 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 					)}
 					<button
 						type="submit"
-						className="w-full py-2 border-4 rounded bg-wax-blue text-wax-cream border-wax-silver hover:border-wax-cream hover:ring-2 hover:ring-wax-blue"
+						className="w-full py-2 border-4 rounded bg-wax-blue text-wax-cream border-wax-silver hover:border-wax-cream hover:ring-2 hover:ring-wax-blue dark:bg-waxDark-blue   dark:hover-ring-waxDark-blue"
 					>
 						Sign In
 					</button>
@@ -175,14 +175,14 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
 				<div className="flex justify-center">
 					<button
 						onClick={handleDemoClick}
-						className="w-full px-5 py-2 mx-2 mt-3 border-4 rounded bg-wax-amber text-wax-cream border-wax-silver hover:border-wax-cream hover:ring-2 hover: ring-wax-amber"
+						className="w-full px-5 py-2 mx-2 mt-3 border-4 rounded bg-wax-amber text-wax-cream border-wax-silver hover:border-wax-cream hover:ring-2 hover: ring-wax-amber dark:bg-waxDark-amber dark:hover:ring-waxDark-amber"
 					>
 						Demo
 					</button>
 					<button
 						type="button"
 						onClick={handleClose}
-						className="w-full px-5 py-2 mx-2 mt-3 border-4 rounded bg-wax-red text-wax-cream border-wax-silver hover:border-wax-cream hover:ring-2 hover:ring-wax-red"
+						className="w-full px-5 py-2 mx-2 mt-3 border-4 rounded bg-wax-red text-wax-cream border-wax-silver hover:border-wax-cream hover:ring-2 hover:ring-wax-red dark:bg-waxDark-red dark:hover:ring-waxDark-red"
 					>
 						Close
 					</button>

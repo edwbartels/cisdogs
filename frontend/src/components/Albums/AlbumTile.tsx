@@ -59,10 +59,10 @@ const AlbumTile: React.FC<AlbumTileProps> = ({ albumId }) => {
 	}
 	return (
 		<>
-			<div className="tile-container ring-wax-gray">
+			<div className="tile-container ring-wax-gray dark:ring-waxDark-black">
 				<div className="tile-title-bar">
 					<div
-						className="font-bold text-lg truncate cursor-pointer hover:text-wax-cream"
+						className="font-bold text-lg truncate cursor-pointer hover:text-wax-cream dark:hover:text-waxDark-silver"
 						onClick={() => navigate(`/artist/${album.artist.id}`)}
 					>
 						{album.artist?.name}
@@ -72,7 +72,7 @@ const AlbumTile: React.FC<AlbumTileProps> = ({ albumId }) => {
 						<FontAwesomeIcon
 							icon={faEllipsis}
 							size="xl"
-							className="cursor-pointer hover:text-wax-cream"
+							className="cursor-pointer hover:text-wax-cream dark:hover:text-waxDark-silver"
 							onClick={() => setActiveDropdown('extra')}
 						/>
 						<DropdownMenu
@@ -99,7 +99,7 @@ const AlbumTile: React.FC<AlbumTileProps> = ({ albumId }) => {
 				<div className="tile-footer-1">
 					{/* <div className="cursor-pointer">{`$${listing.price}`}</div> */}
 					<div
-						className="cursor-pointer self-center w-full truncate hover:text-wax-cream"
+						className="cursor-pointer self-center w-full truncate hover:text-wax-cream dark:hover:text-waxDark-silver"
 						onClick={() => navigate(`/album/${album.id}`)}
 					>
 						{album?.title}

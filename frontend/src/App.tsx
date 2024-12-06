@@ -19,7 +19,6 @@ import Releases from './components/Releases/Releases'
 import Albums from './components/Albums/Albums'
 import Artists from './components/Artists/Artists'
 import Profile from './components/Profile/Profile'
-import useUserStore from './stores/userStore'
 
 const Layout = () => {
 	return (

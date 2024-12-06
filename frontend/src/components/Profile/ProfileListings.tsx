@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 import { useInView } from 'react-intersection-observer'
-import useUserStore from '../../stores/userStore'
 import ProfileListingTile from './ProfileListingTile'
 import useProfileStore from '../../stores/profileStore'
 
@@ -11,9 +10,7 @@ interface ProfileListingsProps {
 const ProfileListings: React.FC<ProfileListingsProps> = ({ userId }) => {
 	const { ref, inView } = useInView({ threshold: 1.0 })
 	const debounceFetch = useRef(false)
-	const { listings, getListings, clearState } = useProfileStore(
-		(state) => state.listings
-	)
+	const { getListings, clearState } = useProfileStore((state) => state.listings)
 	const hasMore = useProfileStore(
 		(state) => state.listings.pagination?.has_more
 	)

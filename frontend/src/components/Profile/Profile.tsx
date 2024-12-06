@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import React, { useState } from 'react'
+import { useLocation, useParams } from 'react-router-dom'
 import ProfileItems from './ProfileItems'
 import ProfileListings from './ProfileListings'
 import ProfileInfo from './ProfileInfo'
@@ -9,7 +9,6 @@ interface ProfileProps {
 }
 const Profile: React.FC<ProfileProps> = () => {
 	const { userId } = useParams()
-	const navigate = useNavigate()
 	const location = useLocation()
 	const defaultTab = location.state?.defaultTab as 'items' | 'listings'
 	const [activeTab, setActiveTab] = useState(defaultTab || 'items')

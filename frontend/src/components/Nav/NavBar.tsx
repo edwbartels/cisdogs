@@ -8,7 +8,6 @@ import QuickCreate from './QuickCreate'
 import NavUser from './NavUser'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons'
-import { faMoon as faMoonOpen } from '@fortawesome/free-regular-svg-icons'
 import useUserStore from '../../stores/userStore'
 
 const Navbar: React.FC = () => {

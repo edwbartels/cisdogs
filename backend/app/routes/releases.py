@@ -27,11 +27,7 @@ router = APIRouter(prefix="/releases", tags=["releases"])
 @lru_cache(maxsize=128)
 def get_cached_releases(pagination: PaginationParams, db_session: Session):
     query: Query[Release] = (
-        db_session.query(Release)
-        .join(Release.items)
-        .join(Item.listing)
-        .join(Release.album)
-        .join(Album.artist)
+        db_session.query(Release).join(Release.album).join(Album.artist)
     )
 
     releases: PaginationResult = paginate(

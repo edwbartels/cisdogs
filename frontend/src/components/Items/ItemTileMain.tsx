@@ -177,7 +177,7 @@ const ItemTileMain: React.FC<ItemTileMainProps> = ({ itemId }) => {
 					{item.album.title}
 				</div>
 				<div
-					className="truncate self-center cursor-pointer hover:text-wax-cream"
+					className="truncate text-center cursor-pointer hover:text-wax-cream"
 					onClick={() => navigate(`/release/${item.release.id}`)}
 				>
 					{`${item.release.media_type.toUpperCase()}`}{' '}

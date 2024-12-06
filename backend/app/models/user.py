@@ -31,6 +31,18 @@ class User(Base, TimestampMixin):
     EMAIL_REGEX = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
 
     @property
+    def collection_count(self):
+        return len(self.items)
+
+    @property
+    def member_since(self):
+        day: int = int(self.created.strftime("%d"))
+        suffix: str = (
+            "th" if 11 <= day <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
+        )
+        return self.created.strftime(f"%B {day}{suffix}, %Y")
+
+    @property
     def password(self):
         return AttributeError("Password is not readable")
 

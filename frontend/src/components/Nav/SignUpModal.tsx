@@ -107,14 +107,14 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 			onClick={onClose}
 		>
 			<div
-				className="flex flex-col items-center p-8 border-4 rounded shadow-lg bg-wax-silver border-wax-gray"
+				className="flex flex-col items-center p-8 border-4 rounded shadow-lg bg-wax-silver border-wax-gray dark:bg-waxDark-silver dark:border-waxDark-gray"
 				onClick={(e) => e.stopPropagation()}
 			>
 				<h2 className="mb-4 text-3xl font-bold border-b-2 text-wax-black border-wax-black">
 					Sign Up
 				</h2>
 				{errors.fetch && (
-					<div className="text-wax-red text-base font-bold italic mb-2">
+					<div className="text-wax-red dark:text-waxDark-red text-base font-bold italic mb-2">
 						{errors.fetch}
 					</div>
 				)}
@@ -125,12 +125,12 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 						defaultValue={signupForm.username}
 						placeholder="Username"
 						className={`block w-full p-2 mb-2 border rounded text-wax-black ${
-							errors.username ? 'border-wax-red' : ''
+							errors.username ? 'border-wax-red dark: border-waxDark-red' : ''
 						}`}
 						required
 					/>
 					{errors.username && (
-						<div className="text-wax-red text-sm font-bold italic mb-2">
+						<div className="text-wax-red dark:text-waxDark-red text-sm font-bold italic mb-2">
 							{errors.username}
 						</div>
 					)}
@@ -140,12 +140,12 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 						defaultValue={signupForm.email}
 						placeholder="Email"
 						className={`block w-full p-2 mb-2 border rounded text-wax-black ${
-							errors.email ? 'border-wax-red' : ''
+							errors.email ? 'border-wax-red dark:border-waxDark-red' : ''
 						}`}
 						required
 					/>
 					{errors.email && (
-						<div className="text-wax-red text-sm font-bold italic mb-2">
+						<div className="text-wax-red dark:text-waxDark-red text-sm font-bold italic mb-2">
 							{errors.email}
 						</div>
 					)}
@@ -165,7 +165,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 					)}
 					<button
 						type="submit"
-						className="w-full py-2 border-4 rounded border-wax-silver bg-wax-blue text-wax-cream hover:ring-wax-blue hover:border-wax-cream hover:ring-2"
+						className="w-full py-2 border-4 rounded bg-wax-blue text-wax-cream border-wax-silver hover:border-wax-cream hover:ring-2 hover:ring-wax-blue dark:bg-waxDark-blue   dark:hover-ring-waxDark-blue"
 					>
 						Sign Up
 					</button>
@@ -173,7 +173,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
 				<button
 					type="button"
 					onClick={handleClose}
-					className="w-1/2 px-4 py-2 mt-4 text-white border-4 rounded border-wax-silver bg-wax-red  hover:border-wax-cream hover:ring-2 hover:ring-wax-red"
+					className="w-1/2 px-4 py-2 mt-4 border-4 rounded bg-wax-red text-wax-cream border-wax-silver hover:border-wax-cream hover:ring-2 hover:ring-wax-red  dark:bg-waxDark-red dark:hover:ring-waxDark-red"
 				>
 					Close
 				</button>

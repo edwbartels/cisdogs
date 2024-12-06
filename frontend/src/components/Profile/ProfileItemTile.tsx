@@ -2,21 +2,21 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMinus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
+// import useUserStore from '../../stores/userStore'
 import { Item } from '../../stores/itemStore'
 import DropdownMenu from '../Util/DropdownMenu'
 import EyeIcon from '../Icons/EyeIcon'
 import { capitalizeFirst } from '../../utils/capitalize'
-import useDashboardStore from '../../stores/dashboardStore'
+import useProfileStore from '../../stores/profileStore'
 
-interface DashboardItemTitleProps {
+interface ProfileItemTitleProps {
 	itemId: number
 }
 
 type DropdownOptions = 'remove' | 'extra' | null
 
-const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
-	const item: Item = useDashboardStore((state) => state.items.items[itemId])
-	const deleteItem = useDashboardStore((state) => state.items.deleteItem)
+const ProfileItemTile: React.FC<ProfileItemTitleProps> = ({ itemId }) => {
+	const item: Item = useProfileStore((state) => state.items.items[itemId])
 	const navigate = useNavigate()
 
 	const [activeDropdown, setActiveDropdown] = useState<{
@@ -36,9 +36,6 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
-			case 'remove':
-				deleteItem(itemId)
-				break
 			case 'listing':
 				navigate(`/listing/${item.listing?.id}`)
 				break
@@ -168,14 +165,12 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 								invisible group-hover:visible bg-wax-gray text-wax-cream text-sm rounded py-1 px-2 absolute bottom-full left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
 						>{`$${item.listing.price.toFixed(2)}`}</div>
 					)}
-					<div className="tile-art-title-bar w-full truncate">
-						{item.artist.name}
-					</div>
+					<div className="tile-art-title-bar truncate">{item.artist.name}</div>
 					<div></div>
 				</div>
 				<div className="tile-footer-2">
 					<div
-						className="cursor-pointer truncate w-full text-center hover:text-wax-cream"
+						className="cursor-pointer truncate text-center hover:text-wax-cream"
 						onClick={() => navigate(`/album/${item.album.id}`)}
 					>
 						{item.album.title}
@@ -201,4 +196,4 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 	)
 }
 
-export default DashboardItemTile
+export default ProfileItemTile

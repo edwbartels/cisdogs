@@ -18,7 +18,6 @@ const Watchlist = () => {
 
 	return (
 		<div className="w-full dashboard-container">
-			<div className="pb-8 text-center text-9xl ">Watchlist</div>
 			<div className="flex justify-between border-b border-wax-silver">
 				<div className="flex justify-between w-full text-xl tabs">
 					<div>
@@ -26,8 +25,8 @@ const Watchlist = () => {
 							onClick={() => handleTabClick('releases')}
 							className={`tab px-2 hover:bg-wax-amber hover:bg-opacity-10 h-full ${
 								activeTab === 'releases'
-									? 'text-wax-blue border-b-2 rounded border-wax-blue'
-									: 'text-wax-gray'
+									? 'text-wax-blue border-b-2 rounded border-wax-blue dark:text-waxDark-blue dark:border-waxDark-blue'
+									: 'text-wax-gray dark:text-wax-silver'
 							}`}
 						>
 							Releases
@@ -36,8 +35,8 @@ const Watchlist = () => {
 							onClick={() => handleTabClick('listings')}
 							className={`tab  hover:bg-wax-amber hover:bg-opacity-10 px-2 h-full ${
 								activeTab === 'listings'
-									? 'text-wax-blue border-b-2 rounded border-wax-blue'
-									: 'text-wax-gray'
+									? 'text-wax-blue border-b-2 rounded border-wax-blue dark:text-waxDark-blue dark:border-waxDark-blue'
+									: 'text-wax-gray dark:text-wax-silver'
 							}`}
 						>
 							Listings

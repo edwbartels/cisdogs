@@ -10,6 +10,12 @@ from app.schemas.order import OrderBase, OrderRead
 from app.schemas.review import ReviewRead
 
 
+class UserProfile(BaseModel):
+    username: str
+    member_since: str
+    collection_count: int
+
+
 class UserDashboardResponse(BaseModel):
     items: dict[int, ItemDetail]
     listings: dict[int, ListingDetail]

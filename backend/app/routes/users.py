@@ -20,6 +20,7 @@ from app.schemas.res import (
     ListingFull,
     OrderSplit,
     ListingArtist,
+    UserProfile,
     # ListingModalData,
 )
 from app.lib.jwt import get_current_user, get_user_id
@@ -38,39 +39,12 @@ def get_all_users(db: Session = Depends(get_db)):
     return users
 
 
-@router.get("/{user_id: int}", response_model=UserRead)
+@router.get("/{user_id: int}", response_model=UserProfile)
 def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
-
-
-# @router.get(
-#     "/dashboard",
-#     response_model=UserDashboardResponse,
-# )
-# def get_dashboard_info(
-#     db: Session = Depends(get_db), current_user: User = Depends(get_current_user)
-# ):
-#     print("Hey sup")
-#     if not current_user:
-#         RedirectResponse(url="/")
-#         raise HTTPException(
-#             status_code=401, detail="Not authenticated (not active user)"
-#         )
-#     items = db.query(Item).filter(Item.owner_id == current_user.id).all()
-#     listings = db.query(Listing).filter(Listing.seller_id == current_user.id).all()
-
-#     item_dict: dict[int, ItemDetail] = {item.id: item for item in items}
-#     listing_dict: dict[int, ListingDetail] = {
-#         listing.id: listing for listing in listings
-#     }
-
-#     return {
-#         "items": item_dict,
-#         "listings": listing_dict,
-#     }
 
 
 @router.get("/items", response_model=dict[int, ItemFull])
@@ -151,7 +125,6 @@ def get_listing_modal_data(
                 items=[item],
             )
         )
-    print(artist_map.values())
 
     # Convert the artist map into the ListingModalData response
     return {"artists": artist_map.values()}

@@ -22,7 +22,6 @@ def get_watchlist(db, user_id):
     items: List[Row[Tuple[int]]] = (
         db.query(Watchlist.release_id).filter(Watchlist.user_id == user_id).all()
     )
-    print("In helper function --->", items)
     return [item.release_id for item in items]
 
 
@@ -35,7 +34,6 @@ def get_user_collection(
         db.query(Item.release_id).filter(Item.owner_id == user_id).all()
     )
     logger.info("Collection: post-query ---> ", collection)
-    print("Collection: post-query --->", collection)
 
     if user_id:
         return [item.release_id for item in collection]
@@ -49,7 +47,6 @@ def get_user_watchlist(
     watchlist: List[Row[Tuple[int]]] = (
         db.query(Watchlist.release_id).filter(Watchlist.user_id == user_id).all()
     )
-    print("Watchlist: post-query ---> ", watchlist)
     return [item.release_id for item in watchlist]
 
 
@@ -68,7 +65,6 @@ def add_to_watchlist(
     try:
         db.add(add)
         db.commit()
-        print(f"Release {request.release_id} add to user {user_id}'s watchlist")
     except Exception as e:
         db.rollback()
         raise HTTPException(
@@ -77,7 +73,6 @@ def add_to_watchlist(
     watchlist: List[Row[Tuple[int]]] = (
         db.query(Watchlist.release_id).filter(Watchlist.user_id == user_id).all()
     )
-    print("Watchlist: post-query --->", watchlist)
     return [item.release_id for item in watchlist]
 
 
@@ -129,7 +124,6 @@ def checkout(
                 buyer_id=order.buyer_id,
                 release_id=order.release_id,
             )
-            # print(new_order)
 
             db.add(new_order)
             orders.append(new_order)
@@ -139,7 +133,6 @@ def checkout(
                 .scalars()
                 .first()
             )
-            print("Item --> ", item)
 
             if not item:
                 raise HTTPException(
@@ -147,7 +140,6 @@ def checkout(
                 )
             db.delete(listing)
             item.owner_id = user_id
-            print("Item w/ new ID (should read 1) --> ", item.owner_id)
 
         db.commit()
 
@@ -190,7 +182,6 @@ def remove_from_watchlist(
     try:
         db.delete(d)
         db.commit()
-        print(f"Removed release {request.release_id} from user's {user_id} watchlist")
     except Exception as e:
         db.rollback()
         raise HTTPException(

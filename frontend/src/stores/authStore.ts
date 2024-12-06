@@ -33,6 +33,8 @@ export interface AuthStore {
 	accessToken: string | null
 	user: User | null
 	cart: { [key: number]: Item }
+	isDarkMode: boolean
+	toggleDarkMode: () => void
 	addToCart: (item: Item) => void
 	removeFromCart: (item: Item) => void
 	checkoutCart: () => void
@@ -55,6 +57,14 @@ const useAuthStore = create(
 					accessToken: null,
 					user: null,
 					cart: {},
+					isDarkMode: false,
+					toggleDarkMode: () => {
+						set((state) => {
+							const newMode = !state.isDarkMode
+							document.getElementById('root')?.classList.toggle('dark', newMode)
+							return { isDarkMode: newMode }
+						})
+					},
 					addToCart: (item) => {
 						set((state) => ({
 							cart: { ...state.cart, [item.id]: item },
@@ -161,17 +171,23 @@ const useAuthStore = create(
 					name: 'authStore',
 					onRehydrateStorage: () => () => {
 						const authState = useAuthStore.getState()
+						console.log('rehydrated and have the authstate')
 						const userStore = useUserStore.getState()
 						if (authState.isLoggedIn) {
-							setTimeout(() => {
-								userStore.getCollection()
-								userStore.getWatchlist()
-							}, 0)
+							// setTimeout(() => {
+							userStore.getCollection()
+							userStore.getWatchlist()
+							// }, 0)
 						} else {
-							setTimeout(() => {
-								useUserStore.setState({ collection: new Set() })
-								useUserStore.setState({ watchlist: new Set() })
-							}, 0)
+							// setTimeout(() => {
+							useUserStore.setState({ collection: new Set() })
+							useUserStore.setState({ watchlist: new Set() })
+							// }, 0)
+						}
+						if (authState.isDarkMode && document.getElementById('root')) {
+							document
+								.getElementById('root')
+								?.classList.toggle('dark', authState.isDarkMode)
 						}
 					},
 				}

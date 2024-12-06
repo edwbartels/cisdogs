@@ -1,19 +1,26 @@
 import { useEffect, useRef } from 'react'
 import { useInView } from 'react-intersection-observer'
-import DashboardItemTile from './DashboardItemTile'
-import useDashboardStore from '../../stores/dashboardStore'
+import useUserStore from '../../stores/userStore'
+import ProfileItemTile from './ProfileItemTile'
+import useProfileStore from '../../stores/profileStore'
 
-const DashboardItems = () => {
+interface ProfileItemsProps {
+	userId: number
+}
+
+const ProfileItems: React.FC<ProfileItemsProps> = ({ userId }) => {
 	const { ref, inView } = useInView({ threshold: 1.0 })
 	const debounceFetch = useRef(false)
-	const { getItems, clearState } = useDashboardStore((state) => state.items)
-	const hasMore = useDashboardStore((state) => state.items.pagination?.has_more)
-	const sortedIds = useDashboardStore(
+	const { items, getItems, clearState } = useProfileStore(
+		(state) => state.items
+	)
+	const hasMore = useProfileStore((state) => state.items.pagination?.has_more)
+	const sortedIds = useProfileStore(
 		(state) => state.items.pagination?.sorted_ids
 	)
 
 	useEffect(() => {
-		getItems()
+		getItems(userId)
 		return () => {
 			clearState()
 			window.scrollTo({ top: 0 })
@@ -23,7 +30,7 @@ const DashboardItems = () => {
 	useEffect(() => {
 		if (inView && hasMore && !debounceFetch.current) {
 			debounceFetch.current = true
-			getItems().finally(() => (debounceFetch.current = false))
+			getItems(userId).finally(() => (debounceFetch.current = false))
 		}
 	}, [inView, hasMore, getItems])
 	return (
@@ -31,7 +38,7 @@ const DashboardItems = () => {
 			<div className="flex flex-wrap justify-start gap-4 p-4">
 				{sortedIds &&
 					sortedIds.map((id) => (
-						<DashboardItemTile key={id} itemId={Number(id)} />
+						<ProfileItemTile key={id} itemId={Number(id)} />
 					))}
 			</div>
 			{hasMore && (
@@ -43,4 +50,4 @@ const DashboardItems = () => {
 	)
 }
 
-export default DashboardItems
+export default ProfileItems

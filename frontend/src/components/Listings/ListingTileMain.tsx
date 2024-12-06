@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faEllipsis, faUser } from '@fortawesome/free-solid-svg-icons'
 import DropdownMenu from '../Util/DropdownMenu'
 import useListingStore, { Listing } from '../../stores/listingStore'
 import useUserStore from '../../stores/userStore'
@@ -13,7 +13,7 @@ interface ListingTileMainProps {
 	listingId: number
 }
 
-type DropdownOptions = 'remove' | 'extra' | 'add' | null
+type DropdownOptions = 'remove' | 'extra' | 'add' | 'user' | null
 
 const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 	const userId = useAuthStore((state) => state.user?.id)
@@ -27,7 +27,8 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 
 	const [activeDropdown, setActiveDropdown] = useState<DropdownOptions>(null)
 	const addOptions = []
-	if (!cart[listing?.id]) addOptions.push({ label: 'To Cart', value: 'cart' })
+	if (!cart[listing?.id] && listing.seller.id != userId)
+		addOptions.push({ label: 'To Cart', value: 'cart' })
 	// const addOptions = [{ label: 'To Cart', value: 'cart' }]
 	if (isLoggedIn && !collection?.has(listing?.release?.id))
 		addOptions.push({ label: 'To Collection', value: 'collection' })
@@ -39,9 +40,13 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 		{ label: 'Album', value: 'album' },
 		{ label: 'Artist', value: 'artist' },
 	]
+	const userOptions = [{ label: 'Profile', value: 'profile' }]
 
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
+			case 'profile':
+				navigate(`/profile/${listing.seller.id}`)
+				break
 			case 'collection':
 				userId &&
 					addToCollection({
@@ -85,15 +90,10 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 			if (!(event.target instanceof Element)) {
 				return
 			}
-			const targetElement = event.target as Element
-
-			const clickedRemove = targetElement.closest('.remove-dropdown')
-			const clickedExtra = targetElement.closest('.extra-dropdown')
-			const clickedAdd = targetElement.closest('.add-dropdown')
-
-			if (!clickedRemove && activeDropdown === 'remove') setActiveDropdown(null)
-			if (!clickedExtra && activeDropdown === 'extra') setActiveDropdown(null)
-			if (!clickedAdd && activeDropdown === 'add') setActiveDropdown(null)
+			const clickInside = event.target.closest('.dropdown')
+			if (!clickInside) {
+				setActiveDropdown(null)
+			}
 		},
 		[activeDropdown]
 	)
@@ -110,41 +110,62 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 		<>
 			<div
 				className={`tile-container ${
-					userListings.includes(listing.id) ? 'ring-green-700' : 'ring-wax-gray'
+					userListings.includes(listing.id)
+						? 'ring-wax-green dark:ring-waxDark-green'
+						: 'ring-wax-gray dark:ring-waxDark-black'
 				}`}
 			>
 				<div className="tile-title-bar">
 					<div className="space-x-1 flex">
 						<EyeIcon id={listing.release.id} />
-						<div className="relative flex flex-col add-dropdown">
+						{addOptions.length > 0 && (
+							<div className="relative flex flex-col add-dropdown">
+								<FontAwesomeIcon
+									icon={faPlus}
+									size="xl"
+									className="cursor-pointer hover:text-wax-cream"
+									onClick={() => setActiveDropdown('add')}
+								/>
+								<DropdownMenu
+									options={addOptions}
+									onSelect={handleOptionSelect}
+									isOpen={activeDropdown === 'add'}
+									className="bottom-full font-bold hover:ring-2"
+								/>
+							</div>
+						)}
+					</div>
+					<div className="flex space-x-1">
+						<div className="relative flex flex-col user-dropdown self-center">
 							<FontAwesomeIcon
-								icon={faPlus}
-								size="xl"
+								icon={faUser}
+								size="lg"
+								onClick={() => setActiveDropdown('user')}
 								className="cursor-pointer hover:text-wax-cream"
-								onClick={() => setActiveDropdown('add')}
 							/>
 							<DropdownMenu
-								options={addOptions}
+								title={listing.seller.username}
+								options={userOptions}
+								isOpen={activeDropdown == 'user'}
 								onSelect={handleOptionSelect}
-								isOpen={activeDropdown === 'add'}
-								className="bottom-full font-bold hover:ring-2"
+								className="bottom-full right-2 bg-wax-cream w-20 font-bold"
 							/>
 						</div>
-					</div>
-					<div className="relative flex flex-col extra-dropdown">
-						<FontAwesomeIcon
-							icon={faEllipsis}
-							size="xl"
-							onClick={() => setActiveDropdown('extra')}
-							className="cursor-pointer hover:text-wax-cream"
-						/>
-						<DropdownMenu
-							title="View Details"
-							options={extraOptions}
-							isOpen={activeDropdown == 'extra'}
-							onSelect={handleOptionSelect}
-							className="-right-2 bg-wax-cream"
-						/>
+						<div className="relative flex flex-col extra-dropdown">
+							<FontAwesomeIcon
+								icon={faEllipsis}
+								size="xl"
+								onClick={() => setActiveDropdown('extra')}
+								className="cursor-pointer hover:text-wax-cream"
+							/>
+							<DropdownMenu
+								title="View Details"
+								options={extraOptions}
+								isOpen={activeDropdown == 'extra'}
+								onSelect={handleOptionSelect}
+								className="-right-2 bg-wax-cream"
+							/>
+						</div>
 					</div>
 				</div>
 				<div
@@ -158,15 +179,15 @@ const ListingTileMain: React.FC<ListingTileMainProps> = ({ listingId }) => {
 					}}
 					onClick={() => navigate(`/listing/${listing.id}`)}
 				>
-					<div className="tile-art-title-bar">{listing.album.title}</div>
+					<div className="tile-art-title-bar">{listing.artist.name}</div>
 					<div></div>
 				</div>
 				<div className="tile-footer-2">
 					<div
-						className="cursor-pointer  hover:text-wax-cream"
-						onClick={() => navigate(`/artist/${listing.artist.id}`)}
+						className="cursor-pointer truncate hover:text-wax-cream"
+						onClick={() => navigate(`/album/${listing.album.id}`)}
 					>
-						{listing.artist.name}
+						{listing.album.title}
 					</div>
 					<div className="flex justify-between cursor-pointer ">
 						<div

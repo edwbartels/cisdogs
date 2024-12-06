@@ -31,13 +31,10 @@ const ArtistTile: React.FC<ArtistTileProps> = ({ artistId }) => {
 			if (!(event.target instanceof Element)) {
 				return
 			}
-			const targetElement = event.target as Element
-
-			const clickedRemove = targetElement.closest('.remove-dropdown')
-			const clickedExtra = targetElement.closest('.extra-dropdown')
-
-			if (!clickedRemove && activeDropdown === 'remove') setActiveDropdown(null)
-			if (!clickedExtra && activeDropdown === 'extra') setActiveDropdown(null)
+			const clickInside = event.target.closest('.dropdown')
+			if (!clickInside) {
+				setActiveDropdown(null)
+			}
 		},
 		[activeDropdown]
 	)
@@ -53,7 +50,7 @@ const ArtistTile: React.FC<ArtistTileProps> = ({ artistId }) => {
 	}
 	return (
 		<>
-			<div className="tile-container ring-wax-gray">
+			<div className="tile-container ring-wax-gray dark:ring-waxDark-black">
 				<div className="tile-title-bar">
 					<div
 						className="font-bold text-lg truncate cursor-pointer hover:text-wax-cream"

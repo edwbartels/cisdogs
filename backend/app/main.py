@@ -15,6 +15,7 @@ from app.routes import (
     orders,
     users,
     watchlist,
+    profile,
 )
 import os
 # import logging
@@ -56,6 +57,7 @@ api_router.include_router(items.router)
 api_router.include_router(listings.router)
 api_router.include_router(orders.router)
 api_router.include_router(dashboard.router)
+api_router.include_router(profile.router)
 api_router.include_router(reviews.router)
 api_router.include_router(watchlist.router)
 

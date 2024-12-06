@@ -62,9 +62,7 @@ const useUserStore = create(
 						throw new Error('Failed to get user collection')
 					}
 					const data = await res.json()
-					console.log('collection res', data)
 					set({ collection: new Set(data) })
-					console.log('Current Collection:', new Set(data))
 				} catch (e) {
 					console.error(e)
 				}
@@ -83,10 +81,8 @@ const useUserStore = create(
 						throw new Error('Failed to add to collection')
 					}
 					const data = await res.json()
-					console.log('collection res', data)
 					set((state) => {
 						const updatedSet = new Set(state.collection)
-						console.log(data.release_id)
 						!updatedSet.has(data.release_id) && updatedSet.add(data?.release_id)
 						return { collection: updatedSet }
 					})
@@ -106,9 +102,7 @@ const useUserStore = create(
 						throw new Error('Failed to get user watchlist')
 					}
 					const data = await res.json()
-					console.log('watchlist res', data)
 					data && set({ watchlist: new Set(data) })
-					console.log('Current Watchlist:', new Set(data))
 				} catch (e) {
 					console.error(e)
 				}
@@ -126,7 +120,6 @@ const useUserStore = create(
 						throw new Error('Failed to add to watchlist')
 					}
 					const data = await res.json()
-					console.log(data)
 					data && set({ watchlist: new Set(data) })
 					// console.log(new Set(data))
 				} catch (e) {
@@ -147,7 +140,6 @@ const useUserStore = create(
 					}
 					const data = await res.json()
 					set({ watchlist: new Set(data) })
-					console.log(new Set(data))
 				} catch (e) {
 					console.error(e)
 				}
@@ -163,7 +155,6 @@ const useUserStore = create(
 					}
 					const data = await res.json()
 					set({ orders: data })
-					console.log(data)
 				} catch (e) {
 					console.error(e)
 				}
@@ -231,13 +222,7 @@ const useUserStore = create(
 			},
 		}),
 		{
-			name: 'userStore',
-			// serialize: {
-			// 	options: {
-			// 		map: (key, value) =>
-			// 			value instanceof Set ? Array.from(value) : value,
-			// 	},
-			// },
+			name: 'User',
 		}
 	)
 )

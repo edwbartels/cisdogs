@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMinus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
-// import useUserStore from '../../stores/userStore'
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons'
 import { Item } from '../../stores/itemStore'
 import DropdownMenu from '../Util/DropdownMenu'
 import EyeIcon from '../Icons/EyeIcon'
@@ -24,7 +23,6 @@ const ProfileItemTile: React.FC<ProfileItemTitleProps> = ({ itemId }) => {
 		type: DropdownOptions
 	} | null>(null)
 
-	const menuOptions = [{ label: 'Remove from collection', value: 'remove' }]
 	const extraOptions = [
 		{ label: 'Item', value: 'item' },
 		{ label: 'Release', value: 'release' },
@@ -98,31 +96,6 @@ const ProfileItemTile: React.FC<ProfileItemTitleProps> = ({ itemId }) => {
 				<div className="tile-title-bar">
 					<div className="relative flex space-x-1">
 						<EyeIcon id={item.release.id} />
-
-						{!item.listing && (
-							<div className="flex flex-col remove-dropdown">
-								<FontAwesomeIcon
-									icon={faMinus}
-									size="xl"
-									onClick={() =>
-										activeDropdown?.itemId === itemId &&
-										activeDropdown.type === 'remove'
-											? handleCloseDropdown()
-											: handleOpenDropdown(itemId, 'remove')
-									}
-									className="cursor-pointer hover:text-wax-cream"
-								/>
-								<DropdownMenu
-									options={menuOptions}
-									isOpen={
-										activeDropdown?.itemId === itemId &&
-										activeDropdown.type === 'remove'
-									}
-									onSelect={handleOptionSelect}
-									className="absolute left-0 w-24 font-bold text-center border border-4 rounded-lg shadow-lg cursor-pointer bg-wax-cream bottom-full border-wax-red hover:bg-wax-red hover:text-wax-cream hover:border-wax-gray"
-								/>
-							</div>
-						)}
 					</div>
 					<div className="relative flex flex-col extra-dropdown">
 						<FontAwesomeIcon

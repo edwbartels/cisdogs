@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMinus, faEllipsis } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons'
 import { Item } from '../../stores/itemStore'
 import DropdownMenu from '../Util/DropdownMenu'
 import EyeIcon from '../Icons/EyeIcon'
 import { capitalizeFirst } from '../../utils/capitalize'
-import useDashboardStore from '../../stores/dashboardStore'
+import useProfileStore from '../../stores/profileStore'
 
-interface DashboardItemTitleProps {
+interface ProfileItemTitleProps {
 	itemId: number
 }
 
 type DropdownOptions = 'remove' | 'extra' | null
 
-const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
-	const item: Item = useDashboardStore((state) => state.items.items[itemId])
-	const deleteItem = useDashboardStore((state) => state.items.deleteItem)
+const ProfileItemTile: React.FC<ProfileItemTitleProps> = ({ itemId }) => {
+	const item: Item = useProfileStore((state) => state.items.items[itemId])
 	const navigate = useNavigate()
 
 	const [activeDropdown, setActiveDropdown] = useState<{
@@ -24,7 +23,6 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 		type: DropdownOptions
 	} | null>(null)
 
-	const menuOptions = [{ label: 'Remove from collection', value: 'remove' }]
 	const extraOptions = [
 		{ label: 'Item', value: 'item' },
 		{ label: 'Release', value: 'release' },
@@ -36,9 +34,6 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
-			case 'remove':
-				deleteItem(itemId)
-				break
 			case 'listing':
 				navigate(`/listing/${item.listing?.id}`)
 				break
@@ -101,31 +96,6 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 				<div className="tile-title-bar">
 					<div className="relative flex space-x-1">
 						<EyeIcon id={item.release.id} />
-
-						{!item.listing && (
-							<div className="flex flex-col remove-dropdown">
-								<FontAwesomeIcon
-									icon={faMinus}
-									size="xl"
-									onClick={() =>
-										activeDropdown?.itemId === itemId &&
-										activeDropdown.type === 'remove'
-											? handleCloseDropdown()
-											: handleOpenDropdown(itemId, 'remove')
-									}
-									className="cursor-pointer hover:text-wax-cream"
-								/>
-								<DropdownMenu
-									options={menuOptions}
-									isOpen={
-										activeDropdown?.itemId === itemId &&
-										activeDropdown.type === 'remove'
-									}
-									onSelect={handleOptionSelect}
-									className="absolute left-0 w-24 font-bold text-center border border-4 rounded-lg shadow-lg cursor-pointer bg-wax-cream bottom-full border-wax-red hover:bg-wax-red hover:text-wax-cream hover:border-wax-gray"
-								/>
-							</div>
-						)}
 					</div>
 					<div className="relative flex flex-col extra-dropdown">
 						<FontAwesomeIcon
@@ -168,14 +138,12 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 								invisible group-hover:visible bg-wax-gray text-wax-cream text-sm rounded py-1 px-2 absolute bottom-full left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
 						>{`$${item.listing.price.toFixed(2)}`}</div>
 					)}
-					<div className="tile-art-title-bar w-full truncate">
-						{item.artist.name}
-					</div>
+					<div className="tile-art-title-bar truncate">{item.artist.name}</div>
 					<div></div>
 				</div>
 				<div className="tile-footer-2">
 					<div
-						className="cursor-pointer truncate w-full text-center hover:text-wax-cream"
+						className="cursor-pointer truncate text-center hover:text-wax-cream"
 						onClick={() => navigate(`/album/${item.album.id}`)}
 					>
 						{item.album.title}
@@ -201,4 +169,4 @@ const DashboardItemTile: React.FC<DashboardItemTitleProps> = ({ itemId }) => {
 	)
 }
 
-export default DashboardItemTile
+export default ProfileItemTile

@@ -3,24 +3,24 @@
 @tailwind utilities;
 
 .tile-container {
-	@apply flex flex-col items-center justify-between w-56 h-fit m-1 rounded bg-wax-cream border-wax-amber ring-8 hover:ring-wax-blue;
+	@apply flex flex-col items-center justify-between w-48 h-fit m-1 rounded bg-wax-cream border-wax-amber ring-8 hover:ring-wax-blue dark:bg-waxDark-silver dark:border-waxDark-amber dark:hover:ring-waxDark-blue;
 }
 
 .tile-title-bar {
-	@apply flex justify-between w-full h-6 px-1 rounded-t-sm bg-wax-amber;
+	@apply flex justify-between w-full text-sm h-6 px-1 rounded-t-sm bg-wax-amber dark:bg-waxDark-amber dark:text-waxDark-black;
 }
 
 .tile-art-container {
-	@apply flex flex-col justify-between w-full aspect-square text-wax-gray cursor-pointer;
+	@apply flex flex-col justify-between w-full aspect-square text-wax-gray dark:text-waxDark-gray cursor-pointer;
 }
 
 .tile-art-title-bar {
-	@apply w-full font-semibold text-center bg-opacity-60 text-wax-black bg-wax-silver;
+	@apply w-full font-semibold text-sm text-center bg-opacity-60 truncate text-wax-black bg-wax-silver dark:text-waxDark-black dark:bg-waxDark-silver dark:bg-opacity-60;
 }
 
 .tile-footer-1 {
-	@apply flex flex-col w-full h-6 px-2 font-semibold bg-wax-gray text-wax-amber;
+	@apply flex flex-col w-full text-sm h-6 px-2 font-semibold bg-wax-gray text-wax-amber dark:bg-waxDark-black dark:text-waxDark-amber;
 }
 .tile-footer-2 {
-	@apply flex flex-col w-full h-12 px-2 font-semibold bg-wax-gray text-wax-amber;
+	@apply flex flex-col w-full text-sm h-10 px-2 font-semibold bg-wax-gray text-wax-amber dark:bg-waxDark-black dark:text-waxDark-amber;
 }

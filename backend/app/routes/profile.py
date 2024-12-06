@@ -1,23 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import ColumnExpressionArgument, or_
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 from sqlalchemy.orm.query import Query
 from app.database import get_db
-from app.models import User, Item, Listing, Album, Release, Order, Review, Artist
-from app.schemas.user import UserRead
-from app.schemas.item import ItemDetail
-from app.schemas.listing import ListingDetail
-from app.schemas.res import (
-    OrderRead,
-    UserDashboardResponse,
-    ItemFull,
-    ListingFull,
-    OrderSplit,
-    ListingArtist,
-    OrderFull,
-    # ListingModalData,
-)
-from app.lib.jwt import get_current_user, get_user_id
+from app.models import Item, Listing, Album, Release, Order, User
+from app.schemas.res import ItemFull, ListingFull, OrderFull, UserProfile
+from app.lib.jwt import get_user_id
 from app.lib.sort_filter import (
     PaginationParams,
     paginate,
@@ -26,7 +14,7 @@ from app.lib.sort_filter import (
 )
 from functools import lru_cache
 
-router = APIRouter(prefix="/dashboard", tags=["dashboard"])
+router = APIRouter(prefix="/profile", tags=["profile"])
 
 
 # * Cache Functions
@@ -34,10 +22,15 @@ router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 def get_cached_items(
     pagination: PaginationParams,
     db_session: Session,
+    user_id: int,
     filters: tuple[ColumnExpressionArgument, ...] = (),
 ):
     query: Query[Item] = (
-        db_session.query(Item).join(Item.release).join(Release.album).join(Album.artist)
+        db_session.query(Item)
+        .join(Item.release)
+        .join(Release.album)
+        .join(Album.artist)
+        .filter(Item.owner_id == user_id)
     )
     if filters:
         for filter in filters:
@@ -58,6 +51,7 @@ def get_cached_items(
 def get_cached_listings(
     pagination: PaginationParams,
     db_session: Session,
+    user_id: int,
     filters: tuple[ColumnExpressionArgument, ...] = (),
 ):
     query: Query[Listing] = (
@@ -66,6 +60,7 @@ def get_cached_listings(
         .join(Item.release)
         .join(Release.album)
         .join(Album.artist)
+        .filter(Listing.seller_id == user_id)
     )
     if filters:
         for filter in filters:
@@ -86,6 +81,7 @@ def get_cached_listings(
 def get_cached_orders(
     pagination: PaginationParams,
     db_session: Session,
+    user_id: int,
     filters: tuple[ColumnExpressionArgument, ...] = (),
 ):
     query: Query[Order] = (
@@ -93,6 +89,7 @@ def get_cached_orders(
         .join(Order.release)
         .join(Release.album)
         .join(Album.artist)
+        .filter(or_(Order.seller_id == user_id, Order.buyer_id == user_id))
     )
     if filters:
         for filter in filters:
@@ -113,6 +110,7 @@ def get_cached_orders(
 def get_cached_sales(
     pagination: PaginationParams,
     db_session: Session,
+    user_id: int,
     filters: tuple[ColumnExpressionArgument, ...] = (),
 ):
     query: Query[Order] = (
@@ -120,6 +118,7 @@ def get_cached_sales(
         .join(Order.release)
         .join(Release.album)
         .join(Album.artist)
+        .filter(Order.seller_id == user_id)
     )
     if filters:
         for filter in filters:
@@ -140,6 +139,7 @@ def get_cached_sales(
 def get_cached_purchases(
     pagination: PaginationParams,
     db_session: Session,
+    user_id: int,
     filters: tuple[ColumnExpressionArgument, ...] = (),
 ):
     query: Query[Order] = (
@@ -147,6 +147,7 @@ def get_cached_purchases(
         .join(Order.release)
         .join(Release.album)
         .join(Album.artist)
+        .filter(Order.buyer_id == user_id)
     )
     if filters:
         for filter in filters:
@@ -193,11 +194,9 @@ def clear_purchases_cache():
     return {"detail": "Purchases cache cleared"}
 
 
-# * GET * #
-
-
-@router.get("/items", response_model=PaginationResult[ItemFull])
-def get_all_dashboard_items(
+@router.get("/items/{user_id}", response_model=PaginationResult[ItemFull])
+def get_all_profile_items(
+    user_id: int,
     pagination: PaginationParams = Depends(
         create_pagination_params(
             default_limit=50,
@@ -211,17 +210,18 @@ def get_all_dashboard_items(
             default_order=["desc", "asc", "asc", "asc", "asc"],
         )
     ),
-    user_id=Depends(get_user_id),
     db: Session = Depends(get_db),
 ) -> PaginationResult[ItemFull]:
-    filters: tuple[ColumnExpressionArgument] = (Item.owner_id == user_id,)
-    items: PaginationResult[ItemFull] = get_cached_items(pagination, db, filters)
+    print("hello")
+    print("got past filter setting")
+    items: PaginationResult[ItemFull] = get_cached_items(pagination, db, user_id)
 
     return items
 
 
-@router.get("/listings", response_model=PaginationResult[ListingFull])
-def get_all_dashboard_listings(
+@router.get("/listings/{user_id}", response_model=PaginationResult[ListingFull])
+def get_all_profile_listings(
+    user_id: int,
     pagination: PaginationParams = Depends(
         create_pagination_params(
             default_limit=50,
@@ -236,19 +236,18 @@ def get_all_dashboard_listings(
             default_order=["desc", "asc", "asc", "asc", "asc", "asc"],
         )
     ),
-    user_id=Depends(get_user_id),
     db: Session = Depends(get_db),
 ) -> PaginationResult[ListingFull]:
-    filters: tuple[ColumnExpressionArgument] = (Listing.seller_id == user_id,)
     listings: PaginationResult[ListingFull] = get_cached_listings(
-        pagination, db, filters
+        pagination, db, user_id
     )
 
     return listings
 
 
-@router.get("/orders", response_model=PaginationResult[OrderFull])
-def get_all_dashboard_orders(
+@router.get("/orders/{user_id}", response_model=PaginationResult[OrderFull])
+def get_all_profile_orders(
+    user_id: int,
     pagination: PaginationParams = Depends(
         create_pagination_params(
             default_limit=50,
@@ -256,21 +255,18 @@ def get_all_dashboard_orders(
             default_order=["desc", "asc"],
         )
     ),
-    user_id=Depends(get_user_id),
     db: Session = Depends(get_db),
 ) -> PaginationResult[OrderFull]:
-    filters: tuple[ColumnExpressionArgument] = (
-        (or_(Order.seller_id == user_id, Order.buyer_id == user_id)),
-    )
-    orders: PaginationResult[OrderFull] = get_cached_orders(pagination, db, filters)
+    orders: PaginationResult[OrderFull] = get_cached_orders(pagination, db, user_id)
     for order in orders.entries.values():
         order.type = order.get_type(user_id)
 
     return orders
 
 
-@router.get("/sales", response_model=PaginationResult[OrderFull])
-def get_dashboard_sales(
+@router.get("/sales/{user_id}", response_model=PaginationResult[OrderFull])
+def get_profile_sales(
+    user_id: int,
     pagination: PaginationParams = Depends(
         create_pagination_params(
             default_limit=50,
@@ -278,11 +274,9 @@ def get_dashboard_sales(
             default_order=["desc", "asc"],
         )
     ),
-    user_id=Depends(get_user_id),
     db: Session = Depends(get_db),
 ) -> PaginationResult[OrderFull]:
-    filters: tuple[ColumnExpressionArgument] = (Order.seller_id == user_id,)
-    orders: PaginationResult[OrderFull] = get_cached_sales(pagination, db, filters)
+    orders: PaginationResult[OrderFull] = get_cached_sales(pagination, db, user_id)
     for order in orders.entries.values():
         order.type = order.get_type(user_id)
 
@@ -290,7 +284,7 @@ def get_dashboard_sales(
 
 
 @router.get("/purchases", response_model=PaginationResult[OrderFull])
-def get_dashboard_purchases(
+def get_profile_purchases(
     pagination: PaginationParams = Depends(
         create_pagination_params(
             default_limit=50,
@@ -301,9 +295,16 @@ def get_dashboard_purchases(
     user_id=Depends(get_user_id),
     db: Session = Depends(get_db),
 ) -> PaginationResult[OrderFull]:
-    filters: tuple[ColumnExpressionArgument] = (Order.buyer_id == user_id,)
-    orders: PaginationResult[OrderFull] = get_cached_purchases(pagination, db, filters)
+    orders: PaginationResult[OrderFull] = get_cached_purchases(pagination, db, user_id)
     for order in orders.entries.values():
         order.type = order.get_type(user_id)
 
     return orders
+
+
+@router.get("/{user_id}", response_model=UserProfile)
+def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
+    user: User | None = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user

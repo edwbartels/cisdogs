@@ -3,7 +3,7 @@ import SidebarLink from './SidebarLink'
 
 const Sidebar: React.FC = () => {
 	return (
-		<div className="flex flex-col text-xl font-bold min-w-40 bg-wax-silver text-wax-gray justify-between">
+		<div className="flex flex-col text-xl font-bold min-w-40 bg-wax-silver text-wax-gray dark:bg-waxDark-silver justify-between">
 			<div className="flex flex-col">
 				{/* <SidebarLink to="/dashboard" title="Dashboard" /> */}
 				<SidebarLink to="/" title="Shop" />

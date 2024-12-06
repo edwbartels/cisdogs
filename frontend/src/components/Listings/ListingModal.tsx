@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import useItemStore from '../../stores/itemStore'
 import useAuthStore from '../../stores/authStore'
 import fetchWithAuth from '../../utils/fetch'
@@ -41,6 +42,7 @@ const ListingModal: React.FC<ListingModalProps> = ({
 	onClose,
 	data,
 }) => {
+	const navigate = useNavigate()
 	const [errors, setErrors] = useState({
 		item_id: '',
 		seller_id: '',
@@ -67,6 +69,10 @@ const ListingModal: React.FC<ListingModalProps> = ({
 	const [selectedRelease, setSelectedRelease] = useState<number | null>(
 		item?.release.id || null
 	)
+	const sortedArtists = useMemo(() => {
+		if (!data) return []
+		return [...data.artists].sort((a, b) => a.name.localeCompare(b.name))
+	}, [data])
 	useEffect(() => {
 		setListingDetails({
 			...listingDetails,
@@ -90,13 +96,19 @@ const ListingModal: React.FC<ListingModalProps> = ({
 	const filteredAlbums = useMemo(() => {
 		if (!selectedArtist) return []
 		const artist = data?.artists.find((a) => a.id === selectedArtist)
-		return artist ? artist.albums : []
-	}, [selectedArtist])
+		return artist
+			? [...artist.albums].sort((a, b) => a.title.localeCompare(b.title))
+			: []
+	}, [selectedArtist, data])
 
 	const filteredReleases = useMemo(() => {
 		if (!selectedAlbum) return []
 		const album = filteredAlbums.find((a) => a.id === selectedAlbum)
-		return album ? album.releases : []
+		return album
+			? [...album.releases].sort((a, b) =>
+					(a.variant || '').localeCompare(b.variant || '')
+			  )
+			: []
 	}, [selectedAlbum, filteredAlbums])
 
 	const handleArtistChange = (artistId: number) => {
@@ -163,10 +175,6 @@ const ListingModal: React.FC<ListingModalProps> = ({
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		const requiredFields = []
-		// console.log(listingDetails)
-		// console.log(selectedArtist)
-		// console.log(selectedAlbum)
-		// console.log(selectedRelease)
 		if (!selectedArtist) requiredFields.push('Artist')
 		if (!selectedAlbum) requiredFields.push('Album')
 		if (!selectedRelease) requiredFields.push('Release')
@@ -192,9 +200,11 @@ const ListingModal: React.FC<ListingModalProps> = ({
 					console.log(error)
 					throw new Error('Failed to create listing')
 				}
+				const data = await res.json()
+				const { id } = data
 				clearInfo()
 				onClose()
-				window.location.reload()
+				navigate(`/listing/${id}`)
 			} catch (e) {
 				console.error(e)
 			}
@@ -208,7 +218,7 @@ const ListingModal: React.FC<ListingModalProps> = ({
 			onClick={onClose}
 		>
 			<div
-				className="flex flex-col w-1/2 p-4 border-4 rounded shadow-lg bg-wax-silver border-wax-gray space-y-1"
+				className="flex flex-col w-1/2 p-4 border-4 rounded shadow-lg bg-wax-silver border-wax-gray space-y-1 dark:bg-waxDark-silver dark:border-waxDark-gray"
 				onClick={(e) => e.stopPropagation()}
 			>
 				<strong className="text-wax-black border-b-2 border-wax-black pb-1 mb-4">
@@ -233,7 +243,7 @@ const ListingModal: React.FC<ListingModalProps> = ({
 								className="block w-full p-2  border rounded text-wax-black"
 							>
 								<option value="">Select Artist</option>
-								{data?.artists.map((artist) => (
+								{sortedArtists.map((artist) => (
 									<option key={artist.id} value={artist.id}>
 										{artist.name}
 									</option>
@@ -324,13 +334,13 @@ const ListingModal: React.FC<ListingModalProps> = ({
 					)}
 					<button
 						type="submit"
-						className="w-4/5 self-center py-2 mt-2 bg-green-700 border-4 rounded border-wax-silver text-wax-cream hover:border-green-700"
+						className="w-4/5 self-center py-2 mt-2 bg-wax-green border-4 rounded border-wax-silver text-wax-cream hover:border-wax-green dark:bg-waxDark-green dark:hover:border-waxDark-green"
 					>
 						Post
 					</button>
 					<button
 						onClick={onClose}
-						className="w-3/5 self-center px-4 py-2 mt-2 text-white border-4 rounded border-wax-silver bg-wax-red hover:border-wax-red"
+						className="w-3/5 self-center px-4 py-2 mt-2 text-white border-4 rounded border-wax-silver bg-wax-red hover:border-wax-red dark:bg-waxDark-red dark:hover:border-waxDark-red"
 					>
 						Close
 					</button>

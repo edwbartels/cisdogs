@@ -47,13 +47,10 @@ const ReleaseTile: React.FC<ReleaseTileProps> = ({ releaseId }) => {
 			if (!(event.target instanceof Element)) {
 				return
 			}
-			const targetElement = event.target as Element
-
-			const clickedRemove = targetElement.closest('.remove-dropdown')
-			const clickedExtra = targetElement.closest('.extra-dropdown')
-
-			if (!clickedRemove && activeDropdown === 'remove') setActiveDropdown(null)
-			if (!clickedExtra && activeDropdown === 'extra') setActiveDropdown(null)
+			const clickInside = event.target.closest('.dropdown')
+			if (!clickInside) {
+				setActiveDropdown(null)
+			}
 		},
 		[activeDropdown]
 	)
@@ -69,7 +66,7 @@ const ReleaseTile: React.FC<ReleaseTileProps> = ({ releaseId }) => {
 	}
 	return (
 		<>
-			<div className="tile-container ring-wax-gray">
+			<div className="tile-container ring-wax-gray dark:ring-waxDark-black">
 				<div className="tile-title-bar">
 					<div className="space-x-1">
 						<EyeIcon id={release.id} />
@@ -117,15 +114,15 @@ const ReleaseTile: React.FC<ReleaseTileProps> = ({ releaseId }) => {
 				>
 					{/* {listing.album.art && <img src=`${listing.album.art}` className='object-contain w-full aspect-square'} */}
 
-					<div className="tile-art-title-bar">{release.album?.title}</div>
+					<div className="tile-art-title-bar">{release.artist?.name}</div>
 					<div></div>
 				</div>
 				<div className="tile-footer-2">
 					<div
-						className="cursor-pointer w-fit self-center hover:text-wax-cream"
-						onClick={() => navigate(`/artist/${release.artist.id}`)}
+						className="cursor-pointer truncate text-center hover:text-wax-cream"
+						onClick={() => navigate(`/album/${release.album.id}`)}
 					>
-						{release.artist?.name}
+						{release.album?.title}
 					</div>
 					<div
 						className="cursor-pointer self-center truncate hover:text-wax-cream"

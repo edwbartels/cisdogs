@@ -37,13 +37,10 @@ const AlbumTile: React.FC<AlbumTileProps> = ({ albumId }) => {
 			if (!(event.target instanceof Element)) {
 				return
 			}
-			const targetElement = event.target as Element
-
-			const clickedRemove = targetElement.closest('.remove-dropdown')
-			const clickedExtra = targetElement.closest('.extra-dropdown')
-
-			if (!clickedRemove && activeDropdown === 'remove') setActiveDropdown(null)
-			if (!clickedExtra && activeDropdown === 'extra') setActiveDropdown(null)
+			const clickInside = event.target.closest('.dropdown')
+			if (!clickInside) {
+				setActiveDropdown(null)
+			}
 		},
 		[activeDropdown]
 	)
@@ -59,10 +56,10 @@ const AlbumTile: React.FC<AlbumTileProps> = ({ albumId }) => {
 	}
 	return (
 		<>
-			<div className="tile-container ring-wax-gray">
+			<div className="tile-container ring-wax-gray dark:ring-waxDark-black">
 				<div className="tile-title-bar">
 					<div
-						className="font-bold text-lg truncate cursor-pointer hover:text-wax-cream"
+						className="font-bold text-lg truncate cursor-pointer hover:text-wax-cream dark:hover:text-waxDark-silver"
 						onClick={() => navigate(`/artist/${album.artist.id}`)}
 					>
 						{album.artist?.name}
@@ -72,7 +69,7 @@ const AlbumTile: React.FC<AlbumTileProps> = ({ albumId }) => {
 						<FontAwesomeIcon
 							icon={faEllipsis}
 							size="xl"
-							className="cursor-pointer hover:text-wax-cream"
+							className="cursor-pointer hover:text-wax-cream dark:hover:text-waxDark-silver"
 							onClick={() => setActiveDropdown('extra')}
 						/>
 						<DropdownMenu
@@ -99,7 +96,7 @@ const AlbumTile: React.FC<AlbumTileProps> = ({ albumId }) => {
 				<div className="tile-footer-1">
 					{/* <div className="cursor-pointer">{`$${listing.price}`}</div> */}
 					<div
-						className="cursor-pointer self-center w-full truncate hover:text-wax-cream"
+						className="cursor-pointer self-center w-full truncate hover:text-wax-cream dark:hover:text-waxDark-silver"
 						onClick={() => navigate(`/album/${album.id}`)}
 					>
 						{album?.title}

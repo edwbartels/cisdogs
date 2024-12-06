@@ -1,31 +1,24 @@
-import React, { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import DashboardItems from './DashboardItems'
-import DashboardListings from './DashboardListings'
-import DashboardOrders from './DashboardOrders'
-import useAuthStore from '../../stores/authStore'
+import React, { useState } from 'react'
+import { useLocation, useParams } from 'react-router-dom'
+import ProfileItems from './ProfileItems'
+import ProfileListings from './ProfileListings'
+import ProfileInfo from './ProfileInfo'
 
-interface DashboardProps {
-	defaultTab?: 'items' | 'listings' | 'orders'
+interface ProfileProps {
+	defaultTab?: 'items' | 'listings'
 }
-const Dashboard: React.FC<DashboardProps> = () => {
-	const navigate = useNavigate()
+const Profile: React.FC<ProfileProps> = () => {
+	const { userId } = useParams()
 	const location = useLocation()
-	const isLoggedIn = useAuthStore((state) => state.isLoggedIn)
-	const defaultTab = location.state?.defaultTab as
-		| 'items'
-		| 'listings'
-		| 'orders'
+	const defaultTab = location.state?.defaultTab as 'items' | 'listings'
 	const [activeTab, setActiveTab] = useState(defaultTab || 'items')
 	const handleTabClick = (tab: string) => {
-		setActiveTab(tab as 'items' | 'listings' | 'orders')
+		setActiveTab(tab as 'items' | 'listings')
 	}
-	useEffect(() => {
-		!isLoggedIn && navigate('/')
-	}, [isLoggedIn])
 
 	return (
 		<div className="w-full dashboard-container">
+			<ProfileInfo userId={Number(userId)} />
 			<div className="flex justify-between border-b border-wax-silver min-w-72">
 				<div className="flex justify-between w-full text-xl tabs">
 					<div>
@@ -34,7 +27,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
 							className={`tab px-2 hover:bg-wax-amber hover:bg-opacity-10 h-full ${
 								activeTab === 'items'
 									? 'text-wax-blue border-b-2 rounded border-wax-blue dark:text-waxDark-blue dark:border-waxDark-blue'
-									: 'text-wax-gray dark:text-wax-silver'
+									: 'text-wax-gray  dark:text-waxDark-silver'
 							}`}
 						>
 							Collection
@@ -44,21 +37,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
 							className={`tab  hover:bg-wax-amber hover:bg-opacity-10 px-2 h-full ${
 								activeTab === 'listings'
 									? 'text-wax-blue border-b-2 rounded border-wax-blue dark:text-waxDark-blue dark:border-waxDark-blue'
-									: 'text-wax-gray dark:text-wax-silver'
+									: 'text-wax-gray  dark:text-waxDark-silver'
 							}`}
 						>
 							Listings
 						</button>
-						<button
-							onClick={() => handleTabClick('orders')}
-							className={`tab hover:bg-wax-amber hover:bg-opacity-10 px-2 h-full ${
-								activeTab === 'orders'
-									? 'text-blue-500 border-b-2 rounded border-wax-blue dark:text-waxDark-blue dark:border-waxDark-blue'
-									: 'text-wax-gray dark:text-wax-silver'
-							}`}
-						>
-							Orders
-						</button>
+
 						{/* <Link to="#">
 							<button className="w-24 mb-1 ml-8 bg-green-700 rounded-md ring-2 ring-wax-cream text-wax-cream hover:ring-wax-gray">
 								Sell
@@ -73,13 +57,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
 				</div>
 			</div>
 			{/* Tab Content */}
-			<div className="flex flex-grow tab-content">
-				{activeTab === 'items' && <DashboardItems />}
-				{activeTab === 'listings' && <DashboardListings />}
-				{activeTab === 'orders' && <DashboardOrders />}
-			</div>
+			{userId && (
+				<div className="flex flex-grow tab-content">
+					{activeTab === 'items' && <ProfileItems userId={Number(userId)} />}
+					{activeTab === 'listings' && (
+						<ProfileListings userId={Number(userId)} />
+					)}
+					{/* {activeTab === 'orders' && <DashboardOrders />} */}
+				</div>
+			)}
 		</div>
 	)
 }
 
-export default Dashboard
+export default Profile

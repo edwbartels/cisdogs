@@ -9,6 +9,7 @@ from app.models import Release, Artist, Album, User, Item, Listing
 from app.schemas.item import ItemRead
 from app.schemas.release import ReleaseRead, ReleaseCreateFull, ReleaseDetails
 from app.schemas.listing import ListingWithSeller
+from app.schemas.album import AlbumRead
 from app.schemas.res import ReleaseFull
 from app.lib.jwt import get_current_user
 from app.lib.sort_filter import (
@@ -26,11 +27,7 @@ router = APIRouter(prefix="/releases", tags=["releases"])
 @lru_cache(maxsize=128)
 def get_cached_releases(pagination: PaginationParams, db_session: Session):
     query: Query[Release] = (
-        db_session.query(Release)
-        .join(Release.items)
-        .join(Item.listing)
-        .join(Release.album)
-        .join(Album.artist)
+        db_session.query(Release).join(Release.album).join(Album.artist)
     )
 
     releases: PaginationResult = paginate(
@@ -138,20 +135,17 @@ def get_releases_by_artist(artist_id: int, db: Session = Depends(get_db)):
 
 @router.post("/", response_model=ReleaseFull)
 def create_release(release: ReleaseCreateFull, db: Session = Depends(get_db)):
-    print("im in")
     existing_artist: Artist | None = (
         db.query(Artist).filter(Artist.id == release.artist_id).first()
     )
     if not existing_artist:
         raise HTTPException(status_code=404, detail="Artist not found")
-    print("RIGHT BEFORE ALBUM QUERY ----> ARTIST.ID ----> ", existing_artist.id)
 
     existing_album: Album | None = (
         db.query(Album).filter(Album.id == release.album_id).first()
     )
     if not existing_album:
         raise HTTPException(status_code=404, detail="Album not found")
-    print("got past album")
     existing_release: Release | None = (
         db.query(Release)
         .filter(
@@ -172,15 +166,9 @@ def create_release(release: ReleaseCreateFull, db: Session = Depends(get_db)):
         media_type=release.media_type,
         variant=release.variant,
     )
-    print("made the release!")
     db.add(new_release)
     db.commit()
-    print("commit to db")
     db.refresh(new_release)
-    new_release.artist = existing_artist
-    items = new_release.items
-    release_extras = {
-        "items": {item.id: item.owner for item in items},
-    }
-
-    return (new_release, release_extras)
+    print(jsonable_encoder(new_release))
+    response_items = {item.id: item for item in new_release.items if new_release.items}
+    return (new_release, {"items": response_items})

@@ -93,6 +93,7 @@ const SubmissionForm = () => {
 	const getData = async () => {
 		const artistParam = transformParam(releaseForm.artist)
 		const albumParam = transformParam(releaseForm.album)
+		console.log(albumParam)
 		if (!(artistParam && albumParam)) return
 		const url = `/api/track_data/${artistParam}/${albumParam}`
 		try {
@@ -170,8 +171,11 @@ const SubmissionForm = () => {
 	return (
 		<div className="flex mt-8 border bg-wax-gray bg-opacity-15 border-wax-silver">
 			<div className="flex flex-col p-4">
-				<div className="flex p-4 min-w-[300px] items-center  bg-wax-gray bg-opacity-15">
-					<img src={releaseForm.art || '/tile-background.png'} />
+				<div className="flex p-4 w-[300px] items-center  bg-wax-gray bg-opacity-15 dark:bg-waxDark-silver">
+					<img
+						className="aspect-square"
+						src={releaseForm.art || '/tile-background.png'}
+					/>
 				</div>
 			</div>
 			<div className="flex w-full">
@@ -203,7 +207,7 @@ const SubmissionForm = () => {
 										defaultValue={releaseForm.artist}
 										required
 										type="text"
-										className="pl-2 mt-1"
+										className="pl-2 mt-1 text-wax-black"
 									></input>
 								)}
 							</div>
@@ -228,7 +232,7 @@ const SubmissionForm = () => {
 										defaultValue={releaseForm.album}
 										required
 										type="text"
-										className="pl-2 mt-1"
+										className="pl-2 mt-1 text-wax-black"
 									></input>
 								)}
 							</div>
@@ -240,7 +244,7 @@ const SubmissionForm = () => {
 									value={releaseForm.variant}
 									required
 									type="text"
-									className="pl-2"
+									className="pl-2 text-wax-black"
 									disabled={releaseForm.media_type != 'vinyl'}
 								></input>
 							</div>

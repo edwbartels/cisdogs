@@ -63,8 +63,8 @@ const DashboardOrders = () => {
 						key={tab}
 						className={`tab px-2 hover:bg-wax-amber hover:bg-opacity-10 h-full ${
 							activeTab === tab
-								? 'text-wax-blue border-b-2 border-wax-blue rounded'
-								: 'text-wax-gray'
+								? 'text-wax-blue border-b-2 border-wax-blue rounded dark:text-waxDark-blue'
+								: 'text-wax-gray dark:text-waxDark-silver'
 						}`}
 						onClick={() => setActiveTab(tab as 'all' | 'sales' | 'purchases')}
 					>
@@ -119,11 +119,43 @@ const DashboardOrders = () => {
 								<td className="pl-2">{record.quality.toUpperCase()}</td>
 								<td className="pl-2">{record.price.toFixed(2)}</td>
 								<td className="pl-2">
-									{activeTab === 'all'
-										? `${capitalizeFirst(record.type)}`
-										: activeTab === 'sales'
-										? `${record.buyer.username}`
-										: `${record.seller.username}`}
+									{activeTab === 'all' ? (
+										<div className="relative group">
+											<div
+												className="hover:bg-wax-blue hover:bg-opacity-15 cursor-pointer"
+												onClick={() => {
+													record.type === 'sale'
+														? navigate(`/profile/${record.buyer.id}`)
+														: navigate(`/profile/${record.seller.id}`)
+												}}
+											>
+												{capitalizeFirst(record.type)}
+											</div>
+											<div
+												className="absolute z-10 
+								invisible group-hover:visible
+								bg-wax-gray text-wax-cream text-sm rounded py-1 px-2 absolute bottom-full right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+											>
+												{record.type === 'sale'
+													? record.buyer.username
+													: record.seller.username}
+											</div>
+										</div>
+									) : activeTab === 'sales' ? (
+										<div
+											className="hover:bg-wax-blue hover:bg-opacity-15 cursor-pointer"
+											onClick={() => navigate(`/profile/${record.buyer.id}`)}
+										>
+											{record.buyer.username}
+										</div>
+									) : (
+										<div
+											className="hover:bg-wax-blue hover:bg-opacity-15 cursor-pointer"
+											onClick={() => navigate(`/profile/${record.seller.id}`)}
+										>
+											{record.seller.username}
+										</div>
+									)}
 								</td>
 							</tr>
 						))}

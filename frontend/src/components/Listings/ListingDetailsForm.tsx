@@ -69,17 +69,20 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 		<div className="flex mt-8 border bg-wax-gray bg-opacity-15 border-wax-silver">
 			<div className="flex flex-col p-4">
 				<div className="flex p-4 min-w-[300px] items-center  bg-wax-gray bg-opacity-15">
-					<img src={listing.album.art || '/tile-background.png'} />
+					<img
+						className="w-full"
+						src={listing.album.art || '/tile-background.png'}
+					/>
 				</div>
 			</div>
 			<div className="flex w-full justify-evenly">
 				<div className="flex w-full p-4 bg-wax-gray bg-opacity-30 justify-between">
-					<div className="flex flex-col justify-between w-1/2 px-2">
+					<div className="flex flex-col justify-between w-full px-2">
 						<div>
 							<div className="flex flex-col  ">
 								<div className="ml-2 font-semibold">Artist</div>
 								<div
-									className="pl-2 max-w-fit cursor-pointer hover:underline"
+									className="ml-4 max-w-fit cursor-pointer hover:underline"
 									onClick={() => navigate(`/artist/${listing.artist.id}`)}
 								>
 									{capitalizeFirst(listing.artist.name)}
@@ -88,7 +91,7 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 							<div className="flex flex-col ">
 								<div className="mt-1 ml-2 font-semibold">Album</div>
 								<div
-									className="pl-2 max-w-fit cursor-pointer hover:underline"
+									className="ml-4 max-w-fit cursor-pointer hover:underline"
 									onClick={() => navigate(`/album/${listing.album.id}`)}
 								>
 									{capitalizeFirst(listing.album.title)}
@@ -96,14 +99,14 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 							</div>
 							<div className="flex flex-col w-4/5">
 								<div className="mt-1 ml-2 font-semibold">Format</div>
-								<div className="pl-2">
+								<div className="ml-4">
 									{capitalizeFirst(listing.release.media_type)}
 								</div>
 							</div>
 							<div className="flex flex-col w-4/5 ">
 								<div className="mt-1 ml-2 font-semibold">Release / Variant</div>
 								<div
-									className="max-w-fit pl-2 cursor-pointer hover:underline"
+									className="max-w-fit ml-4 cursor-pointer hover:underline"
 									onClick={() => navigate(`/release/${listing.release.id}`)}
 								>
 									{capitalizeFirst(listing.release.variant)}
@@ -132,9 +135,10 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 										onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
 											setTempValuePrice(Number(e.target.value))
 										}
+										className="dark:text-waxDark-black"
 									/>
 								) : (
-									<div className="pl-2">{`$${listing.price.toFixed(2)}`}</div>
+									<div className="ml-4">{`$${listing.price.toFixed(2)}`}</div>
 								)}
 							</div>
 							<div className="flex flex-col">
@@ -147,18 +151,33 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 												e.target.value as 'm' | 'vg' | 'g' | 'f' | 'ng'
 											)
 										}
+										className="dark:text-waxDark-black"
 									>
-										<option value="" disabled>
+										<option
+											value=""
+											className="dark:text-waxDark-black"
+											disabled
+										>
 											Select Quality
 										</option>
-										<option value="m">Mint</option>
-										<option value="vg">Very Good</option>
-										<option value="g">Good</option>
-										<option value="f">Fair</option>
-										<option value="ng">Not Good</option>
+										<option value="m" className="dark:text-waxDark-black">
+											Mint
+										</option>
+										<option value="vg" className="dark:text-waxDark-black">
+											Very Good
+										</option>
+										<option value="g" className="dark:text-waxDark-black">
+											Good
+										</option>
+										<option value="f" className="dark:text-waxDark-black">
+											Fair
+										</option>
+										<option value="ng" className="dark:text-waxDark-black">
+											Not Good
+										</option>
 									</select>
 								) : (
-									<div className="pl-2">{listing.quality.toUpperCase()}</div>
+									<div className="ml-4 ">{listing.quality.toUpperCase()}</div>
 								)}
 							</div>
 							<div className="flex flex-col">
@@ -167,9 +186,10 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 									<textarea
 										defaultValue={tempValueDesc || ''}
 										onChange={(e) => setTempValueDesc(e.target.value)}
+										className="dark:text-waxDark-black"
 									/>
 								) : (
-									<div className="pl-2">{listing.description}</div>
+									<div className="ml-4">{listing.description}</div>
 								)}
 							</div>
 						</div>

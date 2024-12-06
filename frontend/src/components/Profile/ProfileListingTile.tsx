@@ -6,21 +6,18 @@ import { Listing } from '../../stores/listingStore'
 import DropdownMenu from '../Util/DropdownMenu'
 import EyeIcon from '../Icons/EyeIcon'
 import { capitalizeFirst } from '../../utils/capitalize'
-import useDashboardStore from '../../stores/dashboardStore'
+import useProfileStore from '../../stores/profileStore'
 
-interface DashboardListingTitleProps {
+interface ProfileListingTitleProps {
 	listingId: number
 }
 type DropdownOptions = 'remove' | 'extra' | null
 
-const DashboardListingTile: React.FC<DashboardListingTitleProps> = ({
+const ProfileListingTile: React.FC<ProfileListingTitleProps> = ({
 	listingId,
 }) => {
-	const listing: Listing = useDashboardStore(
+	const listing: Listing = useProfileStore(
 		(state) => state.listings.listings[listingId]
-	)
-	const deleteListing = useDashboardStore(
-		(state) => state.listings.deleteListing
 	)
 	const navigate = useNavigate()
 	const [activeDropdown, setActiveDropdown] = useState<DropdownOptions>(null)
@@ -35,9 +32,6 @@ const DashboardListingTile: React.FC<DashboardListingTitleProps> = ({
 
 	const handleOptionSelect = (option: { label: string; value: string }) => {
 		switch (option.value) {
-			case 'remove':
-				deleteListing(listingId)
-				break
 			case 'listing':
 				navigate(`/listing/${listing.id}`)
 				break
@@ -63,10 +57,13 @@ const DashboardListingTile: React.FC<DashboardListingTitleProps> = ({
 			if (!(event.target instanceof Element)) {
 				return
 			}
-			const clickInside = event.target.closest('.dropdown')
-			if (!clickInside) {
-				setActiveDropdown(null)
-			}
+			const targetElement = event.target as Element
+
+			const clickedRemove = targetElement.closest('.remove-dropdown')
+			const clickedExtra = targetElement.closest('.extra-dropdown')
+
+			if (!clickedRemove && activeDropdown === 'remove') setActiveDropdown(null)
+			if (!clickedExtra && activeDropdown === 'extra') setActiveDropdown(null)
 		},
 		[activeDropdown]
 	)
@@ -165,4 +162,4 @@ const DashboardListingTile: React.FC<DashboardListingTitleProps> = ({
 	)
 }
 
-export default DashboardListingTile
+export default ProfileListingTile

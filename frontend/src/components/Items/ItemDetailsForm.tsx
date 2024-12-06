@@ -17,7 +17,10 @@ const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
 		<div className="flex mt-8 border bg-wax-gray bg-opacity-15 border-wax-silver">
 			<div className="flex flex-col p-4">
 				<div className="flex p-4 min-w-[300px] items-center  bg-wax-gray bg-opacity-15">
-					<img src={item?.album.art || '/tile-background.png'} />
+					<img
+						className="w-full"
+						src={item?.album.art || '/tile-background.png'}
+					/>
 				</div>
 			</div>
 			<div className="flex w-full">
@@ -27,7 +30,7 @@ const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
 							<div className="flex flex-col w-4/5 ">
 								<div className="ml-2 font-semibold">Artist</div>
 								<div
-									className="pl-2 max-w-fit cursor-pointer hover:underline"
+									className="ml-4 max-w-fit cursor-pointer hover:underline"
 									onClick={() => navigate(`/artist/${item?.artist.id}`)}
 								>
 									{item && capitalizeFirst(item.artist.name)}
@@ -36,7 +39,7 @@ const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
 							<div className="flex flex-col w-4/5 ">
 								<div className="mt-1 ml-2 font-semibold">Album</div>
 								<div
-									className="pl-2 max-w-fit cursor-pointer hover:underline"
+									className="ml-4 max-w-fit cursor-pointer hover:underline"
 									onClick={() => navigate(`/album/${item?.album.id}`)}
 								>
 									{item && capitalizeFirst(item?.album.title)}
@@ -44,15 +47,23 @@ const ItemDetailsForm: React.FC<ItemDetailsFormProps> = ({ item }) => {
 							</div>
 							<div className="flex flex-col w-4/5">
 								<div className="mt-1 ml-2 font-semibold">Format</div>
-								<div className="pl-2">{item?.release.media_type}</div>
+								<div className="ml-4">
+									{item?.release.media_type === 'cd'
+										? item?.release.media_type.toUpperCase()
+										: item?.release.media_type &&
+										  capitalizeFirst(item?.release.media_type)}
+								</div>
 							</div>
 							<div className="flex flex-col w-4/5 ">
 								<div className="mt-1 ml-2 font-semibold">Release Variant</div>
 								<div
-									className="max-w-fit pl-2 cursor-pointer hover:underline"
+									className="max-w-fit ml-4 cursor-pointer hover:underline"
 									onClick={() => navigate(`/release/${item?.release.id}`)}
 								>
-									{item && capitalizeFirst(item?.release.variant)}
+									{item?.release.variant === 'cd'
+										? item?.release.variant.toUpperCase()
+										: item?.release.variant &&
+										  capitalizeFirst(item?.release.variant)}
 								</div>
 							</div>
 						</div>

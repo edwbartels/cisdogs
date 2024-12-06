@@ -47,7 +47,6 @@ const useWatchlistStore = create(
 						throw new Error('Failed to get watchlist releases')
 					}
 					const data = await res.json()
-					// console.log(data)
 					set({ releaseDetails: data })
 				} catch (e) {
 					console.error(e)
@@ -63,7 +62,6 @@ const useWatchlistStore = create(
 						throw new Error('Failed to get watchlist listings')
 					}
 					const data = await res.json()
-					// console.log(data)
 					set({ listingDetails: data })
 				} catch (e) {
 					console.error(e)

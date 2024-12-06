@@ -19,7 +19,7 @@ const ArtistDetailsForm: React.FC<ArtistDetailsFormProps> = ({ artist }) => {
 						<div>
 							<div className="flex flex-col w-4/5 ">
 								<div className="ml-2 font-semibold">Artist</div>
-								<div className="pl-2">{artist.name}</div>
+								<div className="ml-4">{artist.name}</div>
 							</div>
 							{/* <div className="flex flex-col w-4/5 ">
 								<div className="mt-1 ml-2 font-semibold">Album</div>

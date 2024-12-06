@@ -175,15 +175,15 @@ const useAuthStore = create(
 						console.log('rehydrated and have the authstate')
 						const userStore = useUserStore.getState()
 						if (authState.isLoggedIn) {
-							setTimeout(() => {
-								userStore.getCollection()
-								userStore.getWatchlist()
-							}, 0)
+							// setTimeout(() => {
+							userStore.getCollection()
+							userStore.getWatchlist()
+							// }, 0)
 						} else {
-							setTimeout(() => {
-								useUserStore.setState({ collection: new Set() })
-								useUserStore.setState({ watchlist: new Set() })
-							}, 0)
+							// setTimeout(() => {
+							useUserStore.setState({ collection: new Set() })
+							useUserStore.setState({ watchlist: new Set() })
+							// }, 0)
 						}
 						if (authState.isDarkMode && document.getElementById('root')) {
 							document

@@ -114,15 +114,15 @@ const ReleaseTile: React.FC<ReleaseTileProps> = ({ releaseId }) => {
 				>
 					{/* {listing.album.art && <img src=`${listing.album.art}` className='object-contain w-full aspect-square'} */}
 
-					<div className="tile-art-title-bar">{release.album?.title}</div>
+					<div className="tile-art-title-bar">{release.artist?.name}</div>
 					<div></div>
 				</div>
 				<div className="tile-footer-2">
 					<div
-						className="cursor-pointer w-fit self-center hover:text-wax-cream"
-						onClick={() => navigate(`/artist/${release.artist.id}`)}
+						className="cursor-pointer truncate text-center hover:text-wax-cream"
+						onClick={() => navigate(`/album/${release.album.id}`)}
 					>
-						{release.artist?.name}
+						{release.album?.title}
 					</div>
 					<div
 						className="cursor-pointer self-center truncate hover:text-wax-cream"

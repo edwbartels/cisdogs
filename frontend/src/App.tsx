@@ -19,6 +19,7 @@ import Releases from './components/Releases/Releases'
 import Albums from './components/Albums/Albums'
 import Artists from './components/Artists/Artists'
 import Profile from './components/Profile/Profile'
+import useUserStore from './stores/userStore'
 
 const Layout = () => {
 	return (
@@ -72,7 +73,7 @@ const App = () => {
 	const scheduleTokenRefresh = useAuthStore(
 		(state) => state.scheduleTokenRefresh
 	)
-	const isDarkMode = useAuthStore((state) => state.isDarkMode)
+	const { isDarkMode } = useAuthStore((state) => state)
 	if (isDarkMode) {
 		document.getElementById('root')?.classList.toggle('dark', isDarkMode)
 	}

@@ -125,7 +125,6 @@ def get_listing_modal_data(
                 items=[item],
             )
         )
-    print(artist_map.values())
 
     # Convert the artist map into the ListingModalData response
     return {"artists": artist_map.values()}

@@ -120,16 +120,16 @@ const WatchlistReleaseTile: React.FC<WatchlistReleaseTileProps> = ({
 				}}
 				onClick={() => navigate(`/release/${release.id}`)}
 			>
-				<div className="tile-art-title-bar">{release.album.title}</div>
+				<div className="tile-art-title-bar">{release.artist.name}</div>
 				<div></div>
 			</div>
 
 			<div className="tile-footer-2">
 				<div
-					className="cursor-pointer self-center hover:text-wax-cream"
-					onClick={() => navigate(`/artist/${release.artist.id}`)}
+					className="cursor-pointer truncate text-center hover:text-wax-cream"
+					onClick={() => navigate(`/album/${release.album.id}`)}
 				>
-					{release.artist.name}
+					{release.album.title}
 				</div>
 				<div
 					className="truncate self-center cursor-pointer hover:text-wax-cream"

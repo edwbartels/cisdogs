@@ -136,6 +136,7 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 										onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
 											setTempValuePrice(Number(e.target.value))
 										}
+										className="dark:text-waxDark-black"
 									/>
 								) : (
 									<div className="ml-4">{`$${listing.price.toFixed(2)}`}</div>
@@ -151,18 +152,33 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 												e.target.value as 'm' | 'vg' | 'g' | 'f' | 'ng'
 											)
 										}
+										className="dark:text-waxDark-black"
 									>
-										<option value="" disabled>
+										<option
+											value=""
+											className="dark:text-waxDark-black"
+											disabled
+										>
 											Select Quality
 										</option>
-										<option value="m">Mint</option>
-										<option value="vg">Very Good</option>
-										<option value="g">Good</option>
-										<option value="f">Fair</option>
-										<option value="ng">Not Good</option>
+										<option value="m" className="dark:text-waxDark-black">
+											Mint
+										</option>
+										<option value="vg" className="dark:text-waxDark-black">
+											Very Good
+										</option>
+										<option value="g" className="dark:text-waxDark-black">
+											Good
+										</option>
+										<option value="f" className="dark:text-waxDark-black">
+											Fair
+										</option>
+										<option value="ng" className="dark:text-waxDark-black">
+											Not Good
+										</option>
 									</select>
 								) : (
-									<div className="ml-4">{listing.quality.toUpperCase()}</div>
+									<div className="ml-4 ">{listing.quality.toUpperCase()}</div>
 								)}
 							</div>
 							<div className="flex flex-col">
@@ -171,6 +187,7 @@ const ListingDetailsForm: React.FC<ListingDetailsFormProps> = ({ listing }) => {
 									<textarea
 										defaultValue={tempValueDesc || ''}
 										onChange={(e) => setTempValueDesc(e.target.value)}
+										className="dark:text-waxDark-black"
 									/>
 								) : (
 									<div className="ml-4">{listing.description}</div>

@@ -214,9 +214,7 @@ def get_all_dashboard_items(
     user_id=Depends(get_user_id),
     db: Session = Depends(get_db),
 ) -> PaginationResult[ItemFull]:
-    print("hello")
     filters: tuple[ColumnExpressionArgument] = (Item.owner_id == user_id,)
-    print("got past filter setting")
     items: PaginationResult[ItemFull] = get_cached_items(pagination, db, filters)
 
     return items

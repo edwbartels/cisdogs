@@ -137,15 +137,15 @@ const WatchlistListingTile: React.FC<WatchlistListingTileProps> = ({
 					}}
 					onClick={() => navigate(`/listing/${listing.id}`)}
 				>
-					<div className="tile-art-title-bar">{listing.album.title}</div>
+					<div className="tile-art-title-bar">{listing.artist.name}</div>
 					<div></div>
 				</div>
 				<div className="tile-footer-2">
 					<div
-						className="cursor-pointer self-center hover:text-wax-cream"
-						onClick={() => navigate(`/artist/${listing.artist.id}`)}
+						className="cursor-pointer truncate text-center hover:text-wax-cream"
+						onClick={() => navigate(`/album/${listing.album.id}`)}
 					>
-						{listing.artist.name}
+						{listing.album.title}
 					</div>
 					<div className="flex justify-between cursor-pointer ">
 						<div

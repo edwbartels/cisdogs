@@ -11,7 +11,7 @@ const AlbumDetailsForm: React.FC<AlbumDetailsFormProps> = ({ album }) => {
 	return (
 		<div className="flex flex-col self-center">
 			<div className="flex mt-8 self-center border  border-wax-silver w-[90%] text-xl min-w-[800px]">
-				<div className="flex p-4 min-w-[300px] items-center  bg-wax-gray bg-opacity-15">
+				<div className="flex p-4 w-[300px] items-center  bg-wax-gray bg-opacity-15">
 					<img className="w-full" src={album.art || '/tile-background.png'} />
 				</div>
 				<div className="flex  py-4 px-8 bg-wax-gray bg-opacity-30 justify-between flex-grow">

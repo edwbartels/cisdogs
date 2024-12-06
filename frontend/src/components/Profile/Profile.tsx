@@ -27,8 +27,8 @@ const Profile: React.FC<ProfileProps> = () => {
 							onClick={() => handleTabClick('items')}
 							className={`tab px-2 hover:bg-wax-amber hover:bg-opacity-10 h-full ${
 								activeTab === 'items'
-									? 'text-wax-blue border-b-2 rounded border-wax-blue'
-									: 'text-wax-gray'
+									? 'text-wax-blue border-b-2 rounded border-wax-blue dark:text-waxDark-blue dark:border-waxDark-blue'
+									: 'text-wax-gray  dark:text-waxDark-silver'
 							}`}
 						>
 							Collection
@@ -37,8 +37,8 @@ const Profile: React.FC<ProfileProps> = () => {
 							onClick={() => handleTabClick('listings')}
 							className={`tab  hover:bg-wax-amber hover:bg-opacity-10 px-2 h-full ${
 								activeTab === 'listings'
-									? 'text-wax-blue border-b-2 rounded border-wax-blue'
-									: 'text-wax-gray'
+									? 'text-wax-blue border-b-2 rounded border-wax-blue dark:text-waxDark-blue dark:border-waxDark-blue'
+									: 'text-wax-gray  dark:text-waxDark-silver'
 							}`}
 						>
 							Listings

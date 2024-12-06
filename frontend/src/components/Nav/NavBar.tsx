@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import SessionManagement from './SessionManagement'
 import LogoIcon from '../Icons/LogoIcon'
 import { NavLink } from 'react-router-dom'
@@ -9,11 +9,22 @@ import NavUser from './NavUser'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons'
 import { faMoon as faMoonOpen } from '@fortawesome/free-regular-svg-icons'
+import useUserStore from '../../stores/userStore'
 
 const Navbar: React.FC = () => {
-	const { isDarkMode, toggleDarkMode } = useAuthStore((state) => state)
+	const { isDarkMode, toggleDarkMode, isLoggedIn } = useAuthStore(
+		(state) => state
+	)
+	const { getCollection, getWatchlist } = useUserStore((state) => state)
 	const cartItems = useAuthStore((state) => state.cart)
 	const handleCheckout = useAuthStore((state) => state.checkoutCart)
+
+	useEffect(() => {
+		if (isLoggedIn) {
+			getCollection()
+			getWatchlist()
+		}
+	}, [])
 
 	return (
 		<nav className="px-1 w-full m-w-screen-lg sm:px-4 lg:px-6">
@@ -60,7 +71,7 @@ const Navbar: React.FC = () => {
 					<FontAwesomeIcon
 						icon={isDarkMode ? faSun : faMoon}
 						onClick={toggleDarkMode}
-						className="pl-2 cursor-pointer hover:text-wax-amber dark:hover:text-waxDark-amber"
+						className="pl-2 cursor-pointer hover:text-wax-amber dark:hover:text-waxDark-amber w-8"
 					/>
 				</div>
 			</div>

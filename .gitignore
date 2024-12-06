@@ -11,6 +11,7 @@ node_modules/
 dist/
 build/
 .npm/
+stats.html
 
 # Ignore dependencies and virtual environment (FastAPI backend)
 env/

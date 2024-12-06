@@ -125,7 +125,7 @@ const ReleaseTile: React.FC<ReleaseTileProps> = ({ releaseId }) => {
 						{release.album?.title}
 					</div>
 					<div
-						className="cursor-pointer self-center truncate hover:text-wax-cream"
+						className="cursor-pointer text-center w-full truncate hover:text-wax-cream"
 						onClick={() => navigate(`/release/${release.id}`)}
 					>
 						{`${release.media_type.toUpperCase()}`}{' '}

@@ -35,7 +35,7 @@ const Browse: React.FC = () => {
 
 	return (
 		<div className="flex flex-col self-center">
-			<div className="flex flex-wrap justify-start gap-4 p-4 mt-4">
+			<div className="flex flex-wrap justify-start gap-4 pl-4 mt-4">
 				{sortedIds &&
 					sortedIds.map((id) => <ItemTileMain key={id} itemId={id} />)}
 			</div>
